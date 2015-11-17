@@ -26,104 +26,104 @@ void main()
 {
 	srand((unsigned)time(NULL));
 
-	//À©µµ¿ì ÃÊ±âÈ­ ¹× »ı¼º
-	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH); //µğ½ºÇÃ·¹ÀÌ ¸ğµå ¼³Á¤
-	glutInitWindowPosition(500, 0); // À©µµ¿ì À§Ä¡ ÁöÁ¤
-	glutInitWindowSize(800, 600); //À©µµ¿ì Å©±â ÁöÁ¤
-	glutCreateWindow("CGExample1"); //À©µµ¿ì »ı¼º(À©µµ¿ì ÀÌ¸§)
+	//ìœˆë„ìš° ì´ˆê¸°í™” ë° ìƒì„±
+	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH); //ë””ìŠ¤í”Œë ˆì´ ëª¨ë“œ ì„¤ì •
+	glutInitWindowPosition(500, 0); // ìœˆë„ìš° ìœ„ì¹˜ ì§€ì •
+	glutInitWindowSize(800, 600); //ìœˆë„ìš° í¬ê¸° ì§€ì •
+	glutCreateWindow("CGExample1"); //ìœˆë„ìš° ìƒì„±(ìœˆë„ìš° ì´ë¦„)
 
-	//»óÅÂ º¯¼ö ÃÊ±âÈ­ ÇÔ¼ö
-	glutSetCursor(GLUT_CURSOR_NONE);//¸¶¿ì½ºÄ¿¼­ ¾ø¾Ö±â
+	//ìƒíƒœ ë³€ìˆ˜ ì´ˆê¸°í™” í•¨ìˆ˜
+	glutSetCursor(GLUT_CURSOR_NONE);//ë§ˆìš°ìŠ¤ì»¤ì„œ ì—†ì• ê¸°
 
-	//ÇÊ¿äÇÑ Äİ¹é ÇÔ¼ö ¼³Á¤
-	glutDisplayFunc(DrawScene); //Ãâ·Â ÇÔ¼öÀÇ ÁöÁ¤
-	glutTimerFunc(Time, TimerFunction, 1);//Å¸ÀÌ¸Ó Äİ¹é ÇÔ¼ö
-	glutMouseFunc(Mouse);//¸¶¿ì½ºÀÔ·Â
+	//í•„ìš”í•œ ì½œë°± í•¨ìˆ˜ ì„¤ì •
+	glutDisplayFunc(DrawScene); //ì¶œë ¥ í•¨ìˆ˜ì˜ ì§€ì •
+	glutTimerFunc(Time, TimerFunction, 1);//íƒ€ì´ë¨¸ ì½œë°± í•¨ìˆ˜
+	glutMouseFunc(Mouse);//ë§ˆìš°ìŠ¤ì…ë ¥
 	//glutMotionFunc(Motion);
 	glutPassiveMotionFunc(Motion);
-	glutKeyboardFunc(Keyboard);//Å°º¸µåÀÔ·Â
-	glutReshapeFunc(Reshape);//´Ù½Ã±×¸®±â
+	glutKeyboardFunc(Keyboard);//í‚¤ë³´ë“œì…ë ¥
+	glutReshapeFunc(Reshape);//ë‹¤ì‹œê·¸ë¦¬ê¸°
 
-	glutMainLoop();//ÀÌº¥Æ® ·çÇÁ ½ÇÇàÇÏ±â
+	glutMainLoop();//ì´ë²¤íŠ¸ ë£¨í”„ ì‹¤í–‰í•˜ê¸°
 
 }
 
-//À©µµ¿ì Ãâ·Â ÇÔ¼ö
+//ìœˆë„ìš° ì¶œë ¥ í•¨ìˆ˜
 GLvoid DrawScene(GLvoid)
 {
-	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);//¹ÙÅÁ»öÀ»'black'·ÎÁöÁ¤
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);// ¼³Á¤µÈ »öÀ¸·Î ÀüÃ¼¸¦ Ä¥ÇÏ±â
+	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);//ë°”íƒ•ìƒ‰ì„'black'ë¡œì§€ì •
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);// ì„¤ì •ëœ ìƒ‰ìœ¼ë¡œ ì „ì²´ë¥¼ ì¹ í•˜ê¸°
 
 	glLoadIdentity();
 	gluLookAt(Charx, 0.0, Charz, Vewx, Vewy, Vewz, 0.0, 1.0, 0.0);
 
 
 
-	//Á¶¸í¼³Á¤
-	glEnable(GL_DEPTH_TEST);                              // °¡·ÁÁø ¸é Á¦°Å
-	glEnable(GL_CULL_FACE);                               // ÈÄ¸é Á¦°Å
+	//ì¡°ëª…ì„¤ì •
+	glEnable(GL_DEPTH_TEST);                              // ê°€ë ¤ì§„ ë©´ ì œê±°
+	glEnable(GL_CULL_FACE);                               // í›„ë©´ ì œê±°
 
 
-	glPushMatrix();//¹Ù´Ú ±×¸®±â
+	glPushMatrix();//ë°”ë‹¥ ê·¸ë¦¬ê¸°
 	glTranslatef(0, -100, 0);
 	glScalef(1, 0.01, 1);
 	glutWireCube(2000);
-	glPopMatrix();//¹Ù´Ú ±×¸®±â Á¾·á
+	glPopMatrix();//ë°”ë‹¥ ê·¸ë¦¬ê¸° ì¢…ë£Œ
 
-	glPushMatrix();//¹Ù´Ú ±×¸®±â
+	glPushMatrix();//ë°”ë‹¥ ê·¸ë¦¬ê¸°
 	glColor3f(1, 0, 0);
 	glTranslatef(0, 0, -1000);
 	glutSolidCube(100);
-	glPopMatrix();//¹Ù´Ú ±×¸®±â Á¾·á
+	glPopMatrix();//ë°”ë‹¥ ê·¸ë¦¬ê¸° ì¢…ë£Œ
 
-	glPushMatrix();//¹Ù´Ú ±×¸®±â
+	glPushMatrix();//ë°”ë‹¥ ê·¸ë¦¬ê¸°
 	glColor3f(0, 0, 1);
 	glTranslatef(0, 0, 1000);
 	glutSolidCube(100);
-	glPopMatrix();//¹Ù´Ú ±×¸®±â Á¾·á
+	glPopMatrix();//ë°”ë‹¥ ê·¸ë¦¬ê¸° ì¢…ë£Œ
 
-	glPushMatrix();//¹Ù´Ú ±×¸®±â
+	glPushMatrix();//ë°”ë‹¥ ê·¸ë¦¬ê¸°
 	glColor3f(0, 1, 0);
 	glTranslatef(1000, 0, 0);
 	glutSolidCube(100);
-	glPopMatrix();//¹Ù´Ú ±×¸®±â Á¾·á
+	glPopMatrix();//ë°”ë‹¥ ê·¸ë¦¬ê¸° ì¢…ë£Œ
 
-	glPushMatrix();//¹Ù´Ú ±×¸®±â
+	glPushMatrix();//ë°”ë‹¥ ê·¸ë¦¬ê¸°
 	glColor3f(1, 1, 0);
 	glTranslatef(-1000, 0, 0);
 	glutSolidCube(100);
-	glPopMatrix();//¹Ù´Ú ±×¸®±â Á¾·á
+	glPopMatrix();//ë°”ë‹¥ ê·¸ë¦¬ê¸° ì¢…ë£Œ
 
 
-	glPushMatrix();//¹Ù´Ú ±×¸®±â
+	glPushMatrix();//ë°”ë‹¥ ê·¸ë¦¬ê¸°
 	glColor3f(1, 0, 1);
 	glTranslatef(0, -1000, 0);
 	glutSolidCube(100);
-	glPopMatrix();//¹Ù´Ú ±×¸®±â Á¾·á
+	glPopMatrix();//ë°”ë‹¥ ê·¸ë¦¬ê¸° ì¢…ë£Œ
 
-	glPushMatrix();//¹Ù´Ú ±×¸®±â
+	glPushMatrix();//ë°”ë‹¥ ê·¸ë¦¬ê¸°
 	glColor3f(0, 1, 1);
 	glTranslatef(0, 1000, 0);
 	glutSolidCube(100);
-	glPopMatrix();//¹Ù´Ú ±×¸®±â Á¾·á
+	glPopMatrix();//ë°”ë‹¥ ê·¸ë¦¬ê¸° ì¢…ë£Œ
 
 
-	glutSwapBuffers(); //È­¸é¿¡ Ãâ·ÂÇÏ±â
+	glutSwapBuffers(); //í™”ë©´ì— ì¶œë ¥í•˜ê¸°
 }//end of drawScene
 
 GLvoid Reshape(int w, int h)
 {
-	//ºäÆ÷Æ® º¯È¯ ¼³Á¤
+	//ë·°í¬íŠ¸ ë³€í™˜ ì„¤ì •
 	glViewport(0, 0, w, h);
 
-	//Åõ¿µ Çà·Ä ½ºÅÃ Àç¼³Á¤
+	//íˆ¬ì˜ í–‰ë ¬ ìŠ¤íƒ ì¬ì„¤ì •
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 
-	//Å¬¸®ÇÎ °ø°£ ¼³Á¤ : ¿ø±ÙÅõ¿µ
+	//í´ë¦¬í•‘ ê³µê°„ ì„¤ì • : ì›ê·¼íˆ¬ì˜
 	gluPerspective(60.0f, (float)w / (float)h, 0.1, 5000.0);
 
-	//¸ğµ¨ ºä Çà·Ä ½ºÅÃ Àç¼³Á¤
+	//ëª¨ë¸ ë·° í–‰ë ¬ ìŠ¤íƒ ì¬ì„¤ì •
 	glMatrixMode(GL_MODELVIEW);
 }
 
@@ -188,7 +188,7 @@ void Keyboard(unsigned char key, int x, int y)
 		else
 			RotateCam = true;
 		break;
-	case 27://ESCÅ°·Î Á¾·á
+	case 27://ESCí‚¤ë¡œ ì¢…ë£Œ
 		exit(0);
 		break;
 	}
