@@ -18,6 +18,7 @@ char Input;
 
 float camxrotate = 0, camyrotate = -90, Vewx = 0, Vewy = 0, Vewz = -1000, Charx = 0, Charz = 0;
 float nx = 0, ny = 0, bx = 0, by = 0;
+int Charspeed = 5;
 
 bool RotateCam = true;
 
@@ -165,20 +166,20 @@ void Keyboard(unsigned char key, int x, int y)
 	switch (key)
 	{
 	case 'w':
-		Charx += 3 * cos((-camxrotate + 90) * 3.141592 / 180);
-		Charz += 3 * sin((-camxrotate + 90) * 3.141592 / 180);
+		Charx += Charspeed * cos((-camxrotate + 90) * 3.141592 / 180);
+		Charz += Charspeed * sin((-camxrotate + 90) * 3.141592 / 180);
 		break;
 	case 'a':
-		Charx += 3 * cos((-camxrotate) * 3.141592 / 180);
-		Charz += 3 * sin((-camxrotate) * 3.141592 / 180);
+		Charx += Charspeed * cos((-camxrotate) * 3.141592 / 180);
+		Charz += Charspeed * sin((-camxrotate) * 3.141592 / 180);
 		break;
 	case 's':
-		Charx -= 3 * cos((-camxrotate + 90) * 3.141592 / 180);
-		Charz -= 3 * sin((-camxrotate + 90) * 3.141592 / 180);
+		Charx -= Charspeed * cos((-camxrotate + 90) * 3.141592 / 180);
+		Charz -= Charspeed * sin((-camxrotate + 90) * 3.141592 / 180);
 		break;
 	case 'd':
-		Charx -= 3 * cos((-camxrotate) * 3.141592 / 180);
-		Charz -= 3 * sin((-camxrotate) * 3.141592 / 180);
+		Charx -= Charspeed * cos((-camxrotate) * 3.141592 / 180);
+		Charz -= Charspeed * sin((-camxrotate) * 3.141592 / 180);
 		break;
 	case 'c':
 		glutSetCursor(GLUT_CURSOR_NONE);
