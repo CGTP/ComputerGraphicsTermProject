@@ -30,7 +30,7 @@ void main()
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH); //디스플레이 모드 설정
 	glutInitWindowPosition(500, 0); // 윈도우 위치 지정
 	glutInitWindowSize(800, 600); //윈도우 크기 지정
-	glutCreateWindow("CGExample1"); //윈도우 생성(윈도우 이름)
+	glutCreateWindow("ComputerGrapgics TermProject"); //윈도우 생성(윈도우 이름)
 
 	//상태 변수 초기화 함수
 	glutSetCursor(GLUT_CURSOR_NONE);//마우스커서 없애기
