@@ -20,12 +20,12 @@ void SpecialKey(int key, int x, int y);
 void TimerFunction(int);
 
 
-void drawBoxFront(int, GLuint);
-void drawBoxBack(int, GLuint);
-void drawBoxTop(int, GLuint);
-void drawBoxBottom(int, GLuint);
-void drawBoxRight(int, GLuint);
-void drawBoxLeft(int, GLuint);
+void drawBoxFront(int, bool, GLuint);
+void drawBoxBack(int, bool, GLuint);
+void drawBoxTop(int, bool, GLuint);
+void drawBoxBottom(int, bool, GLuint);
+void drawBoxRight(int, bool, GLuint);
+void drawBoxLeft(int, bool, GLuint);
 
 void head_Texture();
 void body_Texture();
@@ -78,67 +78,71 @@ GLvoid drawScene(GLvoid){
 	glPushMatrix(); //Save
 	glTranslated(0, 75, 0);
 	glScaled(1.0, 1.0, 0.7);
-	drawBoxFront(30, character_head_object[0]);
-	drawBoxBack(30, character_head_object[1]);
-	drawBoxLeft(30, character_head_object[2]);
-	drawBoxRight(30, character_head_object[3]);
-	drawBoxTop(30, character_head_object[4]);
-	drawBoxBottom(30, character_head_object[5]);
+	drawBoxFront(30, false, character_head_object[0]);
+	drawBoxBack(30, false, character_head_object[1]);
+	drawBoxLeft(30, false, character_head_object[2]);
+	drawBoxRight(30, false, character_head_object[3]);
+	drawBoxTop(30, false, character_head_object[4]);
+	drawBoxBottom(30, false, character_head_object[5]);
 	glPopMatrix();
 
 	glPushMatrix(); //Save
 	glScaled(1.0, 1.5, 0.5);
-	drawBoxFront(30, character_body_object[0]);
-	drawBoxBack(30, character_body_object[1]);
-	drawBoxLeft(30, character_body_object[2]);
-	drawBoxRight(30, character_body_object[3]);
-	drawBoxTop(30, character_body_object[4]);
-	drawBoxBottom(30, character_body_object[5]);
+	drawBoxFront(30, false, character_body_object[0]);
+	drawBoxBack(30, false, character_body_object[1]);
+	drawBoxLeft(30, false, character_body_object[2]);
+	drawBoxRight(30, false, character_body_object[3]);
+	drawBoxTop(30, false, character_body_object[4]);
+	drawBoxBottom(30, false, character_body_object[5]);
 	glPopMatrix();
 
-	glPushMatrix(); //Save
-	glTranslated(-45, 0, 0);
+	glPushMatrix(); //Save right arm
+	glTranslated(-45, 44, 0);
+	glRotatef(30, 1, 0, 0);
 	glScaled(0.5, 1.5, 0.5);
-	drawBoxFront(30, character_arm_object[0]);
-	drawBoxBack(30, character_arm_object[1]);
-	drawBoxLeft(30, character_arm_object[2]);
-	drawBoxRight(30, character_arm_object[3]);
-	drawBoxTop(30, character_arm_object[4]);
-	drawBoxBottom(30, character_arm_object[5]);
+	drawBoxFront(30, true, character_arm_object[0]);
+	drawBoxBack(30, true, character_arm_object[1]);
+	drawBoxLeft(30, true, character_arm_object[2]);
+	drawBoxRight(30, true, character_arm_object[3]);
+	drawBoxTop(30, true, character_arm_object[4]);
+	drawBoxBottom(30, true, character_arm_object[5]);
 	glPopMatrix();
 
-	glPushMatrix(); //Save
-	glTranslated(45, 0, 0);
+	glPushMatrix(); //Save left arm
+	glTranslated(45, 44, 0);
+	glRotatef(-30, 1, 0, 0);
 	glScaled(0.5, 1.5, 0.5);
-	drawBoxFront(30, character_arm_object[0]);
-	drawBoxBack(30, character_arm_object[1]);
-	drawBoxLeft(30, character_arm_object[2]);
-	drawBoxRight(30, character_arm_object[3]);
-	drawBoxTop(30, character_arm_object[4]);
-	drawBoxBottom(30, character_arm_object[5]);
+	drawBoxFront(30, true, character_arm_object[0]);
+	drawBoxBack(30, true, character_arm_object[1]);
+	drawBoxLeft(30, true, character_arm_object[2]);
+	drawBoxRight(30, true, character_arm_object[3]);
+	drawBoxTop(30, true, character_arm_object[4]);
+	drawBoxBottom(30, true, character_arm_object[5]);
 	glPopMatrix();
 
 
-	glPushMatrix(); //Save
-	glTranslated(-15, -90, 0);
+	glPushMatrix(); //Save right leg
+	glTranslated(-15, -40, 0);
+	glRotatef(-30, 1, 0, 0);
 	glScaled(0.5, 1.5, 0.5);
-	drawBoxFront(30, character_leg_object[0]);
-	drawBoxBack(30, character_leg_object[1]);
-	drawBoxLeft(30, character_leg_object[2]);
-	drawBoxRight(30, character_leg_object[3]);
-	drawBoxTop(30, character_leg_object[4]);
-	drawBoxBottom(30, character_leg_object[5]);
+	drawBoxFront(30, true, character_leg_object[0]);
+	drawBoxBack(30, true, character_leg_object[1]);
+	drawBoxLeft(30, true, character_leg_object[2]);
+	drawBoxRight(30, true, character_leg_object[3]);
+	drawBoxTop(30, true, character_leg_object[4]);
+	drawBoxBottom(30, true, character_leg_object[5]);
 	glPopMatrix();
 
-	glPushMatrix(); //Save
-	glTranslated(15, -90, 0);
+	glPushMatrix(); //Save right leg
+	glTranslated(15, -40, 0);
+	glRotatef(30, 1, 0, 0);
 	glScaled(0.5, 1.5, 0.5);
-	drawBoxFront(30, character_leg_object[0]);
-	drawBoxBack(30, character_leg_object[1]);
-	drawBoxLeft(30, character_leg_object[2]);
-	drawBoxRight(30, character_leg_object[3]);
-	drawBoxTop(30, character_leg_object[4]);
-	drawBoxBottom(30, character_leg_object[5]);
+	drawBoxFront(30, true, character_leg_object[0]);
+	drawBoxBack(30, true, character_leg_object[1]);
+	drawBoxLeft(30, true, character_leg_object[2]);
+	drawBoxRight(30, true, character_leg_object[3]);
+	drawBoxTop(30, true, character_leg_object[4]);
+	drawBoxBottom(30, true, character_leg_object[5]);
 	glPopMatrix();
 
 
@@ -148,6 +152,7 @@ GLvoid drawScene(GLvoid){
 }
 
 void TimerFunction(int value){
+
 	glutPostRedisplay(); // 화면 재 출력
 	glutTimerFunc(100, TimerFunction, 1); // 타이머함수 재 설정
 }
@@ -225,118 +230,190 @@ void vLine(){
 }
 
 
-void drawBoxFront(int size, GLuint image){
+void drawBoxFront(int size, bool shaft, GLuint image){
 	glPushMatrix(); //Save
 	glEnable(GL_TEXTURE_2D);
 	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 	glBindTexture(GL_TEXTURE_2D, image);
 	glBegin(GL_QUADS);
-	glTexCoord2d(0.0f, 1.0f);
-	glVertex3f(-size, size, size);   //1
-	glTexCoord2d(0.0f, 0.0f);
-	glVertex3f(-size, -size, size);   //2
-	glTexCoord2d(1.0f, 0.0f);
-	glVertex3f(size, -size, size);   //3
-	glTexCoord2d(1.0f, 1.0f);
-	glVertex3f(size, size, size);   //4
+	if (shaft == true){
+		//인호's 샘플코드
+		glTexCoord2d(0.0f, 1.0f);
+		glVertex3f(-size, 0, size);   //1
+		glTexCoord2d(0.0f, 0.0f);
+		glVertex3f(-size, -(size * 2), size);   //2
+		glTexCoord2d(1.0f, 0.0f);
+		glVertex3f(size, -(size * 2), size);   //3
+		glTexCoord2d(1.0f, 1.0f);
+		glVertex3f(size, 0, size);   //4
+	}
+	else{
+		glTexCoord2d(0.0f, 1.0f);
+		glVertex3f(-size, size, size);   //1
+		glTexCoord2d(0.0f, 0.0f);
+		glVertex3f(-size, -size, size);   //2
+		glTexCoord2d(1.0f, 0.0f);
+		glVertex3f(size, -size, size);   //3
+		glTexCoord2d(1.0f, 1.0f);
+		glVertex3f(size, size, size);   //4
+	}
 	glEnd();
 	glDisable(GL_TEXTURE_2D);
 	glPopMatrix();
 }
 
-void drawBoxBack(int size, GLuint image){
+void drawBoxBack(int size, bool shaft, GLuint image){
 	glPushMatrix(); //Save
 	glEnable(GL_TEXTURE_2D);
 	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 	glBindTexture(GL_TEXTURE_2D, image);
 	glBegin(GL_QUADS);
-	glTexCoord2d(0.0f, 1.0f);
-	glVertex3f(-size, size, -size);   //5
-	glTexCoord2d(1.0f, 1.0f);
-	glVertex3f(size, size, -size);   //6
-	glTexCoord2d(1.0f, 0.0f);
-	glVertex3f(size, -size, -size);   //7
-	glTexCoord2d(0.0f, 0.0f);
-	glVertex3f(-size, -size, -size);   //8
+	if (shaft == true){
+		glTexCoord2d(0.0f, 1.0f);
+		glVertex3f(-size, 0, -size);   //5
+		glTexCoord2d(1.0f, 1.0f);
+		glVertex3f(size, 0, -size);   //6
+		glTexCoord2d(1.0f, 0.0f);
+		glVertex3f(size, -(size * 2), -size);   //7
+		glTexCoord2d(0.0f, 0.0f);
+		glVertex3f(-size, -(size * 2), -size);   //8
+	}
+	else{
+		glTexCoord2d(0.0f, 1.0f);
+		glVertex3f(-size, size, -size);   //5
+		glTexCoord2d(1.0f, 1.0f);
+		glVertex3f(size, size, -size);   //6
+		glTexCoord2d(1.0f, 0.0f);
+		glVertex3f(size, -size, -size);   //7
+		glTexCoord2d(0.0f, 0.0f);
+		glVertex3f(-size, -size, -size);   //8
+	}
 	glEnd();
 	glDisable(GL_TEXTURE_2D);
 	glPopMatrix();
 }
 
-void drawBoxLeft(int size, GLuint image){
+void drawBoxLeft(int size, bool shaft, GLuint image){
 	glPushMatrix(); //Save
 	glEnable(GL_TEXTURE_2D);
 	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 	glBindTexture(GL_TEXTURE_2D, image);
 	glBegin(GL_QUADS);
-	glTexCoord2d(1.0f, 1.0f);
-	glVertex3f(-size, size, size);   //1
-	glTexCoord2d(0.0f, 1.0f);
-	glVertex3f(-size, size, -size);   //5
-	glTexCoord2d(0.0f, 0.0f);
-	glVertex3f(-size, -size, -size);   //8   
-	glTexCoord2d(1.0f, 0.0f);
-	glVertex3f(-size, -size, size);   //2
+	if (shaft == true){
+		glTexCoord2d(1.0f, 1.0f);
+		glVertex3f(-size, 0, size);   //1
+		glTexCoord2d(0.0f, 1.0f);
+		glVertex3f(-size, 0, -size);   //5
+		glTexCoord2d(0.0f, 0.0f);
+		glVertex3f(-size, -(size * 2), -size);   //8   
+		glTexCoord2d(1.0f, 0.0f);
+		glVertex3f(-size, -(size * 2), size);   //2
+	}
+	else{
+		glTexCoord2d(1.0f, 1.0f);
+		glVertex3f(-size, size, size);   //1
+		glTexCoord2d(0.0f, 1.0f);
+		glVertex3f(-size, size, -size);   //5
+		glTexCoord2d(0.0f, 0.0f);
+		glVertex3f(-size, -size, -size);   //8   
+		glTexCoord2d(1.0f, 0.0f);
+		glVertex3f(-size, -size, size);   //2
+	}
 	glEnd();
 	glDisable(GL_TEXTURE_2D);
 	glPopMatrix();
 
 }
 
-void drawBoxRight(int size, GLuint image){
+void drawBoxRight(int size, bool shaft, GLuint image){
 	glPushMatrix(); //Save
 	glEnable(GL_TEXTURE_2D);
 	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 	glBindTexture(GL_TEXTURE_2D, image);
 	glBegin(GL_QUADS);
-	glTexCoord2d(0.0f, 1.0f);
-	glVertex3f(size, size, size);   //4
-	glTexCoord2d(0.0f, 0.0f);
-	glVertex3f(size, -size, size);   //3   
-	glTexCoord2d(1.0f, 0.0f);
-	glVertex3f(size, -size, -size);   //7
-	glTexCoord2d(1.0f, 1.0f);
-	glVertex3f(size, size, -size);   //6
-
+	if (shaft == true){
+		glTexCoord2d(0.0f, 1.0f);
+		glVertex3f(size, 0, size);   //4
+		glTexCoord2d(0.0f, 0.0f);
+		glVertex3f(size, -(size * 2), size);   //3   
+		glTexCoord2d(1.0f, 0.0f);
+		glVertex3f(size, -(size * 2), -size);   //7
+		glTexCoord2d(1.0f, 1.0f);
+		glVertex3f(size, 0, -size);   //6
+	}
+	else{
+		glTexCoord2d(0.0f, 1.0f);
+		glVertex3f(size, size, size);   //4
+		glTexCoord2d(0.0f, 0.0f);
+		glVertex3f(size, -size, size);   //3   
+		glTexCoord2d(1.0f, 0.0f);
+		glVertex3f(size, -size, -size);   //7
+		glTexCoord2d(1.0f, 1.0f);
+		glVertex3f(size, size, -size);   //6
+	}
 	glEnd();
 	glDisable(GL_TEXTURE_2D);
 	glPopMatrix();
 
 }
 
-void drawBoxTop(int size, GLuint image){
+void drawBoxTop(int size, bool shaft, GLuint image){
 	glPushMatrix(); //Save
 	glEnable(GL_TEXTURE_2D);
 	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 	glBindTexture(GL_TEXTURE_2D, image);
 	glBegin(GL_QUADS);
-	glTexCoord2d(1.0f, 1.0f);
-	glVertex3f(-size, size, size);  //1
-	glTexCoord2d(0.0f, 1.0f);
-	glVertex3f(size, size, size);   //4
-	glTexCoord2d(0.0f, 0.0f);
-	glVertex3f(size, size, -size);   //6
-	glTexCoord2d(1.0f, 0.0f);
-	glVertex3f(-size, size, -size);   //5
+	if (shaft == true){
+		glTexCoord2d(1.0f, 1.0f);
+		glVertex3f(-size, 0, size);  //1
+		glTexCoord2d(0.0f, 1.0f);
+		glVertex3f(size, 0, size);   //4
+		glTexCoord2d(0.0f, 0.0f);
+		glVertex3f(size, 0, -size);   //6
+		glTexCoord2d(1.0f, 0.0f);
+		glVertex3f(-size, 0, -size);   //5
+	}
+	else{
+		glTexCoord2d(1.0f, 1.0f);
+		glVertex3f(-size, size, size);  //1
+		glTexCoord2d(0.0f, 1.0f);
+		glVertex3f(size, size, size);   //4
+		glTexCoord2d(0.0f, 0.0f);
+		glVertex3f(size, size, -size);   //6
+		glTexCoord2d(1.0f, 0.0f);
+		glVertex3f(-size, size, -size);   //5
+	}
 	glEnd();
 	glDisable(GL_TEXTURE_2D);
 	glPopMatrix();
 }
 
-void drawBoxBottom(int size, GLuint image){
+void drawBoxBottom(int size, bool shaft, GLuint image){
 	glPushMatrix(); //Save
 	glEnable(GL_TEXTURE_2D);
 	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 	glBindTexture(GL_TEXTURE_2D, image);
 	glBegin(GL_QUADS);
-	glTexCoord2d(0.0f, 1.0f);
-	glVertex3f(-size, -size, size);   //2
-	glTexCoord2d(0.0f, 0.0f);
-	glVertex3f(-size, -size, -size);   //8
-	glTexCoord2d(1.0f, 0.0f);
-	glVertex3f(size, -size, -size);   //7
-	glTexCoord2d(1.0f, 1.0f);
-	glVertex3f(size, -size, size);   //3
+	if (shaft == true){
+		glTexCoord2d(0.0f, 1.0f);
+		glVertex3f(-size, -(size * 2), size);   //2
+		glTexCoord2d(0.0f, 0.0f);
+		glVertex3f(-size, -(size * 2), -size);   //8
+		glTexCoord2d(1.0f, 0.0f);
+		glVertex3f(size, -(size * 2), -size);   //7
+		glTexCoord2d(1.0f, 1.0f);
+		glVertex3f(size, -(size * 2), size);   //3
+	}
+	else{
+		glTexCoord2d(0.0f, 1.0f);
+		glVertex3f(-size, -size, size);   //2
+		glTexCoord2d(0.0f, 0.0f);
+		glVertex3f(-size, -size, -size);   //8
+		glTexCoord2d(1.0f, 0.0f);
+		glVertex3f(size, -size, -size);   //7
+		glTexCoord2d(1.0f, 1.0f);
+		glVertex3f(size, -size, size);   //3
+	}
 	glEnd();
 	glDisable(GL_TEXTURE_2D);
 	glPopMatrix();
