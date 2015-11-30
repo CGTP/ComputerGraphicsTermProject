@@ -6,7 +6,8 @@
 
 GLubyte *pBytes; // 데이터를 가리킬 포인터
 BITMAPINFO *info; // 비트맵 헤더 저장할 변수
-GLuint character_object[12];
+GLuint character_head_object[6];
+GLuint character_body_object[6];
 GLubyte * LoadDIBitmap(const char *filename, BITMAPINFO **info);
 
 GLvoid drawScene(GLvoid);
@@ -68,14 +69,27 @@ GLvoid drawScene(GLvoid){
 	glPopMatrix();
 
 
-	
-	drawBoxFront(50, character_object[0]);
-	drawBoxBack(50, character_object[1]);
-	drawBoxLeft(50, character_object[2]);
-	drawBoxRight(50, character_object[3]);
-	drawBoxTop(50, character_object[4]);
-	drawBoxBottom(50, character_object[5]);
-	
+	glPushMatrix(); //Save
+	glTranslated(0, 75, 0);
+	drawBoxFront(30, character_head_object[0]);
+	drawBoxBack(30, character_head_object[1]);
+	drawBoxLeft(30, character_head_object[2]);
+	drawBoxRight(30, character_head_object[3]);
+	drawBoxTop(30, character_head_object[4]);
+	drawBoxBottom(30, character_head_object[5]);
+	glPopMatrix();
+
+	glPushMatrix(); //Save
+	glScaled(1.0, 1.5, 1.0);
+	drawBoxFront(30, character_body_object[0]);
+	drawBoxBack(30, character_body_object[1]);
+	drawBoxLeft(30, character_body_object[2]);
+	drawBoxRight(30, character_body_object[3]);
+	drawBoxTop(30, character_body_object[4]);
+	drawBoxBottom(30, character_body_object[5]);
+	glPopMatrix();
+
+
 
 	glPopMatrix();
 	//glFlush(); // 화면에 출력하기
@@ -245,13 +259,13 @@ void drawBoxTop(int size, GLuint image){
 	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 	glBindTexture(GL_TEXTURE_2D, image);
 	glBegin(GL_QUADS);
-	glTexCoord2d(0.0f, 1.0f);
-	glVertex3f(-size, size, size);  //1
-	glTexCoord2d(0.0f, 0.0f);
-	glVertex3f(size, size, size);   //4
-	glTexCoord2d(1.0f, 0.0f);
-	glVertex3f(size, size, -size);   //6
 	glTexCoord2d(1.0f, 1.0f);
+	glVertex3f(-size, size, size);  //1
+	glTexCoord2d(0.0f, 1.0f);
+	glVertex3f(size, size, size);   //4
+	glTexCoord2d(0.0f, 0.0f);
+	glVertex3f(size, size, -size);   //6
+	glTexCoord2d(1.0f, 0.0f);
 	glVertex3f(-size, size, -size);   //5
 	glEnd();
 	glDisable(GL_TEXTURE_2D);
@@ -280,11 +294,11 @@ void drawBoxBottom(int size, GLuint image){
 
 
 void load_Texture(){
-	glGenTextures(11, character_object);
+	glGenTextures(11, character_head_object);
 
 	// 정면
-	glBindTexture(GL_TEXTURE_2D, character_object[0]);
-	pBytes = LoadDIBitmap("ImageData/Temp/Front.bmp", &info);
+	glBindTexture(GL_TEXTURE_2D, character_head_object[0]);
+	pBytes = LoadDIBitmap("ImageData/Head/Front.bmp", &info);
 	glTexImage2D(GL_TEXTURE_2D, 0, 4, 16, 16, 0, GL_BGR_EXT, GL_UNSIGNED_BYTE, pBytes);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -292,8 +306,8 @@ void load_Texture(){
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
 	// 후면
-	glBindTexture(GL_TEXTURE_2D, character_object[1]);
-	pBytes = LoadDIBitmap("ImageData/Temp/Back.bmp", &info);
+	glBindTexture(GL_TEXTURE_2D, character_head_object[1]);
+	pBytes = LoadDIBitmap("ImageData/Head/Back.bmp", &info);
 	glTexImage2D(GL_TEXTURE_2D, 0, 4, 16, 16, 0, GL_BGR_EXT, GL_UNSIGNED_BYTE, pBytes);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -301,8 +315,8 @@ void load_Texture(){
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
 	//왼쪽
-	glBindTexture(GL_TEXTURE_2D, character_object[2]);
-	pBytes = LoadDIBitmap("ImageData/Temp/Left.bmp", &info);
+	glBindTexture(GL_TEXTURE_2D, character_head_object[2]);
+	pBytes = LoadDIBitmap("ImageData/Head/Left.bmp", &info);
 	glTexImage2D(GL_TEXTURE_2D, 0, 4, 16, 16, 0, GL_BGR_EXT, GL_UNSIGNED_BYTE, pBytes);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -310,8 +324,8 @@ void load_Texture(){
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
 	//오른쪽
-	glBindTexture(GL_TEXTURE_2D, character_object[3]);
-	pBytes = LoadDIBitmap("ImageData/Temp/Right.bmp", &info);
+	glBindTexture(GL_TEXTURE_2D, character_head_object[3]);
+	pBytes = LoadDIBitmap("ImageData/Head/Right.bmp", &info);
 	glTexImage2D(GL_TEXTURE_2D, 0, 4, 16, 16, 0, GL_BGR_EXT, GL_UNSIGNED_BYTE, pBytes);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -319,8 +333,8 @@ void load_Texture(){
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
 	//위
-	glBindTexture(GL_TEXTURE_2D, character_object[4]);
-	pBytes = LoadDIBitmap("ImageData/Temp/Top.bmp", &info);
+	glBindTexture(GL_TEXTURE_2D, character_head_object[4]);
+	pBytes = LoadDIBitmap("ImageData/Head/Top.bmp", &info);
 	glTexImage2D(GL_TEXTURE_2D, 0, 4, 16, 16, 0, GL_BGR_EXT, GL_UNSIGNED_BYTE, pBytes);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -328,9 +342,63 @@ void load_Texture(){
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
 	//아래
-	glBindTexture(GL_TEXTURE_2D, character_object[5]);
-	pBytes = LoadDIBitmap("ImageData/Temp/Bottom.bmp", &info);
+	glBindTexture(GL_TEXTURE_2D, character_head_object[5]);
+	pBytes = LoadDIBitmap("ImageData/Head/Bottom.bmp", &info);
 	glTexImage2D(GL_TEXTURE_2D, 0, 4, 16, 16, 0, GL_BGR_EXT, GL_UNSIGNED_BYTE, pBytes);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+	// 정면
+	glBindTexture(GL_TEXTURE_2D, character_body_object[0]);
+	pBytes = LoadDIBitmap("ImageData/Body/Front.bmp", &info);
+	glTexImage2D(GL_TEXTURE_2D, 0, 4, 16, 24, 0, GL_BGR_EXT, GL_UNSIGNED_BYTE, pBytes);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+	// 후면
+	glBindTexture(GL_TEXTURE_2D, character_body_object[1]);
+	pBytes = LoadDIBitmap("ImageData/Body/Back.bmp", &info);
+	glTexImage2D(GL_TEXTURE_2D, 0, 4, 16, 24, 0, GL_BGR_EXT, GL_UNSIGNED_BYTE, pBytes);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+	// 왼쪽
+	glBindTexture(GL_TEXTURE_2D, character_body_object[2]);
+	pBytes = LoadDIBitmap("ImageData/Body/Left.bmp", &info);
+	glTexImage2D(GL_TEXTURE_2D, 0, 4, 8, 24, 0, GL_BGR_EXT, GL_UNSIGNED_BYTE, pBytes);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+	// 오른쪽
+	glBindTexture(GL_TEXTURE_2D, character_body_object[3]);
+	pBytes = LoadDIBitmap("ImageData/Body/Right.bmp", &info);
+	glTexImage2D(GL_TEXTURE_2D, 0, 4, 8, 24, 0, GL_BGR_EXT, GL_UNSIGNED_BYTE, pBytes);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	
+	// 위
+	glBindTexture(GL_TEXTURE_2D, character_body_object[4]);
+	pBytes = LoadDIBitmap("ImageData/Body/Top.bmp", &info);
+	glTexImage2D(GL_TEXTURE_2D, 0, 4, 16, 8, 0, GL_BGR_EXT, GL_UNSIGNED_BYTE, pBytes);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+	// 아래
+	glBindTexture(GL_TEXTURE_2D, character_body_object[5]);
+	pBytes = LoadDIBitmap("ImageData/Body/Bottom.bmp", &info);
+	glTexImage2D(GL_TEXTURE_2D, 0, 4, 16, 8, 0, GL_BGR_EXT, GL_UNSIGNED_BYTE, pBytes);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
