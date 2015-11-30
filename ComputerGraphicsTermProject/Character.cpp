@@ -2,6 +2,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <windows.h>
+
+GLubyte *pBytes; // 데이터를 가리킬 포인터
+BITMAPINFO *info; // 비트맵 헤더 저장할 변수
+GLuint character_object[12];
+GLubyte * LoadDIBitmap(const char *filename, BITMAPINFO **info);
 
 GLvoid drawScene(GLvoid);
 GLvoid Reshape(int w, int h);
@@ -11,15 +17,16 @@ void SpecialKey(int key, int x, int y);
 void TimerFunction(int);
 
 
-void drawBoxFront(int );
-void drawBoxBack(int);
+void drawBoxFront(int, GLuint);
+void drawBoxBack(int, GLuint);
 
-void drawBoxTop(int);
-void drawBoxBottom(int);
+void drawBoxTop(int, GLuint);
+void drawBoxBottom(int, GLuint);
 
-void drawBoxRight(int);
-void drawBoxLeft(int);
+void drawBoxRight(int, GLuint);
+void drawBoxLeft(int, GLuint);
 
+void load_Texture();
 void vLine();
 
 float fMapZ = 0.0;
@@ -37,6 +44,7 @@ void main(int argc, char *argv[]){
 	glutDisplayFunc(drawScene); // 출력 함수의 지정
 	glutMouseFunc(Mouse);
 	glutTimerFunc(100, TimerFunction, 1);
+	load_Texture();
 	glutKeyboardFunc(Keyboard);
 	glutSpecialFunc(SpecialKey);
 	glutReshapeFunc(Reshape);
@@ -48,7 +56,6 @@ GLvoid drawScene(GLvoid){
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f); // 바탕색을 'Black' 로 지정
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);// 설정된 색으로 젂체를 칠하기
 	glEnable(GL_DEPTH_TEST);
-
 	//-------------------------------------------------------------
 	glPushMatrix(); //Save
 	glRotated(fMapZ, 0, 0, 1.0);
@@ -57,16 +64,18 @@ GLvoid drawScene(GLvoid){
 	gluLookAt(0, 0, fView, 0, 0, -1, 0, 1, 0);
 
 	glPushMatrix(); //Save
-	vLine();
+	//vLine();
 	glPopMatrix();
 
+
 	
-	drawBoxFront(50);
-	drawBoxBack(50);
-	drawBoxRight(50);
-	drawBoxLeft(50);
-	drawBoxTop(50);
-	drawBoxBottom(50);
+	drawBoxFront(50, character_object[0]);
+	drawBoxBack(50, character_object[1]);
+	drawBoxLeft(50, character_object[2]);
+	drawBoxRight(50, character_object[3]);
+	drawBoxTop(50, character_object[4]);
+	drawBoxBottom(50, character_object[5]);
+	
 
 	glPopMatrix();
 	//glFlush(); // 화면에 출력하기
@@ -151,76 +160,262 @@ void vLine(){
 }
 
 
-void drawBoxFront(int size){
+void drawBoxFront(int size, GLuint image){
 	glPushMatrix(); //Save
+	glEnable(GL_TEXTURE_2D);
+	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+	glBindTexture(GL_TEXTURE_2D, image);
 	glBegin(GL_QUADS);
-	glColor3f(1.0f, 1.0f, 1.0f);
+	glTexCoord2d(0.0f, 1.0f);
 	glVertex3f(-size, size, size);   //1
+	glTexCoord2d(0.0f, 0.0f);
 	glVertex3f(-size, -size, size);   //2
+	glTexCoord2d(1.0f, 0.0f);
 	glVertex3f(size, -size, size);   //3
+	glTexCoord2d(1.0f, 1.0f);
 	glVertex3f(size, size, size);   //4
 	glEnd();
+	glDisable(GL_TEXTURE_2D);
 	glPopMatrix();
 }
 
-void drawBoxBack(int size){
+void drawBoxBack(int size, GLuint image){
 	glPushMatrix(); //Save
+	glEnable(GL_TEXTURE_2D);
+	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+	glBindTexture(GL_TEXTURE_2D, image);
 	glBegin(GL_QUADS);
-	glColor3f(1.0f, 1.0f, 0.0f);
+	glTexCoord2d(0.0f, 1.0f);
 	glVertex3f(-size, size, -size);   //5
+	glTexCoord2d(1.0f, 1.0f);
 	glVertex3f(size, size, -size);   //6
+	glTexCoord2d(1.0f, 0.0f);
 	glVertex3f(size, -size, -size);   //7
+	glTexCoord2d(0.0f, 0.0f);
 	glVertex3f(-size, -size, -size);   //8
 	glEnd();
+	glDisable(GL_TEXTURE_2D);
 	glPopMatrix();
 }
 
-void drawBoxRight(int size){
+void drawBoxLeft(int size, GLuint image){
 	glPushMatrix(); //Save
+	glEnable(GL_TEXTURE_2D);
+	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+	glBindTexture(GL_TEXTURE_2D, image);
 	glBegin(GL_QUADS);
-	glColor3f(1.0f, 0.0f, 0.0f);
-	glVertex3f(size, size, size);   //4
-	glVertex3f(size, -size, size);   //3   
-	glVertex3f(size, -size, -size);   //7
-	glVertex3f(size, size, -size);   //6
-	glEnd();
-	glPopMatrix();
-
-}
-
-void drawBoxLeft(int size){
-	glPushMatrix(); //Save
-	glBegin(GL_QUADS);
-	glColor3f(0.0f, 1.0f, 0.0f);
+	glTexCoord2d(1.0f, 1.0f);
 	glVertex3f(-size, size, size);   //1
+	glTexCoord2d(0.0f, 1.0f);
 	glVertex3f(-size, size, -size);   //5
+	glTexCoord2d(0.0f, 0.0f);
 	glVertex3f(-size, -size, -size);   //8   
+	glTexCoord2d(1.0f, 0.0f);
 	glVertex3f(-size, -size, size);   //2
 	glEnd();
+	glDisable(GL_TEXTURE_2D);
 	glPopMatrix();
 
 }
 
-void drawBoxTop(int size){
+void drawBoxRight(int size, GLuint image){
 	glPushMatrix(); //Save
+	glEnable(GL_TEXTURE_2D);
+	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+	glBindTexture(GL_TEXTURE_2D, image);
 	glBegin(GL_QUADS);
-	glColor3f(0.0f, 1.0f, 1.0f);
-	glVertex3f(-size, size, size);  //1
+	glTexCoord2d(0.0f, 1.0f);
 	glVertex3f(size, size, size);   //4
+	glTexCoord2d(0.0f, 0.0f);
+	glVertex3f(size, -size, size);   //3   
+	glTexCoord2d(1.0f, 0.0f);
+	glVertex3f(size, -size, -size);   //7
+	glTexCoord2d(1.0f, 1.0f);
 	glVertex3f(size, size, -size);   //6
+
+	glEnd();
+	glDisable(GL_TEXTURE_2D);
+	glPopMatrix();
+
+}
+
+void drawBoxTop(int size, GLuint image){
+	glPushMatrix(); //Save
+	glEnable(GL_TEXTURE_2D);
+	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+	glBindTexture(GL_TEXTURE_2D, image);
+	glBegin(GL_QUADS);
+	glTexCoord2d(0.0f, 1.0f);
+	glVertex3f(-size, size, size);  //1
+	glTexCoord2d(0.0f, 0.0f);
+	glVertex3f(size, size, size);   //4
+	glTexCoord2d(1.0f, 0.0f);
+	glVertex3f(size, size, -size);   //6
+	glTexCoord2d(1.0f, 1.0f);
 	glVertex3f(-size, size, -size);   //5
 	glEnd();
+	glDisable(GL_TEXTURE_2D);
 	glPopMatrix();
 }
 
-void drawBoxBottom(int size){
+void drawBoxBottom(int size, GLuint image){
 	glPushMatrix(); //Save
+	glEnable(GL_TEXTURE_2D);
+	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+	glBindTexture(GL_TEXTURE_2D, image);
 	glBegin(GL_QUADS);
-	glColor3f(0.0f, 0.0f, 1.0f);
+	glTexCoord2d(0.0f, 1.0f);
 	glVertex3f(-size, -size, size);   //2
+	glTexCoord2d(0.0f, 0.0f);
 	glVertex3f(-size, -size, -size);   //8
+	glTexCoord2d(1.0f, 0.0f);
 	glVertex3f(size, -size, -size);   //7
+	glTexCoord2d(1.0f, 1.0f);
 	glVertex3f(size, -size, size);   //3
 	glEnd();
+	glDisable(GL_TEXTURE_2D);
 	glPopMatrix();
+}
+
+
+
+void load_Texture(){
+	glGenTextures(11, character_object);
+
+	// 정면
+	glBindTexture(GL_TEXTURE_2D, character_object[0]);
+	pBytes = LoadDIBitmap("ImageData/Temp/Front.bmp", &info);
+	glTexImage2D(GL_TEXTURE_2D, 0, 4, 16, 16, 0, GL_BGR_EXT, GL_UNSIGNED_BYTE, pBytes);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+	// 후면
+	glBindTexture(GL_TEXTURE_2D, character_object[1]);
+	pBytes = LoadDIBitmap("ImageData/Temp/Back.bmp", &info);
+	glTexImage2D(GL_TEXTURE_2D, 0, 4, 16, 16, 0, GL_BGR_EXT, GL_UNSIGNED_BYTE, pBytes);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+	//왼쪽
+	glBindTexture(GL_TEXTURE_2D, character_object[2]);
+	pBytes = LoadDIBitmap("ImageData/Temp/Left.bmp", &info);
+	glTexImage2D(GL_TEXTURE_2D, 0, 4, 16, 16, 0, GL_BGR_EXT, GL_UNSIGNED_BYTE, pBytes);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+	//오른쪽
+	glBindTexture(GL_TEXTURE_2D, character_object[3]);
+	pBytes = LoadDIBitmap("ImageData/Temp/Right.bmp", &info);
+	glTexImage2D(GL_TEXTURE_2D, 0, 4, 16, 16, 0, GL_BGR_EXT, GL_UNSIGNED_BYTE, pBytes);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+	//위
+	glBindTexture(GL_TEXTURE_2D, character_object[4]);
+	pBytes = LoadDIBitmap("ImageData/Temp/Top.bmp", &info);
+	glTexImage2D(GL_TEXTURE_2D, 0, 4, 16, 16, 0, GL_BGR_EXT, GL_UNSIGNED_BYTE, pBytes);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+	//아래
+	glBindTexture(GL_TEXTURE_2D, character_object[5]);
+	pBytes = LoadDIBitmap("ImageData/Temp/Bottom.bmp", &info);
+	glTexImage2D(GL_TEXTURE_2D, 0, 4, 16, 16, 0, GL_BGR_EXT, GL_UNSIGNED_BYTE, pBytes);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+	// 텍스처 모드 설정
+	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_COLOR, GL_MODULATE);
+	// 텍스처 매핑 활성화
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+GLubyte * LoadDIBitmap(const char *filename, BITMAPINFO **info){
+	FILE *fp;
+	GLubyte *bits;
+	int bitsize, infosize;
+	BITMAPFILEHEADER header;
+	// 바이너리 읽기 모드로 파일을 연다
+	if ((fp = fopen(filename, "rb")) == NULL)
+		return NULL;
+	// 비트맵 파일 헤더를 읽는다.
+	if (fread(&header, sizeof(BITMAPFILEHEADER), 1, fp) < 1) {
+		fclose(fp);
+		return NULL;
+	}
+	// 파일이 BMP 파일인지 확인핚다.
+	if (header.bfType != 'MB') {
+		fclose(fp);
+		return NULL;
+	}
+	// BITMAPINFOHEADER 위치로 갂다.
+	infosize = header.bfOffBits - sizeof(BITMAPFILEHEADER);
+	// 비트맵 이미지 데이터를 넣을 메모리 핛당을 핚다.
+	if ((*info = (BITMAPINFO *)malloc(infosize)) == NULL) {
+		fclose(fp);
+		exit(0);
+		return NULL;
+	}
+	// 비트맵 인포 헤더를 읽는다.
+	if (fread(*info, 1, infosize, fp) < (unsigned int)infosize) {
+		free(*info);
+		fclose(fp);
+		return NULL;
+	}
+	// 비트맵의 크기 설정
+	if ((bitsize = (*info)->bmiHeader.biSizeImage) == 0)
+		bitsize = ((*info)->bmiHeader.biWidth *
+		(*info)->bmiHeader.biBitCount + 7) / 8.0 *
+		abs((*info)->bmiHeader.biHeight);
+	// 비트맵의 크기만큼 메모리를 핛당핚다.
+	if ((bits = (unsigned char *)malloc(bitsize)) == NULL) {
+		free(*info);
+		fclose(fp);
+		return NULL;
+	}
+	// 비트맵 데이터를 bit(GLubyte 타입)에 저장핚다.
+	if (fread(bits, 1, bitsize, fp) < (unsigned int)bitsize) {
+		free(*info); free(bits);
+		fclose(fp);
+		return NULL;
+	}
+	fclose(fp);
+	return bits;
 }
