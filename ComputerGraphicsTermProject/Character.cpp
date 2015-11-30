@@ -8,6 +8,7 @@ GLubyte *pBytes; // 데이터를 가리킬 포인터
 BITMAPINFO *info; // 비트맵 헤더 저장할 변수
 GLuint character_head_object[6];
 GLuint character_body_object[6];
+GLuint character_arm_object[6];
 GLubyte * LoadDIBitmap(const char *filename, BITMAPINFO **info);
 
 GLvoid drawScene(GLvoid);
@@ -20,14 +21,14 @@ void TimerFunction(int);
 
 void drawBoxFront(int, GLuint);
 void drawBoxBack(int, GLuint);
-
 void drawBoxTop(int, GLuint);
 void drawBoxBottom(int, GLuint);
-
 void drawBoxRight(int, GLuint);
 void drawBoxLeft(int, GLuint);
 
-void load_Texture();
+void head_Texture();
+void body_Texture();
+void arm_Texture();
 void vLine();
 
 float fMapZ = 0.0;
@@ -45,7 +46,9 @@ void main(int argc, char *argv[]){
 	glutDisplayFunc(drawScene); // 출력 함수의 지정
 	glutMouseFunc(Mouse);
 	glutTimerFunc(100, TimerFunction, 1);
-	load_Texture();
+	head_Texture();
+	body_Texture();
+	arm_Texture();
 	glutKeyboardFunc(Keyboard);
 	glutSpecialFunc(SpecialKey);
 	glutReshapeFunc(Reshape);
@@ -89,6 +92,27 @@ GLvoid drawScene(GLvoid){
 	drawBoxBottom(30, character_body_object[5]);
 	glPopMatrix();
 
+	glPushMatrix(); //Save
+	glTranslated(-45, 0, 0);
+	glScaled(0.5, 1.5, 0.5);
+	drawBoxFront(30, character_arm_object[0]);
+	drawBoxBack(30, character_arm_object[1]);
+	drawBoxLeft(30, character_arm_object[2]);
+	drawBoxRight(30, character_arm_object[3]);
+	drawBoxTop(30, character_arm_object[4]);
+	drawBoxBottom(30, character_arm_object[5]);
+	glPopMatrix();
+
+	glPushMatrix(); //Save
+	glTranslated(45, 0, 0);
+	glScaled(0.5, 1.5, 0.5);
+	drawBoxFront(30, character_arm_object[0]);
+	drawBoxBack(30, character_arm_object[1]);
+	drawBoxLeft(30, character_arm_object[2]);
+	drawBoxRight(30, character_arm_object[3]);
+	drawBoxTop(30, character_arm_object[4]);
+	drawBoxBottom(30, character_arm_object[5]);
+	glPopMatrix();
 
 
 	glPopMatrix();
@@ -293,8 +317,8 @@ void drawBoxBottom(int size, GLuint image){
 
 
 
-void load_Texture(){
-	glGenTextures(11, character_head_object);
+void head_Texture(){
+	glGenTextures(6, character_head_object);
 
 	// 정면
 	glBindTexture(GL_TEXTURE_2D, character_head_object[0]);
@@ -350,6 +374,14 @@ void load_Texture(){
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
+	// 텍스처 모드 설정
+	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_COLOR, GL_MODULATE);
+	// 텍스처 매핑 활성화
+}
+
+void body_Texture(){
+	glGenTextures(6, character_body_object);
+
 	// 정면
 	glBindTexture(GL_TEXTURE_2D, character_body_object[0]);
 	pBytes = LoadDIBitmap("ImageData/Body/Front.bmp", &info);
@@ -385,7 +417,7 @@ void load_Texture(){
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	
+
 	// 위
 	glBindTexture(GL_TEXTURE_2D, character_body_object[4]);
 	pBytes = LoadDIBitmap("ImageData/Body/Top.bmp", &info);
@@ -409,8 +441,66 @@ void load_Texture(){
 	// 텍스처 매핑 활성화
 }
 
+void arm_Texture(){
+	glGenTextures(6, character_arm_object);
+	// 정면
+	glBindTexture(GL_TEXTURE_2D, character_arm_object[0]);
+	pBytes = LoadDIBitmap("ImageData/Arm/Front.bmp", &info);
+	glTexImage2D(GL_TEXTURE_2D, 0, 4, 8, 24, 0, GL_BGR_EXT, GL_UNSIGNED_BYTE, pBytes);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
+	// 후면
+	glBindTexture(GL_TEXTURE_2D, character_arm_object[1]);
+	pBytes = LoadDIBitmap("ImageData/Arm/Back.bmp", &info);
+	glTexImage2D(GL_TEXTURE_2D, 0, 4, 8, 24, 0, GL_BGR_EXT, GL_UNSIGNED_BYTE, pBytes);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
+	// 왼쪽
+	glBindTexture(GL_TEXTURE_2D, character_arm_object[2]);
+	pBytes = LoadDIBitmap("ImageData/Arm/Left.bmp", &info);
+	glTexImage2D(GL_TEXTURE_2D, 0, 4, 8, 24, 0, GL_BGR_EXT, GL_UNSIGNED_BYTE, pBytes);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+	// 오른쪽
+	glBindTexture(GL_TEXTURE_2D, character_arm_object[3]);
+	pBytes = LoadDIBitmap("ImageData/Arm/Right.bmp", &info);
+	glTexImage2D(GL_TEXTURE_2D, 0, 4, 8, 24, 0, GL_BGR_EXT, GL_UNSIGNED_BYTE, pBytes);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+	// 위
+	glBindTexture(GL_TEXTURE_2D, character_arm_object[4]);
+	pBytes = LoadDIBitmap("ImageData/Arm/Top.bmp", &info);
+	glTexImage2D(GL_TEXTURE_2D, 0, 4, 8, 8, 0, GL_BGR_EXT, GL_UNSIGNED_BYTE, pBytes);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+	// 아래
+	glBindTexture(GL_TEXTURE_2D, character_arm_object[5]);
+	pBytes = LoadDIBitmap("ImageData/Arm/Bottom.bmp", &info);
+	glTexImage2D(GL_TEXTURE_2D, 0, 4, 8, 8, 0, GL_BGR_EXT, GL_UNSIGNED_BYTE, pBytes);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+	// 텍스처 모드 설정
+	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_COLOR, GL_MODULATE);
+	// 텍스처 매핑 활성화
+}
 
 
 
