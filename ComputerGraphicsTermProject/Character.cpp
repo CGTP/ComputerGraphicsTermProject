@@ -4,9 +4,9 @@
 #include <time.h>
 #include <windows.h>
 
-//ÅØ½ºÃÄ °ü·Ã ½ÃÀÛ
-GLubyte *pBytes; // µ¥ÀÌÅÍ¸¦ °¡¸®Å³ Æ÷ÀÎÅÍ
-BITMAPINFO *info; // ºñÆ®¸Ê Çì´õ ÀúÀåÇÒ º¯¼ö
+//í…ìŠ¤ì³ ê´€ë ¨ ì‹œì‘
+GLubyte *pBytes; // ë°ì´í„°ë¥¼ ê°€ë¦¬í‚¬ í¬ì¸í„°
+BITMAPINFO *info; // ë¹„íŠ¸ë§µ í—¤ë” ì €ì¥í•  ë³€ìˆ˜
 GLuint character_head_object[6];
 GLuint character_body_object[6];
 GLuint character_arm_top_object[6];
@@ -15,14 +15,15 @@ GLuint character_leg_top_object[6];
 GLuint character_leg_bottom_object[6];
 GLubyte * LoadDIBitmap(const char *filename, BITMAPINFO **info);
 
-void head_Texture();//ÅØ½ºÃÄ Àû¿ëºÎºĞ
+void head_Texture();//í…ìŠ¤ì³ ì ìš©ë¶€ë¶„
 void body_Texture();
 void arm_Texture();
 void leg_Texture();
-//ÅØ½ºÃÄ °ü·Ã ³¡
+void parameteri_Texture(int, int);
+//í…ìŠ¤ì³ ê´€ë ¨ ë
 
 
-//ÇÔ¼ö¼±¾ğ ½ÃÀÛ
+//í•¨ìˆ˜ì„ ì–¸ ì‹œì‘
 GLvoid drawScene(GLvoid);
 GLvoid Reshape(int w, int h);
 void Mouse(int, int, int, int);
@@ -30,45 +31,45 @@ void Keyboard(unsigned char, int, int);
 void SpecialKey(int key, int x, int y);
 void TimerFunction(int);
 
-void drawBoxFront(int, bool, GLuint);//¹Ú½º ±×¸®´Â ÇÔ¼ö
+void drawBoxFront(int, bool, GLuint);//ë°•ìŠ¤ ê·¸ë¦¬ëŠ” í•¨ìˆ˜
 void drawBoxBack(int, bool, GLuint);
 void drawBoxTop(int, bool, GLuint);
 void drawBoxBottom(int, bool, GLuint);
 void drawBoxRight(int, bool, GLuint);
 void drawBoxLeft(int, bool, GLuint);
 
-void vLine();//ÁÂÇ¥°è ±×¸®´Â ÇÔ¼ö
+void vLine();//ì¢Œí‘œê³„ ê·¸ë¦¬ëŠ” í•¨ìˆ˜
 
 void drawCharacter();
-//ÇÔ¼ö¼±¾ğ ³¡
+//í•¨ìˆ˜ì„ ì–¸ ë
 
 
-//º¯¼ö¼±¾ğ ½ÃÀÛ
-float fMapZ = 0.0;//È­¸éÈ¸Àü°ü·Ã º¯¼ö
+//ë³€ìˆ˜ì„ ì–¸ ì‹œì‘
+#define oneTimerSpeed 10
+float fMapZ = 0.0;//í™”ë©´íšŒì „ê´€ë ¨ ë³€ìˆ˜
 float vMapX = 0.0;
 float fView = 0.0;
 float vMapY = 0.0;
-int Time = 10;
 
-//¾Ö´Ï¸ŞÀÌ¼Ç º¯¼ö
-int character_state = 1;//ÀÌµ¿ ¾Ö´Ï¸ŞÀÌ¼Ç ±¸ºĞ¿ë
-float head_angle_x;//¸Ó¸®È¸Àü
-float left_sholder_x, left_sholder_y, right_sholder_x, right_sholder_y, left_elbow_x, right_elbow_x;//ÆÈÈ¸Àü
-float left_leg_x, left_leg_y, left_knee_x, right_leg_x, right_leg_y, right_knee_x;//´Ù¸®È¸Àü
+//ì• ë‹ˆë©”ì´ì…˜ ë³€ìˆ˜
+int character_state = 1;//ì´ë™ ì• ë‹ˆë©”ì´ì…˜ êµ¬ë¶„ìš©
+float head_angle_x;//ë¨¸ë¦¬íšŒì „
+float left_sholder_x, left_sholder_y, right_sholder_x, right_sholder_y, left_elbow_x, right_elbow_x;//íŒ”íšŒì „
+float left_leg_x, left_leg_y, left_knee_x, right_leg_x, right_leg_y, right_knee_x;//ë‹¤ë¦¬íšŒì „
 int timer = 0;
 
-//º¯¼ö¼±¾ğ ³¡
+//ë³€ìˆ˜ì„ ì–¸ ë
 
 
 void main(int argc, char *argv[]){
-	//ÃÊ±âÈ­ ÇÔ¼öµé
-	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);// µğ½ºÇÃ·¹ÀÌ ¸ğµå ¼³Á¤
-	glutInitWindowPosition(100, 100); // À©µµ¿ìÀÇ À§Ä¡ÁöÁ¤
-	glutInitWindowSize(800, 600); // À©µµ¿ìÀÇ Å©±â ÁöÁ¤
-	glutCreateWindow("WindowsHyun - 2012180004"); // À©µµ¿ì »ı¼º (À©µµ¿ì ÀÌ¸§)
-	glutDisplayFunc(drawScene); // Ãâ·Â ÇÔ¼öÀÇ ÁöÁ¤
+	//ì´ˆê¸°í™” í•¨ìˆ˜ë“¤
+	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);// ë””ìŠ¤í”Œë ˆì´ ëª¨ë“œ ì„¤ì •
+	glutInitWindowPosition(100, 100); // ìœˆë„ìš°ì˜ ìœ„ì¹˜ì§€ì •
+	glutInitWindowSize(800, 600); // ìœˆë„ìš°ì˜ í¬ê¸° ì§€ì •
+	glutCreateWindow("WindowsHyun - 2012180004"); // ìœˆë„ìš° ìƒì„± (ìœˆë„ìš° ì´ë¦„)
+	glutDisplayFunc(drawScene); // ì¶œë ¥ í•¨ìˆ˜ì˜ ì§€ì •
 	glutMouseFunc(Mouse);
-	glutTimerFunc(Time, TimerFunction, 1);
+	glutTimerFunc(oneTimerSpeed, TimerFunction, 1);
 	head_Texture();
 	body_Texture();
 	arm_Texture();
@@ -79,10 +80,10 @@ void main(int argc, char *argv[]){
 	glutMainLoop();
 }
 
-// À©µµ¿ì Ãâ·Â ÇÔ¼ö
+// ìœˆë„ìš° ì¶œë ¥ í•¨ìˆ˜
 GLvoid drawScene(GLvoid){
-	glClearColor(0.0f, 0.0f, 0.0f, 1.0f); // ¹ÙÅÁ»öÀ» 'Black' ·Î ÁöÁ¤
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);// ¼³Á¤µÈ »öÀ¸·Î  †Ã¼¸¦ Ä¥ÇÏ±â
+	glClearColor(0.0f, 0.0f, 0.0f, 1.0f); // ë°”íƒ•ìƒ‰ì„ 'Black' ë¡œ ì§€ì •
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);// ì„¤ì •ëœ ìƒ‰ìœ¼ë¡œ ì ‚ì²´ë¥¼ ì¹ í•˜ê¸°
 	glEnable(GL_DEPTH_TEST);
 	//-------------------------------------------------------------
 	glPushMatrix(); //Save
@@ -100,8 +101,8 @@ GLvoid drawScene(GLvoid){
 
 
 	glPopMatrix();
-	//glFlush(); // È­¸é¿¡ Ãâ·ÂÇÏ±â
-	glutSwapBuffers();     // È­¸é¿¡ Ãâ·ÂÇÏ±â
+	//glFlush(); // í™”ë©´ì— ì¶œë ¥í•˜ê¸°
+	glutSwapBuffers();     // í™”ë©´ì— ì¶œë ¥í•˜ê¸°
 }
 
 void TimerFunction(int value){
@@ -109,7 +110,7 @@ void TimerFunction(int value){
 	switch (value){
 	case 1:
 		switch (character_state){
-		case 0://°¡¸¸È÷ ¼­ÀÖÀ»¶§
+		case 0://ê°€ë§Œíˆ ì„œìˆì„ë•Œ
 			left_sholder_x = 0;
 			left_sholder_y = 0;
 			right_sholder_x = 0;
@@ -123,7 +124,7 @@ void TimerFunction(int value){
 			right_leg_y = 0;
 			right_knee_x = 0;
 			break;
-		case 1://ÀüÁø,ÈÄÁø
+		case 1://ì „ì§„,í›„ì§„
 			printf("%d\n", timer);
 			if (timer < 150)
 			{
@@ -132,26 +133,26 @@ void TimerFunction(int value){
 				{
 					left_leg_x = timer - 45;
 					right_leg_x = 30 - timer;
-					right_knee_x = timer;
+					//right_knee_x = timer;
 				}
 				else
 				{
 					left_leg_x = 105 - timer;
 					right_leg_x = timer - 120;
-					left_knee_x = (timer / 2);
+					//left_knee_x = (timer / 2);
 				}
 			}
 			else
 				timer = 0;
 			break;
-		case 2://ÁÂ¿ìÀÌµ¿
+		case 2://ì¢Œìš°ì´ë™
 			break;
 		}
-		glutTimerFunc(Time, TimerFunction, 1); // Å¸ÀÌ¸ÓÇÔ¼ö Àç ¼³Á¤
+		glutTimerFunc(oneTimerSpeed, TimerFunction, 1); // íƒ€ì´ë¨¸í•¨ìˆ˜ ì¬ ì„¤ì •
 		break;
 	}
 
-	glutPostRedisplay(); // È­¸é Àç Ãâ·Â
+	glutPostRedisplay(); // í™”ë©´ ì¬ ì¶œë ¥
 }
 
 void Keyboard(unsigned char key, int x, int y){
@@ -189,19 +190,19 @@ void Mouse(int button, int state, int x, int y){
 }
 
 GLvoid Reshape(int w, int h){
-	//ºäÆ÷Æ® º¯È¯ ¼³Á¤
+	//ë·°í¬íŠ¸ ë³€í™˜ ì„¤ì •
 	glViewport(0, 0, w, h);
 
-	//Åõ¿µ Çà·Ä ½ºÅÃ Àç¼³Á¤
+	//íˆ¬ì˜ í–‰ë ¬ ìŠ¤íƒ ì¬ì„¤ì •
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 
-	//Å¬¸®ÇÎ °ø°£ ¼³Á¤ : ¿ø±ÙÅõ¿µ
+	//í´ë¦¬í•‘ ê³µê°„ ì„¤ì • : ì›ê·¼íˆ¬ì˜
 	gluPerspective(60.0f, (float)w / (float)h, 0.1, 5000.0);
 
 	gluLookAt(0, 0, 500, 0, 0, -1, 0, 1, 0);
 
-	//¸ğµ¨ ºä Çà·Ä ½ºÅÃ Àç¼³Á¤
+	//ëª¨ë¸ ë·° í–‰ë ¬ ìŠ¤íƒ ì¬ì„¤ì •
 	glMatrixMode(GL_MODELVIEW);
 }
 
@@ -234,7 +235,7 @@ void drawBoxFront(int size, bool shaft, GLuint image){
 	glBindTexture(GL_TEXTURE_2D, image);
 	glBegin(GL_QUADS);
 	if (shaft == true){
-		//ÀÎÈ£'s »ùÇÃÄÚµå
+		//ì¸í˜¸'s ìƒ˜í”Œì½”ë“œ
 		glTexCoord2d(0.0f, 1.0f);
 		glVertex3f(-size, 0, size);   //1
 		glTexCoord2d(0.0f, 0.0f);
@@ -416,342 +417,211 @@ void drawBoxBottom(int size, bool shaft, GLuint image){
 	glPopMatrix();
 }
 
-
+void parameteri_Texture(int w, int h){
+	glTexImage2D(GL_TEXTURE_2D, 0, 4, w, h, 0, GL_BGR_EXT, GL_UNSIGNED_BYTE, pBytes);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+}
 
 void head_Texture(){
 	glGenTextures(6, character_head_object);
 
-	// Á¤¸é
+	// ì •ë©´
 	glBindTexture(GL_TEXTURE_2D, character_head_object[0]);
 	pBytes = LoadDIBitmap("ImageData/Head/Front.bmp", &info);
-	glTexImage2D(GL_TEXTURE_2D, 0, 4, 16, 16, 0, GL_BGR_EXT, GL_UNSIGNED_BYTE, pBytes);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	parameteri_Texture(16, 16);
 
-	// ÈÄ¸é
+	// í›„ë©´
 	glBindTexture(GL_TEXTURE_2D, character_head_object[1]);
 	pBytes = LoadDIBitmap("ImageData/Head/Back.bmp", &info);
-	glTexImage2D(GL_TEXTURE_2D, 0, 4, 16, 16, 0, GL_BGR_EXT, GL_UNSIGNED_BYTE, pBytes);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	parameteri_Texture(16, 16);
 
-	//¿ŞÂÊ
+	//ì™¼ìª½
 	glBindTexture(GL_TEXTURE_2D, character_head_object[2]);
 	pBytes = LoadDIBitmap("ImageData/Head/Left.bmp", &info);
-	glTexImage2D(GL_TEXTURE_2D, 0, 4, 16, 16, 0, GL_BGR_EXT, GL_UNSIGNED_BYTE, pBytes);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	parameteri_Texture(16, 16);
 
-	//¿À¸¥ÂÊ
+	//ì˜¤ë¥¸ìª½
 	glBindTexture(GL_TEXTURE_2D, character_head_object[3]);
 	pBytes = LoadDIBitmap("ImageData/Head/Right.bmp", &info);
-	glTexImage2D(GL_TEXTURE_2D, 0, 4, 16, 16, 0, GL_BGR_EXT, GL_UNSIGNED_BYTE, pBytes);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	parameteri_Texture(16, 16);
 
-	//À§
+	//ìœ„
 	glBindTexture(GL_TEXTURE_2D, character_head_object[4]);
 	pBytes = LoadDIBitmap("ImageData/Head/Top.bmp", &info);
-	glTexImage2D(GL_TEXTURE_2D, 0, 4, 16, 16, 0, GL_BGR_EXT, GL_UNSIGNED_BYTE, pBytes);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	parameteri_Texture(16, 16);
 
-	//¾Æ·¡
+	//ì•„ë˜
 	glBindTexture(GL_TEXTURE_2D, character_head_object[5]);
 	pBytes = LoadDIBitmap("ImageData/Head/Bottom.bmp", &info);
-	glTexImage2D(GL_TEXTURE_2D, 0, 4, 16, 16, 0, GL_BGR_EXT, GL_UNSIGNED_BYTE, pBytes);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	parameteri_Texture(16, 16);
 
-	// ÅØ½ºÃ³ ¸ğµå ¼³Á¤
+	// í…ìŠ¤ì²˜ ëª¨ë“œ ì„¤ì •
 	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_COLOR, GL_MODULATE);
-	// ÅØ½ºÃ³ ¸ÅÇÎ È°¼ºÈ­
+	// í…ìŠ¤ì²˜ ë§¤í•‘ í™œì„±í™”
 }
 
 void body_Texture(){
 	glGenTextures(6, character_body_object);
 
-	// Á¤¸é
+	// ì •ë©´
 	glBindTexture(GL_TEXTURE_2D, character_body_object[0]);
 	pBytes = LoadDIBitmap("ImageData/Body/Front.bmp", &info);
-	glTexImage2D(GL_TEXTURE_2D, 0, 4, 16, 24, 0, GL_BGR_EXT, GL_UNSIGNED_BYTE, pBytes);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	parameteri_Texture(16, 24);
 
-	// ÈÄ¸é
+	// í›„ë©´
 	glBindTexture(GL_TEXTURE_2D, character_body_object[1]);
 	pBytes = LoadDIBitmap("ImageData/Body/Back.bmp", &info);
-	glTexImage2D(GL_TEXTURE_2D, 0, 4, 16, 24, 0, GL_BGR_EXT, GL_UNSIGNED_BYTE, pBytes);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	parameteri_Texture(16, 24);
 
-	// ¿ŞÂÊ
+	// ì™¼ìª½
 	glBindTexture(GL_TEXTURE_2D, character_body_object[2]);
 	pBytes = LoadDIBitmap("ImageData/Body/Left.bmp", &info);
-	glTexImage2D(GL_TEXTURE_2D, 0, 4, 8, 24, 0, GL_BGR_EXT, GL_UNSIGNED_BYTE, pBytes);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	parameteri_Texture(8, 24);
 
-	// ¿À¸¥ÂÊ
+	// ì˜¤ë¥¸ìª½
 	glBindTexture(GL_TEXTURE_2D, character_body_object[3]);
 	pBytes = LoadDIBitmap("ImageData/Body/Right.bmp", &info);
-	glTexImage2D(GL_TEXTURE_2D, 0, 4, 8, 24, 0, GL_BGR_EXT, GL_UNSIGNED_BYTE, pBytes);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	parameteri_Texture(8, 24);
 
-	// À§
+	// ìœ„
 	glBindTexture(GL_TEXTURE_2D, character_body_object[4]);
 	pBytes = LoadDIBitmap("ImageData/Body/Top.bmp", &info);
-	glTexImage2D(GL_TEXTURE_2D, 0, 4, 16, 8, 0, GL_BGR_EXT, GL_UNSIGNED_BYTE, pBytes);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	parameteri_Texture(16, 8);
 
-	// ¾Æ·¡
+	// ì•„ë˜
 	glBindTexture(GL_TEXTURE_2D, character_body_object[5]);
 	pBytes = LoadDIBitmap("ImageData/Body/Bottom.bmp", &info);
-	glTexImage2D(GL_TEXTURE_2D, 0, 4, 16, 8, 0, GL_BGR_EXT, GL_UNSIGNED_BYTE, pBytes);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	parameteri_Texture(16, 8);
 
-	// ÅØ½ºÃ³ ¸ğµå ¼³Á¤
+	// í…ìŠ¤ì²˜ ëª¨ë“œ ì„¤ì •
 	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_COLOR, GL_MODULATE);
-	// ÅØ½ºÃ³ ¸ÅÇÎ È°¼ºÈ­
+	// í…ìŠ¤ì²˜ ë§¤í•‘ í™œì„±í™”
 }
 
 void arm_Texture(){
 	glGenTextures(6, character_arm_top_object);
 	glGenTextures(6, character_arm_bottom_object);
 
-	// Á¤¸é
+	// ì •ë©´
 	glBindTexture(GL_TEXTURE_2D, character_arm_top_object[0]);
 	pBytes = LoadDIBitmap("ImageData/Arm/Front_Top.bmp", &info);
-	glTexImage2D(GL_TEXTURE_2D, 0, 4, 8, 12, 0, GL_BGR_EXT, GL_UNSIGNED_BYTE, pBytes);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	parameteri_Texture(8, 12);
 
-	// ÈÄ¸é
+	// í›„ë©´
 	glBindTexture(GL_TEXTURE_2D, character_arm_top_object[1]);
 	pBytes = LoadDIBitmap("ImageData/Arm/Back_Top.bmp", &info);
-	glTexImage2D(GL_TEXTURE_2D, 0, 4, 8, 12, 0, GL_BGR_EXT, GL_UNSIGNED_BYTE, pBytes);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	parameteri_Texture(8, 12);
 
-	// ¿ŞÂÊ
+	// ì™¼ìª½
 	glBindTexture(GL_TEXTURE_2D, character_arm_top_object[2]);
 	pBytes = LoadDIBitmap("ImageData/Arm/Left_Top.bmp", &info);
-	glTexImage2D(GL_TEXTURE_2D, 0, 4, 8, 12, 0, GL_BGR_EXT, GL_UNSIGNED_BYTE, pBytes);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	parameteri_Texture(8, 12);
 
-	// ¿À¸¥ÂÊ
+	// ì˜¤ë¥¸ìª½
 	glBindTexture(GL_TEXTURE_2D, character_arm_top_object[3]);
 	pBytes = LoadDIBitmap("ImageData/Arm/Right_Top.bmp", &info);
-	glTexImage2D(GL_TEXTURE_2D, 0, 4, 8, 12, 0, GL_BGR_EXT, GL_UNSIGNED_BYTE, pBytes);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	parameteri_Texture(8, 12);
 
-	// À§
+	// ìœ„
 	glBindTexture(GL_TEXTURE_2D, character_arm_top_object[4]);
 	pBytes = LoadDIBitmap("ImageData/Arm/Top.bmp", &info);
-	glTexImage2D(GL_TEXTURE_2D, 0, 4, 8, 8, 0, GL_BGR_EXT, GL_UNSIGNED_BYTE, pBytes);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	parameteri_Texture(8, 8);
 
-	// ¾Æ·¡
+	// ì•„ë˜
 	glBindTexture(GL_TEXTURE_2D, character_arm_top_object[5]);
 	pBytes = LoadDIBitmap("ImageData/Arm/Bottom.bmp", &info);
-	glTexImage2D(GL_TEXTURE_2D, 0, 4, 8, 8, 0, GL_BGR_EXT, GL_UNSIGNED_BYTE, pBytes);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	parameteri_Texture(8, 8);
 
-
-	// Á¤¸é
+	// ì •ë©´
 	glBindTexture(GL_TEXTURE_2D, character_arm_bottom_object[0]);
 	pBytes = LoadDIBitmap("ImageData/Arm/Front_Bottom.bmp", &info);
-	glTexImage2D(GL_TEXTURE_2D, 0, 4, 8, 12, 0, GL_BGR_EXT, GL_UNSIGNED_BYTE, pBytes);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	parameteri_Texture(8, 12);
 
-	// ÈÄ¸é
+	// í›„ë©´
 	glBindTexture(GL_TEXTURE_2D, character_arm_bottom_object[1]);
 	pBytes = LoadDIBitmap("ImageData/Arm/Back_Bottom.bmp", &info);
-	glTexImage2D(GL_TEXTURE_2D, 0, 4, 8, 12, 0, GL_BGR_EXT, GL_UNSIGNED_BYTE, pBytes);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	parameteri_Texture(8, 12);
 
-	// ¿ŞÂÊ
+	// ì™¼ìª½
 	glBindTexture(GL_TEXTURE_2D, character_arm_bottom_object[2]);
 	pBytes = LoadDIBitmap("ImageData/Arm/Left_Bottom.bmp", &info);
-	glTexImage2D(GL_TEXTURE_2D, 0, 4, 8, 12, 0, GL_BGR_EXT, GL_UNSIGNED_BYTE, pBytes);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	parameteri_Texture(8, 12);
 
-	// ¿À¸¥ÂÊ
+	// ì˜¤ë¥¸ìª½
 	glBindTexture(GL_TEXTURE_2D, character_arm_bottom_object[3]);
 	pBytes = LoadDIBitmap("ImageData/Arm/Right_Bottom.bmp", &info);
-	glTexImage2D(GL_TEXTURE_2D, 0, 4, 8, 12, 0, GL_BGR_EXT, GL_UNSIGNED_BYTE, pBytes);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	parameteri_Texture(8, 12);
 
-
-
-
-
-
-
-
-	// ÅØ½ºÃ³ ¸ğµå ¼³Á¤
+	// í…ìŠ¤ì²˜ ëª¨ë“œ ì„¤ì •
 	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_COLOR, GL_MODULATE);
-	// ÅØ½ºÃ³ ¸ÅÇÎ È°¼ºÈ­
+	// í…ìŠ¤ì²˜ ë§¤í•‘ í™œì„±í™”
 }
 
 void leg_Texture(){
 	glGenTextures(6, character_leg_top_object);
 	glGenTextures(6, character_leg_bottom_object);
-	// Á¤¸é
+	// ì •ë©´
 	glBindTexture(GL_TEXTURE_2D, character_leg_top_object[0]);
 	pBytes = LoadDIBitmap("ImageData/Leg/Front_Top.bmp", &info);
-	glTexImage2D(GL_TEXTURE_2D, 0, 4, 8, 12, 0, GL_BGR_EXT, GL_UNSIGNED_BYTE, pBytes);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	parameteri_Texture(8, 12);
 
-	// ÈÄ¸é
+	// í›„ë©´
 	glBindTexture(GL_TEXTURE_2D, character_leg_top_object[1]);
 	pBytes = LoadDIBitmap("ImageData/Leg/Back_Top.bmp", &info);
-	glTexImage2D(GL_TEXTURE_2D, 0, 4, 8, 12, 0, GL_BGR_EXT, GL_UNSIGNED_BYTE, pBytes);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	parameteri_Texture(8, 12);
 
-	// ¿ŞÂÊ
+	// ì™¼ìª½
 	glBindTexture(GL_TEXTURE_2D, character_leg_top_object[2]);
 	pBytes = LoadDIBitmap("ImageData/Leg/Left_Top.bmp", &info);
-	glTexImage2D(GL_TEXTURE_2D, 0, 4, 8, 12, 0, GL_BGR_EXT, GL_UNSIGNED_BYTE, pBytes);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	parameteri_Texture(8, 12);
 
-	// ¿À¸¥ÂÊ
+	// ì˜¤ë¥¸ìª½
 	glBindTexture(GL_TEXTURE_2D, character_leg_top_object[3]);
 	pBytes = LoadDIBitmap("ImageData/Leg/Right_Top.bmp", &info);
-	glTexImage2D(GL_TEXTURE_2D, 0, 4, 8, 12, 0, GL_BGR_EXT, GL_UNSIGNED_BYTE, pBytes);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	parameteri_Texture(8, 12);
 
-	// À§
+	// ìœ„
 	glBindTexture(GL_TEXTURE_2D, character_leg_top_object[4]);
 	pBytes = LoadDIBitmap("ImageData/Leg/Top.bmp", &info);
-	glTexImage2D(GL_TEXTURE_2D, 0, 4, 8, 8, 0, GL_BGR_EXT, GL_UNSIGNED_BYTE, pBytes);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	parameteri_Texture(8, 8);
 
-	// ¾Æ·¡
+	// ì•„ë˜
 	glBindTexture(GL_TEXTURE_2D, character_leg_top_object[5]);
 	pBytes = LoadDIBitmap("ImageData/Leg/Bottom.bmp", &info);
-	glTexImage2D(GL_TEXTURE_2D, 0, 4, 8, 8, 0, GL_BGR_EXT, GL_UNSIGNED_BYTE, pBytes);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	parameteri_Texture(8, 8);
 
 
-	// Á¤¸é
+	// ì •ë©´
 	glBindTexture(GL_TEXTURE_2D, character_leg_bottom_object[0]);
 	pBytes = LoadDIBitmap("ImageData/Leg/Front_Bottom.bmp", &info);
-	glTexImage2D(GL_TEXTURE_2D, 0, 4, 8, 12, 0, GL_BGR_EXT, GL_UNSIGNED_BYTE, pBytes);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	parameteri_Texture(8, 12);
 
-	// ÈÄ¸é
+	// í›„ë©´
 	glBindTexture(GL_TEXTURE_2D, character_leg_bottom_object[1]);
 	pBytes = LoadDIBitmap("ImageData/Leg/Back_Bottom.bmp", &info);
-	glTexImage2D(GL_TEXTURE_2D, 0, 4, 8, 12, 0, GL_BGR_EXT, GL_UNSIGNED_BYTE, pBytes);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	parameteri_Texture(8, 12);
 
-	// ¿ŞÂÊ
+	// ì™¼ìª½
 	glBindTexture(GL_TEXTURE_2D, character_leg_bottom_object[2]);
 	pBytes = LoadDIBitmap("ImageData/Leg/Left_Bottom.bmp", &info);
-	glTexImage2D(GL_TEXTURE_2D, 0, 4, 8, 12, 0, GL_BGR_EXT, GL_UNSIGNED_BYTE, pBytes);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	parameteri_Texture(8, 12);
 
-	// ¿À¸¥ÂÊ
+	// ì˜¤ë¥¸ìª½
 	glBindTexture(GL_TEXTURE_2D, character_leg_bottom_object[3]);
 	pBytes = LoadDIBitmap("ImageData/Leg/Right_Bottom.bmp", &info);
-	glTexImage2D(GL_TEXTURE_2D, 0, 4, 8, 12, 0, GL_BGR_EXT, GL_UNSIGNED_BYTE, pBytes);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	parameteri_Texture(8, 12);
 
-	// ÅØ½ºÃ³ ¸ğµå ¼³Á¤
+	// í…ìŠ¤ì²˜ ëª¨ë“œ ì„¤ì •
 	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_COLOR, GL_MODULATE);
-	// ÅØ½ºÃ³ ¸ÅÇÎ È°¼ºÈ­
+	// í…ìŠ¤ì²˜ ë§¤í•‘ í™œì„±í™”
 }
 
 
-void drawCharacter()
-{
-	glPushMatrix(); //Save ¸Ó¸®
+void drawCharacter(){
+	glPushMatrix(); //Save ë¨¸ë¦¬
 	glTranslated(0, 75, 0);
 	glScaled(1.0, 1.0, 0.7);
 	drawBoxFront(30, false, character_head_object[0]);
@@ -762,7 +632,7 @@ void drawCharacter()
 	drawBoxBottom(30, false, character_head_object[5]);
 	glPopMatrix();
 
-	glPushMatrix(); //Save ¸öÅë
+	glPushMatrix(); //Save ëª¸í†µ
 	glScaled(1.0, 1.5, 0.5);
 	drawBoxFront(30, false, character_body_object[0]);
 	drawBoxBack(30, false, character_body_object[1]);
@@ -772,7 +642,7 @@ void drawCharacter()
 	drawBoxBottom(30, false, character_body_object[5]);
 	glPopMatrix();
 
-	glPushMatrix(); //Save ¿À¸¥ÆÈ ¾î²²
+	glPushMatrix(); //Save ì˜¤ë¥¸íŒ” ì–´ê»˜
 	glTranslated(-45, 44, 0);
 	glRotatef(right_sholder_x, 1, 0, 0);
 	glRotatef(right_sholder_y, 0, 1, 0);
@@ -783,22 +653,24 @@ void drawCharacter()
 	drawBoxRight(30, true, character_arm_top_object[3]);
 	drawBoxTop(30, true, character_arm_top_object[4]);
 	drawBoxBottom(30, true, character_arm_top_object[5]);
+	glScaled(2, 1.333333, 2);
 
-	glPushMatrix(); //Save ¿À¸¥ÆÈ ÆÈ²ŞÄ¡
-	glTranslated(0, -60, 0);
+	glPushMatrix(); //Save ì˜¤ë¥¸íŒ” íŒ”ê¿ˆì¹˜
+	glTranslated(0, -45, 0);
 	glRotatef(right_elbow_x, 1, 0, 0);
+	glScaled(0.5, 0.75, 0.5);
 	drawBoxFront(30, true, character_arm_bottom_object[0]);
 	drawBoxBack(30, true, character_arm_bottom_object[1]);
 	drawBoxLeft(30, true, character_arm_bottom_object[2]);
 	drawBoxRight(30, true, character_arm_bottom_object[3]);
 	drawBoxTop(30, true, character_arm_top_object[4]);
 	drawBoxBottom(30, true, character_arm_top_object[5]);
-	glPopMatrix();//¿À¸¥ÆÈ ÆÈ²ŞÄ¡ Á¾·á
+	glPopMatrix();//ì˜¤ë¥¸íŒ” íŒ”ê¿ˆì¹˜ ì¢…ë£Œ
 
-	glPopMatrix();//¿À¸¥ÆÈ ¾î²² Á¾·á
+	glPopMatrix();//ì˜¤ë¥¸íŒ” ì–´ê»˜ ì¢…ë£Œ
 
 
-	glPushMatrix(); //Save ¿ŞÆÈ ¾î²²
+	glPushMatrix(); //Save ì™¼íŒ” ì–´ê»˜
 	glTranslated(45, 44, 0);
 	glRotatef(left_sholder_x, 1, 0, 0);
 	glRotatef(left_sholder_y, 0, 1, 0);
@@ -809,23 +681,25 @@ void drawCharacter()
 	drawBoxRight(30, true, character_arm_top_object[3]);
 	drawBoxTop(30, true, character_arm_top_object[4]);
 	drawBoxBottom(30, true, character_arm_top_object[5]);
+	glScaled(2, 1.333333, 2);
 
-	glPushMatrix(); //Save ¿ŞÆÈ ÆÈ²ŞÄ¡
-	glTranslated(0, -60, 0);
+	glPushMatrix(); //Save ì™¼íŒ” íŒ”ê¿ˆì¹˜
+	glTranslated(0, -45, 0);
 	glRotatef(left_elbow_x, 1, 0, 0);
+	glScaled(0.5, 0.75, 0.5);
 	drawBoxFront(30, true, character_arm_bottom_object[0]);
 	drawBoxBack(30, true, character_arm_bottom_object[1]);
 	drawBoxLeft(30, true, character_arm_bottom_object[2]);
 	drawBoxRight(30, true, character_arm_bottom_object[3]);
 	drawBoxTop(30, true, character_arm_top_object[4]);
 	drawBoxBottom(30, true, character_arm_top_object[5]);
-	glPopMatrix();//¿ŞÆÈ ÆÈ²ŞÄ¡ Á¾·á
+	glPopMatrix();//ì™¼íŒ” íŒ”ê¿ˆì¹˜ ì¢…ë£Œ
 
-	glPopMatrix();//¿ŞÆÈ¾î²² Á¾·á
+	glPopMatrix();//ì™¼íŒ”ì–´ê»˜ ì¢…ë£Œ
 
 
 
-	glPushMatrix(); //Save ¿À¸¥ÂÊ °ñ¹İ
+	glPushMatrix(); //Save ì˜¤ë¥¸ìª½ ê³¨ë°˜
 	glTranslated(-15, -40, 0);
 	glRotatef(right_leg_x, 1, 0, 0);
 	glRotatef(right_leg_y, 0, 1, 0);
@@ -838,7 +712,7 @@ void drawCharacter()
 	drawBoxBottom(30, true, character_leg_top_object[5]);
 	glScaled(2, 1.333333, 2);
 
-	glPushMatrix(); //Save ¿À¸¥ÂÊ ¹«¸­
+	glPushMatrix(); //Save ì˜¤ë¥¸ìª½ ë¬´ë¦
 	glTranslated(0, -45, 0);
 	glRotatef(right_knee_x, 1, 0, 0);
 	glScaled(0.5, 0.75, 0.5);
@@ -848,12 +722,12 @@ void drawCharacter()
 	drawBoxRight(30, true, character_leg_bottom_object[3]);
 	drawBoxTop(30, true, character_leg_top_object[4]);
 	drawBoxBottom(30, true, character_leg_top_object[5]);
-	glPopMatrix();//¿À¸¥ÂÊ ¹«¸­ Á¾·á
+	glPopMatrix();//ì˜¤ë¥¸ìª½ ë¬´ë¦ ì¢…ë£Œ
 
-	glPopMatrix();//¿À¸¥ÂÊ °ñ¹İ Á¾·á
+	glPopMatrix();//ì˜¤ë¥¸ìª½ ê³¨ë°˜ ì¢…ë£Œ
 
 
-	glPushMatrix(); //Save ¿ŞÂÊ °ñ¹İ
+	glPushMatrix(); //Save ì™¼ìª½ ê³¨ë°˜
 	glTranslated(15, -40, 0);
 	glRotatef(left_leg_x, 1, 0, 0);
 	glRotatef(left_leg_y, 0, 1, 0);
@@ -866,7 +740,7 @@ void drawCharacter()
 	drawBoxBottom(30, true, character_leg_top_object[5]);
 	glScaled(2, 1.333333, 2);
 
-	glPushMatrix(); //Save ¿ŞÂÊ ¹«¸­
+	glPushMatrix(); //Save ì™¼ìª½ ë¬´ë¦
 	glTranslated(0, -45, 0);
 	glRotatef(left_knee_x, 1, 0, 0);
 	glScaled(0.5, 0.75, 0.5);
@@ -876,15 +750,10 @@ void drawCharacter()
 	drawBoxRight(30, true, character_leg_bottom_object[3]);
 	drawBoxTop(30, true, character_leg_top_object[4]);
 	drawBoxBottom(30, true, character_leg_top_object[5]);
-	glPopMatrix(); //¿ŞÂÊ ¹«¸­ Á¾·á
+	glPopMatrix(); //ì™¼ìª½ ë¬´ë¦ ì¢…ë£Œ
 
-	glPopMatrix(); //¿ŞÂÊ°ñ¹İ Á¾·á
+	glPopMatrix(); //ì™¼ìª½ê³¨ë°˜ ì¢…ë£Œ
 
-
-
-
-
-	
 
 }
 
@@ -912,45 +781,45 @@ GLubyte * LoadDIBitmap(const char *filename, BITMAPINFO **info){
 	GLubyte *bits;
 	int bitsize, infosize;
 	BITMAPFILEHEADER header;
-	// ¹ÙÀÌ³Ê¸® ÀĞ±â ¸ğµå·Î ÆÄÀÏÀ» ¿¬´Ù
+	// ë°”ì´ë„ˆë¦¬ ì½ê¸° ëª¨ë“œë¡œ íŒŒì¼ì„ ì—°ë‹¤
 	if ((fp = fopen(filename, "rb")) == NULL)
 		return NULL;
-	// ºñÆ®¸Ê ÆÄÀÏ Çì´õ¸¦ ÀĞ´Â´Ù.
+	// ë¹„íŠ¸ë§µ íŒŒì¼ í—¤ë”ë¥¼ ì½ëŠ”ë‹¤.
 	if (fread(&header, sizeof(BITMAPFILEHEADER), 1, fp) < 1) {
 		fclose(fp);
 		return NULL;
 	}
-	// ÆÄÀÏÀÌ BMP ÆÄÀÏÀÎÁö È®ÀÎÀ™´Ù.
+	// íŒŒì¼ì´ BMP íŒŒì¼ì¸ì§€ í™•ì¸í•šë‹¤.
 	if (header.bfType != 'MB') {
 		fclose(fp);
 		return NULL;
 	}
-	// BITMAPINFOHEADER À§Ä¡·Î A´Ù.
+	// BITMAPINFOHEADER ìœ„ì¹˜ë¡œ ê°‚ë‹¤.
 	infosize = header.bfOffBits - sizeof(BITMAPFILEHEADER);
-	// ºñÆ®¸Ê ÀÌ¹ÌÁö µ¥ÀÌÅÍ¸¦ ³ÖÀ» ¸Ş¸ğ¸® Àš´çÀ» À™´Ù.
+	// ë¹„íŠ¸ë§µ ì´ë¯¸ì§€ ë°ì´í„°ë¥¼ ë„£ì„ ë©”ëª¨ë¦¬ í•›ë‹¹ì„ í•šë‹¤.
 	if ((*info = (BITMAPINFO *)malloc(infosize)) == NULL) {
 		fclose(fp);
 		exit(0);
 		return NULL;
 	}
-	// ºñÆ®¸Ê ÀÎÆ÷ Çì´õ¸¦ ÀĞ´Â´Ù.
+	// ë¹„íŠ¸ë§µ ì¸í¬ í—¤ë”ë¥¼ ì½ëŠ”ë‹¤.
 	if (fread(*info, 1, infosize, fp) < (unsigned int)infosize) {
 		free(*info);
 		fclose(fp);
 		return NULL;
 	}
-	// ºñÆ®¸ÊÀÇ Å©±â ¼³Á¤
+	// ë¹„íŠ¸ë§µì˜ í¬ê¸° ì„¤ì •
 	if ((bitsize = (*info)->bmiHeader.biSizeImage) == 0)
 		bitsize = ((*info)->bmiHeader.biWidth *
 		(*info)->bmiHeader.biBitCount + 7) / 8.0 *
 		abs((*info)->bmiHeader.biHeight);
-	// ºñÆ®¸ÊÀÇ Å©±â¸¸Å­ ¸Ş¸ğ¸®¸¦ Àš´çÀ™´Ù.
+	// ë¹„íŠ¸ë§µì˜ í¬ê¸°ë§Œí¼ ë©”ëª¨ë¦¬ë¥¼ í•›ë‹¹í•šë‹¤.
 	if ((bits = (unsigned char *)malloc(bitsize)) == NULL) {
 		free(*info);
 		fclose(fp);
 		return NULL;
 	}
-	// ºñÆ®¸Ê µ¥ÀÌÅÍ¸¦ bit(GLubyte Å¸ÀÔ)¿¡ ÀúÀåÀ™´Ù.
+	// ë¹„íŠ¸ë§µ ë°ì´í„°ë¥¼ bit(GLubyte íƒ€ì…)ì— ì €ì¥í•šë‹¤.
 	if (fread(bits, 1, bitsize, fp) < (unsigned int)bitsize) {
 		free(*info); free(bits);
 		fclose(fp);
