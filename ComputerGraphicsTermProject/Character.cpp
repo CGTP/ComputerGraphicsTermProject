@@ -125,7 +125,7 @@ void TimerFunction(int value){
 			right_knee_x = 0;
 			break;
 		case 1://전진,후진
-			printf("%d\n", timer);
+			//printf("%d\n", timer);
 			if (timer < 150)
 			{
 				timer++;
@@ -133,13 +133,15 @@ void TimerFunction(int value){
 				{
 					left_leg_x = timer - 45;
 					right_leg_x = 30 - timer;
-					//right_knee_x = timer;
+					right_knee_x = timer - 10;
+					//left_knee_x = 105-timer;
 				}
 				else
 				{
 					left_leg_x = 105 - timer;
 					right_leg_x = timer - 120;
-					//left_knee_x = (timer / 2);
+					right_knee_x = 120 -timer;
+					//left_knee_x = timer - 120;
 				}
 			}
 			else
@@ -665,7 +667,7 @@ void drawCharacter(){
 	drawBoxBack(30, true, character_arm_bottom_object[1]);
 	drawBoxLeft(30, true, character_arm_bottom_object[2]);
 	drawBoxRight(30, true, character_arm_bottom_object[3]);
-	drawBoxTop(30, true, character_arm_top_object[4]);
+	drawBoxTop(30, true, character_arm_top_object[5]);
 	drawBoxBottom(30, true, character_arm_top_object[5]);
 	glPopMatrix();//오른팔 팔꿈치 종료
 
@@ -693,7 +695,7 @@ void drawCharacter(){
 	drawBoxBack(30, true, character_arm_bottom_object[1]);
 	drawBoxLeft(30, true, character_arm_bottom_object[2]);
 	drawBoxRight(30, true, character_arm_bottom_object[3]);
-	drawBoxTop(30, true, character_arm_top_object[4]);
+	drawBoxTop(30, true, character_arm_top_object[5]);
 	drawBoxBottom(30, true, character_arm_top_object[5]);
 	glPopMatrix();//왼팔 팔꿈치 종료
 
