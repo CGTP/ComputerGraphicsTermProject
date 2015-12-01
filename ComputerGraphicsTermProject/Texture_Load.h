@@ -14,6 +14,13 @@ void body_Texture(GLuint[]);
 void arm_Texture(GLuint[], GLuint[]);
 void leg_Texture(GLuint[], GLuint[]);
 
+void drawBoxFront(int, bool, GLuint);//박스 그리는 함수
+void drawBoxBack(int, bool, GLuint);
+void drawBoxTop(int, bool, GLuint);
+void drawBoxBottom(int, bool, GLuint);
+void drawBoxRight(int, bool, GLuint);
+void drawBoxLeft(int, bool, GLuint);
+
 static GLubyte *pBytes; // 데이터를 가리킬 포인터
 static BITMAPINFO *info; // 비트맵 헤더 저장할 변수
 
