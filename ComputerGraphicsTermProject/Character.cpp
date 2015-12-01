@@ -160,7 +160,9 @@ void Keyboard(unsigned char key, int x, int y){
 	if (key == 'r'){
 		vMapY += 3.0;
 	}
-
+	if (key == 27){
+		exit(0);
+	}
 	glutPostRedisplay();
 }
 
