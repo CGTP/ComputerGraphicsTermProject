@@ -6,6 +6,23 @@
 #include <stdlib.h>
 #include <time.h>
 #include <windows.h>
+// json 으로 인한 추가 모듈
+#include <string>
+#include <vector>
+
+#include "json/json.h"
+
+#if defined(_WIN32) || defined(_WIN64)
+#if defined(_DEBUG)
+#define JSON_DEBUG
+#pragma comment(lib, "./lib_json/json_vc71_libmtd")
+#else
+#pragma comment(lib, "./lib_json/json_vc71_libmt")
+#endif
+#else // linux
+#endif
+
+// json 으로 인한 추가 모듈
 
 void nomal_Texture(GLuint []);
 void tree_Texture(GLuint []);
