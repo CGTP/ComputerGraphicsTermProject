@@ -423,6 +423,8 @@ void Target(int x, int y)
 	}
 }
 
+
+
 void Keyinput(int key)
 {
 	if (key == 'w')

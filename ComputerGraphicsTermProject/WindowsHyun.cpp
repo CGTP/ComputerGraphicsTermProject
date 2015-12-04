@@ -12,7 +12,6 @@ void Motion(int x, int y);
 void TimerFunction(int value);
 void MenuFunc(int button);
 
-void drawWall(); // 벽그리는 함수
 void drawCharacter();//캐릭터 드로우 함수
 void init_Texture();//텍스쳐 로드 함수
 void animationCharleg();//캐릭터 다리 애니메이션 함수
@@ -27,7 +26,7 @@ float camxrotate = 0, camyrotate = -90, Viewx = 0, Viewy = 0, Viewz = -1000, Cam
 float Charx = 0, Charz = 0, Chary = 0;
 float nx = 0, ny = 0, bx = 0, by = 0;
 float testx = 0, texty = 0;
-int Charspeed = 5, Camdistance = 400, MouseSens = 25;
+int Charspeed = 20, Camdistance = 400, MouseSens = 25;
 bool RotateCam = true, FirstPersonView = true;
 bool Keybuffer[256];
 
@@ -140,19 +139,19 @@ GLvoid DrawScene(GLvoid)
 
 
 	glPushMatrix();
-	for (int i = -36; i < 36; ++i){
-		for (int j = -13; j <= 13; ++j){
-			glPushMatrix();//바닥 블록 그리기
-			glTranslatef(120 * i, -190, 120 * j);
-			draw_Block(60, block_Nomal_object);
-			glPopMatrix();//바닥 블록 그리기 종료
-		}
-	}
+	draw_Ground(block_Nomal_object);
 	glPopMatrix();
 
+	glPushMatrix();
+	draw_Wall(block_Brick_object);
+	glPopMatrix();
 
 	glPushMatrix();
-	drawWall();
+	draw_Wooden(block_Wooden_object);
+	glPopMatrix();
+
+	glPushMatrix();
+	draw_Stone(block_Stone_object);
 	glPopMatrix();
 
 
@@ -404,6 +403,9 @@ void init_Texture(){
 	nomal_Texture(block_Nomal_object);
 	tree_Texture(block_Tree_object);
 	brick_Texture(block_Brick_object);
+	wooden_Texture(block_Wooden_object);
+	stone_Texture(block_Stone_object);
+
 	head_Texture(character_head_object);
 	body_Texture(character_body_object);
 	arm_Texture(character_arm_top_object, character_arm_bottom_object);
@@ -521,33 +523,4 @@ void Keyinput(int key)
 	{
 		exit(0);
 	}
-}
-
-void drawWall()
-{
-	int temp = 0;
-	int wallheight = -190;
-	for (int k = 1; k <= 4; ++k){
-		wallheight += 120;
-		for (int j = 0; j < 2; ++j){
-			if (j == 0)
-				temp = 27;
-			else
-				temp = -27;
-			for (int i = -13; i <= 13; ++i){
-				glPushMatrix();//바닥 블록 그리기
-				if (i == -9 || i == -8 || i == -7 || i == 9 || i == 8 || i == 7){
-
-				}
-				else{
-					glTranslatef(120 * temp, wallheight, 120 * i);
-					draw_Block(60, block_Brick_object);
-				}
-				glPopMatrix();//바닥 블록 그리기 종료
-			}
-		}
-	}
-
-	
-
 }

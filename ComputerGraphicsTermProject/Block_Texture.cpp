@@ -120,6 +120,80 @@ void brick_Texture(GLuint object[]){
 	// 텍스처 매핑 활성화
 }
 
+void wooden_Texture(GLuint object[]){
+	glGenTextures(6, object);
+	// 정면
+	glBindTexture(GL_TEXTURE_2D, object[0]);
+	pBytes = LoadDIBitmap("ImageData/Block/Wooden/Around.bmp", &info);
+	block_Texture(256, 256);
+
+	// 후면
+	glBindTexture(GL_TEXTURE_2D, object[1]);
+	pBytes = LoadDIBitmap("ImageData/Block/Wooden/Around.bmp", &info);
+	block_Texture(256, 256);
+
+	//왼쪽
+	glBindTexture(GL_TEXTURE_2D, object[2]);
+	pBytes = LoadDIBitmap("ImageData/Block/Wooden/Around.bmp", &info);
+	block_Texture(256, 256);
+
+	//오른쪽
+	glBindTexture(GL_TEXTURE_2D, object[3]);
+	pBytes = LoadDIBitmap("ImageData/Block/Wooden/Around.bmp", &info);
+	block_Texture(256, 256);
+
+	//위
+	glBindTexture(GL_TEXTURE_2D, object[4]);
+	pBytes = LoadDIBitmap("ImageData/Block/Wooden/Top.bmp", &info);
+	block_Texture(256, 256);
+
+	//아래
+	glBindTexture(GL_TEXTURE_2D, object[5]);
+	pBytes = LoadDIBitmap("ImageData/Block/Wooden/Bottom.bmp", &info);
+	block_Texture(256, 256);
+
+	// 텍스처 모드 설정
+	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_COLOR, GL_MODULATE);
+	// 텍스처 매핑 활성화
+}
+
+void stone_Texture(GLuint object[]){
+	glGenTextures(6, object);
+	// 정면
+	glBindTexture(GL_TEXTURE_2D, object[0]);
+	pBytes = LoadDIBitmap("ImageData/Block/Stone/Around.bmp", &info);
+	block_Texture(512, 512);
+
+	// 후면
+	glBindTexture(GL_TEXTURE_2D, object[1]);
+	pBytes = LoadDIBitmap("ImageData/Block/Stone/Around.bmp", &info);
+	block_Texture(512, 512);
+
+	//왼쪽
+	glBindTexture(GL_TEXTURE_2D, object[2]);
+	pBytes = LoadDIBitmap("ImageData/Block/Stone/Around.bmp", &info);
+	block_Texture(512, 512);
+
+	//오른쪽
+	glBindTexture(GL_TEXTURE_2D, object[3]);
+	pBytes = LoadDIBitmap("ImageData/Block/Stone/Around.bmp", &info);
+	block_Texture(512, 512);
+
+	//위
+	glBindTexture(GL_TEXTURE_2D, object[4]);
+	pBytes = LoadDIBitmap("ImageData/Block/Stone/Top.bmp", &info);
+	block_Texture(512, 512);
+
+	//아래
+	glBindTexture(GL_TEXTURE_2D, object[5]);
+	pBytes = LoadDIBitmap("ImageData/Block/Stone/Bottom.bmp", &info);
+	block_Texture(512, 512);
+
+	// 텍스처 모드 설정
+	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_COLOR, GL_MODULATE);
+	// 텍스처 매핑 활성화
+}
+
 GLubyte * LoadDIBitmap(const char *filename, BITMAPINFO **info){
 	FILE *fp;
 	GLubyte *bits;
