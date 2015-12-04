@@ -94,50 +94,6 @@ GLvoid DrawScene(GLvoid)
 	glutSolidCube(40);
 	glPopMatrix();
 
-	glPushMatrix();//바닥 그리기
-	glTranslatef(0, -100, 0);
-	glScalef(1, 0.01, 1);
-	glutWireCube(2000);
-	glPopMatrix();//바닥 그리기 종료
-
-	glPushMatrix();//바닥 그리기
-	glColor3f(1, 0, 0);//빨강색 z축
-	glTranslatef(0, 0, -1000);
-	glutSolidCube(100);
-	glPopMatrix();//바닥 그리기 종료
-
-	glPushMatrix();//바닥 그리기
-	glColor3f(0, 0, 1);//파랑색
-	glTranslatef(0, 0, 1000);//z축
-	glutSolidCube(100);
-	glPopMatrix();//바닥 그리기 종료
-
-	glPushMatrix();//바닥 그리기
-	glColor3f(0, 1, 0);
-	glTranslatef(1000, 0, 0);
-	glutSolidCube(100);
-	glPopMatrix();//바닥 그리기 종료
-
-	glPushMatrix();//바닥 그리기
-	glColor3f(1, 1, 0);
-	glTranslatef(-1000, 0, 0);
-	glutSolidCube(100);
-	glPopMatrix();//바닥 그리기 종료
-
-	glPushMatrix();//바닥 그리기
-	glColor3f(1, 0, 1);
-	glTranslatef(0, -1000, 0);
-	glutSolidCube(100);
-	glPopMatrix();//바닥 그리기 종료
-
-	glPushMatrix();//바닥 그리기
-	glColor3f(0, 1, 1);
-	glTranslatef(0, 1000, 0);
-	glutSolidCube(100);
-	glPopMatrix();//바닥 그리기 종료
-
-
-
 	glPushMatrix();
 	draw_Ground(block_Nomal_object);
 	glPopMatrix();
@@ -472,7 +428,15 @@ void Keyinput(int key)
 		Charz += Charspeed * sin((-camxrotate) * 3.141592 / 180);
 		character_state = 2;
 	}
-
+	//-------------------------------------------------------
+	// 위에서 보기 편하게 하기 위해서.
+	if (key == 'r'){
+		Chary += 5;
+	}
+	if (key == 't'){
+		Chary -= 5;
+	}
+	//-------------------------------------------------------
 	if (key == 'c')
 	{
 		glutSetCursor(GLUT_CURSOR_NONE);
