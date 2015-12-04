@@ -26,6 +26,7 @@
 
 void nomal_Texture(GLuint []);
 void tree_Texture(GLuint []);
+void brick_Texture(GLuint[]);
 void head_Texture(GLuint[]);
 void body_Texture(GLuint[]);
 void arm_Texture(GLuint[], GLuint[]);
@@ -45,6 +46,7 @@ static BITMAPINFO *info; // 비트맵 헤더 저장할 변수
 
 static GLuint block_Nomal_object[6];
 static GLuint block_Tree_object[6];
+static GLuint block_Brick_object[6];
 static GLuint character_head_object[6];
 static GLuint character_body_object[6];
 static GLuint character_arm_top_object[6];
