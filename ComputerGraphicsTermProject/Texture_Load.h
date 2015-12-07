@@ -6,12 +6,16 @@
 #include <stdlib.h>
 #include <time.h>
 #include <windows.h>
+
+// OpenGL Aux 사용으로 인한 모듈 추가
+#include "OpenGL_Aux/GLAUX.H"
+#pragma comment(lib, "./OpenGL_Aux/GLAUX")
+// OpenGL Aux 사용으로 인한 모듈 추가 종료
+
 // json 으로 인한 추가 모듈
 #include <string>
 #include <vector>
-
 #include "json/json.h"
-
 #if defined(_WIN32) || defined(_WIN64)
 #if defined(_DEBUG)
 #define JSON_DEBUG
@@ -23,6 +27,9 @@
 #endif
 
 // json 으로 인한 추가 모듈
+
+
+static AUX_RGBImageRec as; // 테스트용 
 
 void nomal_Texture(GLuint []);
 void tree_Texture(GLuint []);
