@@ -14,32 +14,32 @@ void nomal_Texture(GLuint object[]){
 	// 정면
 	glBindTexture(GL_TEXTURE_2D, object[0]);
 	pBytes = LoadDIBitmap("ImageData/Block/Nomal/Around.bmp", &info);
-	block_Texture(256, 256);
+	block_Texture(64, 64);
 
 	// 후면
 	glBindTexture(GL_TEXTURE_2D, object[1]);
 	pBytes = LoadDIBitmap("ImageData/Block/Nomal/Around.bmp", &info);
-	block_Texture(256, 256);
+	block_Texture(64, 64);
 
 	//왼쪽
 	glBindTexture(GL_TEXTURE_2D, object[2]);
 	pBytes = LoadDIBitmap("ImageData/Block/Nomal/Around.bmp", &info);
-	block_Texture(256, 256);
+	block_Texture(64, 64);
 
 	//오른쪽
 	glBindTexture(GL_TEXTURE_2D, object[3]);
 	pBytes = LoadDIBitmap("ImageData/Block/Nomal/Around.bmp", &info);
-	block_Texture(256, 256);
+	block_Texture(64, 64);
 
 	//위
 	glBindTexture(GL_TEXTURE_2D, object[4]);
 	pBytes = LoadDIBitmap("ImageData/Block/Nomal/Top.bmp", &info);
-	block_Texture(256, 256);
+	block_Texture(64, 64);
 
 	//아래
 	glBindTexture(GL_TEXTURE_2D, object[5]);
 	pBytes = LoadDIBitmap("ImageData/Block/Nomal/Bottom.bmp", &info);
-	block_Texture(256, 256);
+	block_Texture(64, 64);
 
 	// 텍스처 모드 설정
 	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_COLOR, GL_MODULATE);
