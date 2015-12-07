@@ -9,3 +9,7 @@ void draw_Block(int size, GLuint object[]){
 	drawBoxTop(size, false, object[4]);
 	drawBoxBottom(size, false, object[5]);
 }
+
+void draw_Ground(int size, GLuint object[]){
+	drawBoxTop(size, false, object[4]);
+}

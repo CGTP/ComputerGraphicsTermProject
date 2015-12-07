@@ -130,7 +130,7 @@ GLvoid Reshape(int w, int h)
 	glLoadIdentity();
 
 	//클리핑 공간 설정 : 원근투영
-	gluPerspective(60.0f, (float)w / (float)h, 0.1, 5000.0);
+	gluPerspective(60.0f, (float)w / (float)h, 0.1, 10000.0);
 
 	//모델 뷰 행렬 스택 재설정
 	glMatrixMode(GL_MODELVIEW);

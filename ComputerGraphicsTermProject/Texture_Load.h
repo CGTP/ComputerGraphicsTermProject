@@ -25,7 +25,6 @@
 #endif
 #else // linux
 #endif
-
 // json 으로 인한 추가 모듈
 
 void nomal_Texture(GLuint []);
@@ -47,6 +46,7 @@ void drawBoxRight(int, bool, GLuint);
 void drawBoxLeft(int, bool, GLuint);
 
 void draw_Block(int, GLuint[]);	// 텍스쳐 맵핑된 블럭을 사이즈를 받아 그리기.
+void draw_Ground(int, GLuint[]);
 void draw_Wall(GLuint []); // 벽그리는 함수
 void draw_Ground(GLuint []);	// 땅그리는 함수
 void draw_Wooden(GLuint[]);	// 나무박스 그려준다.

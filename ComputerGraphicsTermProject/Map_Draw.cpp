@@ -8,12 +8,18 @@ void draw_Location_Box(GLuint object[], int x, int y, int h){
 	glPopMatrix();
 }
 
+void draw_Location_Ground(GLuint object[], int x, int y, int h){
+	glPushMatrix();
+	glTranslatef(120 * x, -70 + (120 * (h - 1)), 120 * y);
+	draw_Ground(60, object);
+	glPopMatrix();
+}
 
 void draw_Ground(GLuint object[]){
 	glPushMatrix();
 	for (int i = -36; i < 36; ++i){
 		for (int j = -13; j <= 13; ++j){
-			draw_Location_Box(object, i, j, 0);
+			draw_Location_Ground(object, i, j, 0);
 		}
 	}
 	glPopMatrix();
