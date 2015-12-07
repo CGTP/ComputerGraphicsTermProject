@@ -106,15 +106,22 @@ void draw_Stone(GLuint object[]){
 	//-----------------------------------------------------------------------------------------
 	glPushMatrix();
 	for (int i = -16; i <= -9; ++i){
-		for (int j = 11; j <= 13; ++j){
-			for (int k = 1; k <= 3; ++k){
-				if (j == 12 && (k == 1 || k == 2)){
+		for (int j = 10; j <= 13; ++j){
+			for (int k = 1; k <= 4; ++k){
+				if ((j == 12 || j == 11) && (k == 1 || k == 2 || k == 3)){
 				}
 				else{
 					draw_Location_Box(object, i, j, k);
 				}
 			}
 		}
+	}
+	for (int i = 1; i <= 3; ++i){
+		draw_Location_Box(object, -16, 11, i);
+	}
+
+	for(int i = 1; i <= 3; ++i){
+		draw_Location_Box(object, -9, 12, i);
 	}
 	glPopMatrix();
 	//-----------------------------------------------------------------------------------------
@@ -176,10 +183,71 @@ void draw_Stone(GLuint object[]){
 	glPopMatrix();
 	//-----------------------------------------------------------------------------------------
 	glPushMatrix();
-	for (int i = -14; i <= -7; ++i){
-		for (int j = -13; j <= -11; ++j){
+	for (int i = 1; i <= 3; ++i){
+		for (int j = -12; j <= -10; ++j){
 			for (int k = 1; k <= 3; ++k){
-				if (j == -12 && (k == 1 || k == 2)){
+				draw_Location_Box(object, i, j, k);
+			}
+		}
+	}
+
+	for (int k = 1; k <= 3; ++k){
+		draw_Location_Box(object, 4, -10, k);
+	}
+
+	for (int i = 2; i <= 4; ++i){
+		for (int j = -10; j <= -8; ++j){
+			for (int k = 1; k <= 3; ++k){
+				draw_Location_Box(object, i, j, k);
+			}
+		}
+	}
+
+	for (int k = 1; k <= 3; ++k){
+		draw_Location_Box(object, 5, -8, k);
+	}
+
+	for (int i = 3; i <= 5; ++i){
+		for (int j = -8; j <= -6; ++j){
+			for (int k = 1; k <= 3; ++k){
+				draw_Location_Box(object, i, j, k);
+			}
+		}
+	}
+
+	glPopMatrix();
+	//-----------------------------------------------------------------------------------------
+	glPushMatrix();
+	for (int i = -14; i <= -6; ++i){
+		for (int j = -13; j <= -10; ++j){
+			for (int k = 1; k <= 4; ++k){
+				if ((j == -12 || j == -11) && (k == 1 || k == 2 || k == 3)){
+				}
+				else{
+					draw_Location_Box(object, i, j, k);
+				}
+			}
+		}
+	}
+	for (int i = 1; i <= 3; ++i){
+		draw_Location_Box(object, -14, -11, i);
+	}
+
+	for (int i = 1; i <= 3; ++i){
+		draw_Location_Box(object, -6, -12, i);
+	}
+	glPopMatrix();
+	//-----------------------------------------------------------------------------------------
+	glPushMatrix();
+	for (int i = 6; i <= 10; ++i){
+		for (int j = -8; j <= -2; ++j){
+			for (int k = 1; k <= 3; ++k){
+				if ( (i == 6 && j == -8) || (i == 7 && j == -8) || 
+				    (i == 7 && j == -7) || (i == 6 && j == -7) ||
+					(i == 6 && j == -6) || (i == 6 && j == -5) ||
+					(i == 9 && j == -2) || (i == 9 && j == -3) ||
+					(i == 10 && j == -2) || (i == 10 && j == -3) ||
+					(i == 10 && j == -4) || (i == 10 && j == -5)){
 				}
 				else{
 					draw_Location_Box(object, i, j, k);
@@ -189,6 +257,33 @@ void draw_Stone(GLuint object[]){
 	}
 	glPopMatrix();
 	//-----------------------------------------------------------------------------------------
-
+	glPushMatrix();
+	for (int i = 11; i <= 15; ++i){
+		for (int j = -2; j <= 4; ++j){
+			for (int k = 1; k <= 3; ++k){
+				if ((i == 14 && j == -2) || (i == 14 && j == -1) ||
+					(i == 15 && j == -2) || (i == 15 && j == -1) ||
+					(i == 15 && j == 0) || (i == 15 && j == 1) ||
+					(i == 11 && j == 1) || (i == 11 && j == 2) ||
+					(i == 11 && j == 3) || (i == 11 && j == 4) ||
+					(i == 12 && j == 3) || (i == 12 && j == 4)){
+				}
+				else{
+					draw_Location_Box(object, i, j, k);
+				}
+			}
+		}
+	}
+	glPopMatrix();
+	//-----------------------------------------------------------------------------------------
+	glPushMatrix();
+	for (int i = 15; i <= 26; ++i){
+		for (int j = 11; j <= 13; ++j){
+			for (int k = 1; k <= 3; ++k){
+					draw_Location_Box(object, i, j, k);
+			}
+		}
+	}
+	glPopMatrix();
 
 }
