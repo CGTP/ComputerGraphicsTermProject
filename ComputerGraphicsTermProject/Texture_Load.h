@@ -28,9 +28,6 @@
 
 // json 으로 인한 추가 모듈
 
-
-static AUX_RGBImageRec as; // 테스트용 
-
 void nomal_Texture(GLuint []);
 void tree_Texture(GLuint []);
 void brick_Texture(GLuint[]);
@@ -55,9 +52,6 @@ void draw_Ground(GLuint []);	// 땅그리는 함수
 void draw_Wooden(GLuint[]);	// 나무박스 그려준다.
 void draw_Stone(GLuint[]);	// 벽돌을 그려준다.
 
-static GLubyte *pBytes; // 데이터를 가리킬 포인터
-static BITMAPINFO *info; // 비트맵 헤더 저장할 변수
-
 static GLuint block_Nomal_object[6];
 static GLuint block_Tree_object[6];
 static GLuint block_Brick_object[6];
@@ -71,9 +65,7 @@ static GLuint character_arm_bottom_object[6];
 static GLuint character_leg_top_object[6];
 static GLuint character_leg_bottom_object[6];
 
-
-void block_Texture(int w, int h);
-void character_Texture(int w, int h);
-GLubyte * LoadDIBitmap(const char *filename, BITMAPINFO **info);
+void Load_TextureBMP(GLuint [], int, char *);
+AUX_RGBImageRec *LoadBMP(char *Filename);
 
 #endif

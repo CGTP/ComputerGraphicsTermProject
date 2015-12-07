@@ -1,45 +1,23 @@
 #include "Texture_Load.h"
 
-void character_Texture(int w, int h){
-	glTexImage2D(GL_TEXTURE_2D, 0, 4, w, h, 0, GL_BGR_EXT, GL_UNSIGNED_BYTE, pBytes);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-}
-
 void head_Texture(GLuint object[]){
-	glGenTextures(6, object);
-
 	// 정면
-	glBindTexture(GL_TEXTURE_2D, object[0]);
-	pBytes = LoadDIBitmap("ImageData/Steave/Head/Front.bmp", &info);
-	character_Texture(16, 16);
+	Load_TextureBMP(object, 0, "ImageData/Steave/Head/Front.bmp");
 
 	// 후면
-	glBindTexture(GL_TEXTURE_2D, object[1]);
-	pBytes = LoadDIBitmap("ImageData/Steave/Head/Back.bmp", &info);
-	character_Texture(16, 16);
+	Load_TextureBMP(object, 1, "ImageData/Steave/Head/Back.bmp");
 
 	//왼쪽
-	glBindTexture(GL_TEXTURE_2D, object[2]);
-	pBytes = LoadDIBitmap("ImageData/Steave/Head/Left.bmp", &info);
-	character_Texture(16, 16);
+	Load_TextureBMP(object, 2, "ImageData/Steave/Head/Left.bmp");
 
 	//오른쪽
-	glBindTexture(GL_TEXTURE_2D, object[3]);
-	pBytes = LoadDIBitmap("ImageData/Steave/Head/Right.bmp", &info);
-	character_Texture(16, 16);
+	Load_TextureBMP(object, 3, "ImageData/Steave/Head/Right.bmp");
 
 	//위
-	glBindTexture(GL_TEXTURE_2D, object[4]);
-	pBytes = LoadDIBitmap("ImageData/Steave/Head/Top.bmp", &info);
-	character_Texture(16, 16);
+	Load_TextureBMP(object, 4, "ImageData/Steave/Head/Top.bmp");
 
 	//아래
-	glBindTexture(GL_TEXTURE_2D, object[5]);
-	pBytes = LoadDIBitmap("ImageData/Steave/Head/Bottom.bmp", &info);
-	character_Texture(16, 16);
+	Load_TextureBMP(object, 5, "ImageData/Steave/Head/Bottom.bmp");
 
 	// 텍스처 모드 설정
 	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_COLOR, GL_MODULATE);
@@ -47,37 +25,23 @@ void head_Texture(GLuint object[]){
 }
 
 void body_Texture(GLuint object[]){
-	glGenTextures(6, object);
-
 	// 정면
-	glBindTexture(GL_TEXTURE_2D, object[0]);
-	pBytes = LoadDIBitmap("ImageData/Steave/Body/Front.bmp", &info);
-	character_Texture(16, 24);
+	Load_TextureBMP(object, 0, "ImageData/Steave/Body/Front.bmp");
 
 	// 후면
-	glBindTexture(GL_TEXTURE_2D, object[1]);
-	pBytes = LoadDIBitmap("ImageData/Steave/Body/Back.bmp", &info);
-	character_Texture(16, 24);
+	Load_TextureBMP(object, 1, "ImageData/Steave/Body/Back.bmp");
 
-	// 왼쪽
-	glBindTexture(GL_TEXTURE_2D, object[2]);
-	pBytes = LoadDIBitmap("ImageData/Steave/Body/Left.bmp", &info);
-	character_Texture(8, 24);
+	//왼쪽
+	Load_TextureBMP(object, 2, "ImageData/Steave/Body/Left.bmp");
 
-	// 오른쪽
-	glBindTexture(GL_TEXTURE_2D, object[3]);
-	pBytes = LoadDIBitmap("ImageData/Steave/Body/Right.bmp", &info);
-	character_Texture(8, 24);
+	//오른쪽
+	Load_TextureBMP(object, 3, "ImageData/Steave/Body/Right.bmp");
 
-	// 위
-	glBindTexture(GL_TEXTURE_2D, object[4]);
-	pBytes = LoadDIBitmap("ImageData/Steave/Body/Top.bmp", &info);
-	character_Texture(16, 8);
+	//위
+	Load_TextureBMP(object, 4, "ImageData/Steave/Body/Top.bmp");
 
-	// 아래
-	glBindTexture(GL_TEXTURE_2D, object[5]);
-	pBytes = LoadDIBitmap("ImageData/Steave/Body/Bottom.bmp", &info);
-	character_Texture(16, 8);
+	//아래
+	Load_TextureBMP(object, 5, "ImageData/Steave/Body/Bottom.bmp");
 
 	// 텍스처 모드 설정
 	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_COLOR, GL_MODULATE);
@@ -85,58 +49,35 @@ void body_Texture(GLuint object[]){
 }
 
 void arm_Texture(GLuint object[], GLuint object2[]){
-	glGenTextures(6, object);
-	glGenTextures(6, object2);
-
 	// 정면
-	glBindTexture(GL_TEXTURE_2D, object[0]);
-	pBytes = LoadDIBitmap("ImageData/Steave/Arm/Front_Top.bmp", &info);
-	character_Texture(8, 12);
+	Load_TextureBMP(object, 0, "ImageData/Steave/Arm/Front_Top.bmp");
 
 	// 후면
-	glBindTexture(GL_TEXTURE_2D, object[1]);
-	pBytes = LoadDIBitmap("ImageData/Steave/Arm/Back_Top.bmp", &info);
-	character_Texture(8, 12);
+	Load_TextureBMP(object, 1, "ImageData/Steave/Arm/Back_Top.bmp");
 
 	// 왼쪽
-	glBindTexture(GL_TEXTURE_2D, object[2]);
-	pBytes = LoadDIBitmap("ImageData/Steave/Arm/Left_Top.bmp", &info);
-	character_Texture(8, 12);
+	Load_TextureBMP(object, 2, "ImageData/Steave/Arm/Left_Top.bmp");
 
 	// 오른쪽
-	glBindTexture(GL_TEXTURE_2D, object[3]);
-	pBytes = LoadDIBitmap("ImageData/Steave/Arm/Right_Top.bmp", &info);
-	character_Texture(8, 12);
+	Load_TextureBMP(object, 3, "ImageData/Steave/Arm/Right_Top.bmp");
 
 	// 위
-	glBindTexture(GL_TEXTURE_2D, object[4]);
-	pBytes = LoadDIBitmap("ImageData/Steave/Arm/Top.bmp", &info);
-	character_Texture(8, 8);
+	Load_TextureBMP(object, 4, "ImageData/Steave/Arm/Top.bmp");
 
 	// 아래
-	glBindTexture(GL_TEXTURE_2D, object[5]);
-	pBytes = LoadDIBitmap("ImageData/Steave/Arm/Bottom.bmp", &info);
-	character_Texture(8, 8);
+	Load_TextureBMP(object, 5, "ImageData/Steave/Arm/Bottom.bmp");
 
 	// 정면
-	glBindTexture(GL_TEXTURE_2D, object2[0]);
-	pBytes = LoadDIBitmap("ImageData/Steave/Arm/Front_Bottom.bmp", &info);
-	character_Texture(8, 12);
+	Load_TextureBMP(object2, 0, "ImageData/Steave/Arm/Front_Bottom.bmp");
 
 	// 후면
-	glBindTexture(GL_TEXTURE_2D, object2[1]);
-	pBytes = LoadDIBitmap("ImageData/Steave/Arm/Back_Bottom.bmp", &info);
-	character_Texture(8, 12);
+	Load_TextureBMP(object2, 1, "ImageData/Steave/Arm/Back_Bottom.bmp");
 
 	// 왼쪽
-	glBindTexture(GL_TEXTURE_2D, object2[2]);
-	pBytes = LoadDIBitmap("ImageData/Steave/Arm/Left_Bottom.bmp", &info);
-	character_Texture(8, 12);
+	Load_TextureBMP(object2, 2, "ImageData/Steave/Arm/Left_Bottom.bmp");
 
 	// 오른쪽
-	glBindTexture(GL_TEXTURE_2D, object2[3]);
-	pBytes = LoadDIBitmap("ImageData/Steave/Arm/Right_Bottom.bmp", &info);
-	character_Texture(8, 12);
+	Load_TextureBMP(object2, 3, "ImageData/Steave/Arm/Right_Bottom.bmp");
 
 	// 텍스처 모드 설정
 	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_COLOR, GL_MODULATE);
@@ -144,58 +85,35 @@ void arm_Texture(GLuint object[], GLuint object2[]){
 }
 
 void leg_Texture(GLuint object[], GLuint object2[]){
-	glGenTextures(6, object);
-	glGenTextures(6, object2);
 	// 정면
-	glBindTexture(GL_TEXTURE_2D, object[0]);
-	pBytes = LoadDIBitmap("ImageData/Steave/Leg/Front_Top.bmp", &info);
-	character_Texture(8, 12);
+	Load_TextureBMP(object, 0, "ImageData/Steave/Leg/Front_Top.bmp");
 
 	// 후면
-	glBindTexture(GL_TEXTURE_2D, object[1]);
-	pBytes = LoadDIBitmap("ImageData/Steave/Leg/Back_Top.bmp", &info);
-	character_Texture(8, 12);
+	Load_TextureBMP(object, 1, "ImageData/Steave/Leg/Back_Top.bmp");
 
 	// 왼쪽
-	glBindTexture(GL_TEXTURE_2D, object[2]);
-	pBytes = LoadDIBitmap("ImageData/Steave/Leg/Left_Top.bmp", &info);
-	character_Texture(8, 12);
+	Load_TextureBMP(object, 2, "ImageData/Steave/Leg/Left_Top.bmp");
 
 	// 오른쪽
-	glBindTexture(GL_TEXTURE_2D, object[3]);
-	pBytes = LoadDIBitmap("ImageData/Steave/Leg/Right_Top.bmp", &info);
-	character_Texture(8, 12);
+	Load_TextureBMP(object, 3, "ImageData/Steave/Leg/Right_Top.bmp");
 
 	// 위
-	glBindTexture(GL_TEXTURE_2D, object[4]);
-	pBytes = LoadDIBitmap("ImageData/Steave/Leg/Top.bmp", &info);
-	character_Texture(8, 8);
+	Load_TextureBMP(object, 4, "ImageData/Steave/Leg/Top.bmp");
 
 	// 아래
-	glBindTexture(GL_TEXTURE_2D, object[5]);
-	pBytes = LoadDIBitmap("ImageData/Steave/Leg/Bottom.bmp", &info);
-	character_Texture(8, 8);
-
+	Load_TextureBMP(object, 5, "ImageData/Steave/Leg/Bottom.bmp");
 
 	// 정면
-	glBindTexture(GL_TEXTURE_2D, object2[0]);
-	pBytes = LoadDIBitmap("ImageData/Steave/Leg/Front_Bottom.bmp", &info);
-	character_Texture(8, 12);
+	Load_TextureBMP(object2, 0, "ImageData/Steave/Leg/Front_Bottom.bmp");
 
 	// 후면
-	glBindTexture(GL_TEXTURE_2D, object2[1]);
-	pBytes = LoadDIBitmap("ImageData/Steave/Leg/Back_Bottom.bmp", &info);
-	character_Texture(8, 12);
+	Load_TextureBMP(object2, 1, "ImageData/Steave/Leg/Back_Bottom.bmp");
 
 	// 왼쪽
-	glBindTexture(GL_TEXTURE_2D, object2[2]);
-	pBytes = LoadDIBitmap("ImageData/Steave/Leg/Left_Bottom.bmp", &info);
-	character_Texture(8, 12);
+	Load_TextureBMP(object2, 2, "ImageData/Steave/Leg/Left_Bottom.bmp");
 
 	// 오른쪽
-	glBindTexture(GL_TEXTURE_2D, object2[3]);
-	pBytes = LoadDIBitmap("ImageData/Steave/Leg/Right_Bottom.bmp", &info);
-	character_Texture(8, 12);
+	Load_TextureBMP(object2, 3, "ImageData/Steave/Leg/Right_Bottom.bmp");
 
 	// 텍스처 모드 설정
 	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_COLOR, GL_MODULATE);
