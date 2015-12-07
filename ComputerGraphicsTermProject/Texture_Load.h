@@ -38,6 +38,11 @@ void body_Texture(GLuint[]);
 void arm_Texture(GLuint[], GLuint[]);
 void leg_Texture(GLuint[], GLuint[]);
 
+void zombie_head_Texture(GLuint[]);
+void zombie_body_Texture(GLuint[]);
+void zombie_arm_Texture(GLuint[], GLuint[]);
+void zombie_leg_Texture(GLuint[], GLuint[]);
+
 void drawBoxFront(int, bool, GLuint);//박스 그리는 함수
 void drawBoxBack(int, bool, GLuint);
 void drawBoxTop(int, bool, GLuint);
@@ -64,6 +69,13 @@ static GLuint character_arm_top_object[6];
 static GLuint character_arm_bottom_object[6];
 static GLuint character_leg_top_object[6];
 static GLuint character_leg_bottom_object[6];
+
+static GLuint zombie_head_object[6];
+static GLuint zombie_body_object[6];
+static GLuint zombie_arm_top_object[6];
+static GLuint zombie_arm_bottom_object[6];
+static GLuint zombie_leg_top_object[6];
+static GLuint zombie_leg_bottom_object[6];
 
 void Load_TextureBMP(GLuint [], int, char *);
 AUX_RGBImageRec *LoadBMP(char *Filename);

@@ -13,6 +13,7 @@ void TimerFunction(int value);
 void MenuFunc(int button);
 
 void drawCharacter();//Ä³¸¯ÅÍ µå·Î¿ì ÇÔ¼ö
+void drawZomie(); // Á»ºñ Ä³¸¯ÅÍ µå·Î¿ì ÇÔ¼ö
 void init_Texture();//ÅØ½ºÃÄ ·Îµå ÇÔ¼ö
 void animationCharleg();//Ä³¸¯ÅÍ ´Ù¸® ¾Ö´Ï¸ÞÀÌ¼Ç ÇÔ¼ö
 void Target(int x, int y);//Ä«¸Þ¶ó ½ÃÁ¡°ü·Ã ÇÔ¼ö
@@ -108,6 +109,10 @@ GLvoid DrawScene(GLvoid)
 
 	glPushMatrix();
 	draw_Stone(block_Stone_object);
+	glPopMatrix();
+
+	glPushMatrix();
+	drawZomie();
 	glPopMatrix();
 
 
@@ -311,6 +316,143 @@ void drawCharacter(){
 	glPopMatrix(); //¿ÞÂÊ°ñ¹Ý Á¾·á
 }
 
+void drawZomie(){
+	glPushMatrix(); //Save ¸Ó¸®
+	glTranslated(0, 75, 0);
+	glRotatef(-(camyrotate + 90) / 3, 1, 0, 0);
+	glScaled(1.0, 1.0, 0.7);
+	drawBoxFront(30, false, zombie_head_object[0]);
+	drawBoxBack(30, false, zombie_head_object[1]);
+	drawBoxLeft(30, false, zombie_head_object[2]);
+	drawBoxRight(30, false, zombie_head_object[3]);
+	drawBoxTop(30, false, zombie_head_object[4]);
+	drawBoxBottom(30, false, zombie_head_object[5]);
+	glPopMatrix();
+
+	glPushMatrix(); //Save ¸öÅë
+	glScaled(1.0, 1.5, 0.5);
+	drawBoxFront(30, false, zombie_body_object[0]);
+	drawBoxBack(30, false, zombie_body_object[1]);
+	drawBoxLeft(30, false, zombie_body_object[2]);
+	drawBoxRight(30, false, zombie_body_object[3]);
+	drawBoxTop(30, false, zombie_body_object[4]);
+	drawBoxBottom(30, false, zombie_body_object[5]);
+	glPopMatrix();
+
+	glPushMatrix(); //Save ¿À¸¥ÆÈ ¾î²²
+	glTranslated(-45, 44, 0);
+	glRotatef(right_sholder_x, 1, 0, 0);
+	glRotatef(right_sholder_y, 0, 1, 0);
+	glScaled(0.5, 0.75, 0.5);
+	drawBoxFront(30, true, zombie_arm_top_object[0]);
+	drawBoxBack(30, true, zombie_arm_top_object[1]);
+	drawBoxLeft(30, true, zombie_arm_top_object[2]);
+	drawBoxRight(30, true, zombie_arm_top_object[3]);
+	drawBoxTop(30, true, zombie_arm_top_object[4]);
+	drawBoxBottom(30, true, zombie_arm_top_object[5]);
+	glScaled(2, 1.333333, 2);
+
+	glPushMatrix(); //Save ¿À¸¥ÆÈ ÆÈ²ÞÄ¡
+	glTranslated(0, -45, 0);
+	glRotatef(right_elbow_x, 1, 0, 0);
+	glScaled(0.5, 0.75, 0.5);
+	drawBoxFront(30, true, zombie_arm_bottom_object[0]);
+	drawBoxBack(30, true, zombie_arm_bottom_object[1]);
+	drawBoxLeft(30, true, zombie_arm_bottom_object[2]);
+	drawBoxRight(30, true, zombie_arm_bottom_object[3]);
+	drawBoxTop(30, true, zombie_arm_top_object[5]);
+	drawBoxBottom(30, true, zombie_arm_top_object[5]);
+	glPopMatrix();//¿À¸¥ÆÈ ÆÈ²ÞÄ¡ Á¾·á
+
+	glPopMatrix();//¿À¸¥ÆÈ ¾î²² Á¾·á
+
+
+	glPushMatrix(); //Save ¿ÞÆÈ ¾î²²
+	glTranslated(45, 44, 0);
+	glRotatef(left_sholder_x, 1, 0, 0);
+	glRotatef(left_sholder_y, 0, 1, 0);
+	glScaled(0.5, 0.75, 0.5);
+	drawBoxFront(30, true, zombie_arm_top_object[0]);
+	drawBoxBack(30, true, zombie_arm_top_object[1]);
+	drawBoxLeft(30, true, zombie_arm_top_object[2]);
+	drawBoxRight(30, true, zombie_arm_top_object[3]);
+	drawBoxTop(30, true, zombie_arm_top_object[4]);
+	drawBoxBottom(30, true, zombie_arm_top_object[5]);
+	glScaled(2, 1.333333, 2);
+
+	glPushMatrix(); //Save ¿ÞÆÈ ÆÈ²ÞÄ¡
+	glTranslated(0, -45, 0);
+	glRotatef(left_elbow_x, 1, 0, 0);
+	glScaled(0.5, 0.75, 0.5);
+	drawBoxFront(30, true, zombie_arm_bottom_object[0]);
+	drawBoxBack(30, true, zombie_arm_bottom_object[1]);
+	drawBoxLeft(30, true, zombie_arm_bottom_object[2]);
+	drawBoxRight(30, true, zombie_arm_bottom_object[3]);
+	drawBoxTop(30, true, zombie_arm_top_object[5]);
+	drawBoxBottom(30, true, zombie_arm_top_object[5]);
+	glPopMatrix();//¿ÞÆÈ ÆÈ²ÞÄ¡ Á¾·á
+
+	glPopMatrix();//¿ÞÆÈ¾î²² Á¾·á
+
+
+
+	glPushMatrix(); //Save ¿À¸¥ÂÊ °ñ¹Ý
+	glTranslated(-15, -40, 0);
+	glRotatef(right_leg_x, 1, 0, 0);
+	glRotatef(right_leg_y, 0, 1, 0);
+	glScaled(0.5, 0.75, 0.5);
+	drawBoxFront(30, true, zombie_leg_top_object[0]);
+	drawBoxBack(30, true, zombie_leg_top_object[1]);
+	drawBoxLeft(30, true, zombie_leg_top_object[2]);
+	drawBoxRight(30, true, zombie_leg_top_object[3]);
+	drawBoxTop(30, true, zombie_leg_top_object[4]);
+	drawBoxBottom(30, true, zombie_leg_top_object[5]);
+	glScaled(2, 1.333333, 2);
+
+	glPushMatrix(); //Save ¿À¸¥ÂÊ ¹«¸­
+	glTranslated(0, -45, 0);
+	glRotatef(right_knee_x, 1, 0, 0);
+	glScaled(0.5, 0.75, 0.5);
+	drawBoxFront(30, true, zombie_leg_bottom_object[0]);
+	drawBoxBack(30, true, zombie_leg_bottom_object[1]);
+	drawBoxLeft(30, true, zombie_leg_bottom_object[2]);
+	drawBoxRight(30, true, zombie_leg_bottom_object[3]);
+	drawBoxTop(30, true, zombie_leg_top_object[4]);
+	drawBoxBottom(30, true, zombie_leg_top_object[5]);
+	glPopMatrix();//¿À¸¥ÂÊ ¹«¸­ Á¾·á
+
+	glPopMatrix();//¿À¸¥ÂÊ °ñ¹Ý Á¾·á
+
+
+	glPushMatrix(); //Save ¿ÞÂÊ °ñ¹Ý
+	glTranslated(15, -40, 0);
+	glRotatef(left_leg_x, 1, 0, 0);
+	glRotatef(left_leg_y, 0, 1, 0);
+	glScaled(0.5, 0.75, 0.5);
+	drawBoxFront(30, true, zombie_leg_top_object[0]);
+	drawBoxBack(30, true, zombie_leg_top_object[1]);
+	drawBoxLeft(30, true, zombie_leg_top_object[2]);
+	drawBoxRight(30, true, zombie_leg_top_object[3]);
+	drawBoxTop(30, true, zombie_leg_top_object[4]);
+	drawBoxBottom(30, true, zombie_leg_top_object[5]);
+	glScaled(2, 1.333333, 2);
+
+	glPushMatrix(); //Save ¿ÞÂÊ ¹«¸­
+	glTranslated(0, -45, 0);
+	glRotatef(left_knee_x, 1, 0, 0);
+	glScaled(0.5, 0.75, 0.5);
+	drawBoxFront(30, true, zombie_leg_bottom_object[0]);
+	drawBoxBack(30, true, zombie_leg_bottom_object[1]);
+	drawBoxLeft(30, true, zombie_leg_bottom_object[2]);
+	drawBoxRight(30, true, zombie_leg_bottom_object[3]);
+	drawBoxTop(30, true, zombie_leg_top_object[4]);
+	drawBoxBottom(30, true, zombie_leg_top_object[5]);
+	glPopMatrix(); //¿ÞÂÊ ¹«¸­ Á¾·á
+
+	glPopMatrix(); //¿ÞÂÊ°ñ¹Ý Á¾·á
+}
+
+
 void animationCharleg()
 {
 	switch (character_state){
@@ -366,6 +508,11 @@ void init_Texture(){
 	body_Texture(character_body_object);
 	arm_Texture(character_arm_top_object, character_arm_bottom_object);
 	leg_Texture(character_leg_top_object, character_leg_bottom_object);
+
+	zombie_head_Texture(zombie_head_object);
+	zombie_body_Texture(zombie_body_object);
+	zombie_arm_Texture(zombie_arm_top_object, zombie_arm_bottom_object);
+	zombie_leg_Texture(zombie_leg_top_object, zombie_leg_bottom_object);
 }
 
 void Target(int x, int y)
