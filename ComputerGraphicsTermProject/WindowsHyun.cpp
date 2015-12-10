@@ -1,5 +1,7 @@
+#define _CRT_SECURE_NO_WARNINGS
 #include "Texture_Load.h"
 #include <math.h>
+#include <string.h>
 
 
 GLvoid DrawScene(GLvoid);
@@ -30,6 +32,16 @@ float testx = 0, texty = 0;
 int Charspeed = 20, Camdistance = 400, MouseSens = 25;
 bool RotateCam = true, FirstPersonView = true;
 bool Keybuffer[256];
+
+// FPS 측정을 위한 변수
+long fpsStartTime = 0L;             // Frame 시작 시간
+int frameCnt = 0;                      // 돌아간 Frame 갯수
+double timeElapsed = 0.0f;         // 그 동안 쌓인 시간 차이
+float fps;
+char draw_FPS[100];
+int font = (int)GLUT_BITMAP_TIMES_ROMAN_24;
+void renderBitmapCharacter(float x, float y, float z, void *font, char *string);
+
 
 //애니메이션 변수
 int character_state = 0, timer = 0;//이동 애니메이션 구분용
@@ -77,6 +89,27 @@ GLvoid DrawScene(GLvoid)
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);// 설정된 색으로 전체를 칠하기
 
 	glLoadIdentity();
+	//------------------------------------------------------------------------
+	// FPS 구하는 부분
+	long fpsEndTime = timeGetTime();
+	float timeDelta = (fpsEndTime - fpsStartTime) * 0.001f;
+	// Frame 증가 셋팅 
+	frameCnt++;
+	timeElapsed += timeDelta;
+	// FPS를 구하기.
+	if (timeElapsed >= 1.0f){
+		fps = (frameCnt / timeElapsed);
+		frameCnt = 0;
+		timeElapsed = 0.0f;
+	}
+
+	glPushMatrix();
+	glEnable(GL_DEPTH_TEST);
+	sprintf(draw_FPS, "FPS : %f", fps);
+	renderBitmapCharacter(-750, 540, -1000, (void *)font, draw_FPS);
+	glDisable(GL_DEPTH_TEST);
+	glPopMatrix();
+	//------------------------------------------------------------------------
 	if (FirstPersonView)
 	{
 		gluLookAt(Charx, Chary + 100, Charz, Charx + Viewx, Chary + Viewy, Charz + Viewz, 0.0, 1.0, 0.0);
@@ -122,6 +155,10 @@ GLvoid DrawScene(GLvoid)
 	drawCharacter();
 	glPopMatrix();
 
+	//------------------------------------------------------------------------
+	// FPS 구하는 부분.
+	fpsStartTime = timeGetTime();
+	//------------------------------------------------------------------------
 	glutSwapBuffers(); //화면에 출력하기
 }//end of drawScene
 
@@ -633,5 +670,14 @@ void Keyinput(int key)
 	if (key == 27)
 	{
 		exit(0);
+	}
+}
+
+void renderBitmapCharacter(float x, float y, float z, void *font, char *string){
+	char *c;
+	glRasterPos3f(x, y, z);
+	for (c = string; *c != '\0'; c++)
+	{
+		glutBitmapCharacter(font, *c);
 	}
 }

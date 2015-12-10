@@ -150,7 +150,18 @@ void draw_Wooden(GLuint object[]){
 	draw_Location_Box(object, -3, -7, 3);
 	glPopMatrix();
 	//-----------------------------------------------------------------------------------------
+	glPushMatrix();
+	for (int i = 2; i <= 3; ++i){
+		for (int j = 11; j <= 12; ++j){
+			for (int k = 1; k <= 1; ++k){
+					draw_Location_Box(object, i, j, k);
+			}
+		}
+	}
 
+	draw_Location_Box(object, 2, 11, 2);
+	glPopMatrix();
+	//-----------------------------------------------------------------------------------------
 
 
 
