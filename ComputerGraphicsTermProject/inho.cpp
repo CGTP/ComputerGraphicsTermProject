@@ -15,11 +15,19 @@ void MenuFunc(int button);
 void drawCharacter();//캐릭터 드로우 함수
 void init_Texture();//텍스쳐 로드 함수
 void animationCharleg();//캐릭터 다리 애니메이션 함수
+void animationChararm();//캐릭터 팔 애니메이션 함수
 void Target(int x, int y);//카메라 시점관련 함수
 void Keyinput(int key);//키보드 동시입력을 위한 입력처리 함수
+void drawHud();//HUD 그리는 함수
+
+void drawTestbox();/////////////////////////////////////////////////테스트박스
 
 int Time = 10;//타이머 갱신시간
+int width, height;
 char Input;
+
+int rifleammo = 120, rifleload = 30, hp = 100;
+char ammo[10], health[10];
 
 //캐릭터 및 카메라 관련 변수
 float camxrotate = 0, camyrotate = -90, Viewx = 0, Viewy = 0, Viewz = -1000, Camx, Camy, Camz;
@@ -31,7 +39,7 @@ bool RotateCam = true, FirstPersonView = true;
 bool Keybuffer[256];
 
 //애니메이션 변수
-int character_state = 0, timer = 0;//이동 애니메이션 구분용
+int character_up_state = 0, character_down_state = 0, timer = 0;//이동 애니메이션 구분용
 float head_angle_x;//머리회전
 float left_sholder_x, left_sholder_y, right_sholder_x, right_sholder_y, left_elbow_x, right_elbow_x;//팔회전
 float left_leg_x, left_leg_y, left_knee_x, right_leg_x, right_leg_y, right_knee_x;//다리회전
@@ -64,9 +72,7 @@ void main()
 	glutKeyboardUpFunc(Keyboardup);//키보드 버튼을 뗐을 때
 
 	glutReshapeFunc(Reshape);//다시그리기
-
 	glutMainLoop();//이벤트 루프 실행하기
-
 }
 
 //윈도우 출력 함수
@@ -75,74 +81,34 @@ GLvoid DrawScene(GLvoid)
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);//바탕색을'black'로지정
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);// 설정된 색으로 전체를 칠하기
 
+	glViewport(0, 0, width, height);
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	gluPerspective(60.0f, (float)width / (float)height, 0.1, 5000.0);
+	glMatrixMode(GL_MODELVIEW);
+
+	//3D Draw----------------------------------------------------------------------
 	glLoadIdentity();
 	if (FirstPersonView)
-	{
 		gluLookAt(Charx, Chary + 100, Charz, Charx + Viewx, Chary + Viewy, Charz + Viewz, 0.0, 1.0, 0.0);
-	}
 	else
-	{
 		gluLookAt(Charx + Camx, Chary + Camy, Charz + Camz, Charx + Viewx, Chary + Viewy, Charz + Viewz, 0.0, 1.0, 0.0);
-	}
 
 	//조명설정
 	glEnable(GL_DEPTH_TEST);                              // 가려진 면 제거
 	glEnable(GL_CULL_FACE);                               // 후면 제거
 
-	glPushMatrix();
-	glTranslatef(Charx + Viewx, Chary + Viewy, Charz + Viewz);
-	glutSolidCube(40);
+
+	glPushMatrix();//캐릭터 그리기
+	glTranslatef(Charx, Chary, Charz);		//캐릭터 위치 이동
+	glRotatef(camxrotate + 180, 0, 1, 0);	//캐릭터 몸통 전체 회전
+	drawCharacter();	//캐릭터 그리기
 	glPopMatrix();
-
-	glPushMatrix();//바닥 그리기
-	glTranslatef(0, -100, 0);
-	glScalef(1, 0.01, 1);
-	glutWireCube(2000);
-	glPopMatrix();//바닥 그리기 종료
-
-	glPushMatrix();//바닥 그리기
-	glColor3f(1, 0, 0);//빨강색 z축
-	glTranslatef(0, 0, -1000);
-	glutSolidCube(100);
-	glPopMatrix();//바닥 그리기 종료
-
-	glPushMatrix();//바닥 그리기
-	glColor3f(0, 0, 1);//파랑색
-	glTranslatef(0, 0, 1000);//z축
-	glutSolidCube(100);
-	glPopMatrix();//바닥 그리기 종료
-
-	glPushMatrix();//바닥 그리기
-	glColor3f(0, 1, 0);
-	glTranslatef(1000, 0, 0);
-	glutSolidCube(100);
-	glPopMatrix();//바닥 그리기 종료
-
-	glPushMatrix();//바닥 그리기
-	glColor3f(1, 1, 0);
-	glTranslatef(-1000, 0, 0);
-	glutSolidCube(100);
-	glPopMatrix();//바닥 그리기 종료
-
-	glPushMatrix();//바닥 그리기
-	glColor3f(1, 0, 1);
-	glTranslatef(0, -1000, 0);
-	glutSolidCube(100);
-	glPopMatrix();//바닥 그리기 종료
-
-	glPushMatrix();//바닥 그리기
-	glColor3f(0, 1, 1);
-	glTranslatef(0, 1000, 0);
-	glutSolidCube(100);
-	glPopMatrix();//바닥 그리기 종료
-
-
-
-	glPushMatrix();
-	glTranslatef(Charx, Chary, Charz);
-	glRotatef(camxrotate + 180, 0, 1, 0);
-	drawCharacter();
-	glPopMatrix();
+	//3D END------------------------------------------------------------------------------
+	drawTestbox();
+	//2D Draw-----------------------------------------------------------------------------
+	drawHud();
+	//2D END------------------------------------------------------------------------------
 
 	glutSwapBuffers(); //화면에 출력하기
 }//end of drawScene
@@ -151,6 +117,8 @@ GLvoid Reshape(int w, int h)
 {
 	//뷰포트 변환 설정
 	glViewport(0, 0, w, h);
+	width = w;
+	height = h;
 
 	//투영 행렬 스택 재설정
 	glMatrixMode(GL_PROJECTION);
@@ -183,21 +151,28 @@ void Keyboardup(unsigned char key, int x, int y)
 {
 	Keybuffer[key] = false;
 	if (!Keybuffer['w'] && !Keybuffer['a'] && !Keybuffer['s'] && !Keybuffer['d'])
-		character_state = 0;
+		character_down_state = 0;
 }
 
 void TimerFunction(int value)
 {
-	if (RotateCam)
-		glutWarpPointer(400, 300);
-	animationCharleg();//캐릭터 다리 애니메이션
-
-	for (int i = 0; i < 256; i++)
+	switch (value)
 	{
-		if (Keybuffer[i])
-			Keyinput(i);
-	}
+	case 1:
+		if (RotateCam)
+			glutWarpPointer(400, 300);
+		animationCharleg();//캐릭터 다리 애니메이션
+		animationChararm();//캐릭터 팔 애니메이션
 
+		for (int i = 0; i < 256; i++)
+		{
+			if (Keybuffer[i])
+				Keyinput(i);
+		}
+		break;
+	case 2:
+		break;
+	}
 	glutPostRedisplay();
 	glutTimerFunc(Time, TimerFunction, 1);
 }//end of TimerFunction
@@ -338,16 +313,29 @@ void drawCharacter(){
 	glPopMatrix(); //왼쪽골반 종료
 }
 
-void animationCharleg()
+void animationChararm()
 {
-	switch (character_state){
-	case 0://가만히 서있을때
+	switch (character_up_state)
+	{
+	case 0:
 		left_sholder_x = 0;
 		left_sholder_y = 0;
 		right_sholder_x = 0;
 		right_sholder_y = 0;
 		left_elbow_x = 0;
 		right_elbow_x = 0;
+		break;
+	case 1://라이플
+		break;
+	case 2://권총
+		break;
+	}
+}
+
+void animationCharleg()
+{
+	switch (character_down_state){
+	case 0://가만히 서있을 때
 		left_leg_x = 0;
 		left_leg_y = 0;
 		left_knee_x = 0;
@@ -358,20 +346,27 @@ void animationCharleg()
 	case 1://전진,후진
 		if (timer < 150)
 		{
-			timer++;
+			timer+=2;
 			if (timer < 75)
 			{
 				left_leg_x = timer - 45;
 				right_leg_x = 30 - timer;
-				right_knee_x = timer - 10;
-				//left_knee_x = 105-timer;
+				left_knee_x = 0;
+				if (timer < 38)
+					right_knee_x = timer;
+				else
+					right_knee_x = 38 - (timer - 38);
 			}
 			else
 			{
 				left_leg_x = 105 - timer;
 				right_leg_x = timer - 120;
-				right_knee_x = 120 - timer;
-				//left_knee_x = timer - 120;
+				right_knee_x = 0;
+				
+				if (timer < 113)
+					left_knee_x = timer - 75;
+				else
+					left_knee_x = 38 - (timer - 113);
 			}
 		}
 		else
@@ -431,75 +426,179 @@ void Keyinput(int key)
 	{
 		Charx += Charspeed * cos((-camxrotate - 90) * 3.141592 / 180);
 		Charz += Charspeed * sin((-camxrotate - 90) * 3.141592 / 180);
-		character_state = 1;
+		character_down_state = 1;
 	}
 	else if (key == 's')
 	{
 		Charx -= Charspeed * cos((-camxrotate - 90) * 3.141592 / 180);
 		Charz -= Charspeed * sin((-camxrotate - 90) * 3.141592 / 180);
-		character_state = 1;
+		character_down_state = 1;
 	}
 	if (key == 'a')
 	{
 		Charx -= Charspeed * cos((-camxrotate) * 3.141592 / 180);
 		Charz -= Charspeed * sin((-camxrotate) * 3.141592 / 180);
-		character_state = 2;
+		character_down_state = 2;
 	}
 	else if (key == 'd')
 	{
 		Charx += Charspeed * cos((-camxrotate) * 3.141592 / 180);
 		Charz += Charspeed * sin((-camxrotate) * 3.141592 / 180);
-		character_state = 2;
+		character_down_state = 2;
 	}
 
-	if (key == 'c')
+
+	switch (key)
 	{
+	case '1':
+		break;
+	case 'c':
 		glutSetCursor(GLUT_CURSOR_NONE);
 		if (RotateCam)
 			RotateCam = false;
 		else
 			RotateCam = true;
 		Keybuffer[key] = false;
-	}
-	else if (key == 'f')
-	{
+		break;
+	case 'f':
 		if (FirstPersonView)
 			FirstPersonView = false;
 		else
 			FirstPersonView = true;
 		Keybuffer[key] = false;
-	}
-	else if (key == '+')
-	{
+		break;
+	case '+':
 		Camdistance--;
 		if (Camdistance < 50)
 			Camdistance = 50;
-	}
-	else if (key == '-')
-	{
+		break;
+	case '-':
 		Camdistance++;
 		if (Camdistance > 1000)
 			Camdistance = 1000;
-	}
-	else if (key == '[')
-	{
+		break;
+	case '[':
 		MouseSens++;
 		if (MouseSens < 1)
 			MouseSens = 1;
 		printf("현재 마우스 감도는 %d 입니다.(default : 25)\n", MouseSens);
 		Keybuffer[key] = false;
-	}
-	else if (key == ']')
-	{
+		break;
+	case ']':
 		MouseSens--;
 		if (MouseSens > 100)
 			MouseSens = 100;
 		printf("현재 마우스 감도는 %d 입니다.(default : 25)\n", MouseSens);
 		Keybuffer[key] = false;
-	}
-
-	if (key == 27)
-	{
+		break;
+	case 27:
 		exit(0);
+		break;
 	}
+}
+
+void drawHud()
+{
+	glPushMatrix();
+
+	glViewport(0, 0, 800, 600);
+
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	glOrtho(0, 800, 600, 0, -1, 1);
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+
+	glColor3f(0, 1, 0);
+	glBegin(GL_LINES);// Crosshair
+	glVertex2f(370, 300);
+	glVertex2f(390, 300);
+
+	glVertex2f(410, 300);
+	glVertex2f(430, 300);
+
+	glVertex2f(400, 270);
+	glVertex2f(400, 290);
+
+	glVertex2f(400, 310);
+	glVertex2f(400, 330);
+	glEnd();
+
+	glPushMatrix();//총알 표시
+	glColor3f(0, 1, 0);
+	glTranslatef(680, 570,0);
+	glRasterPos2f(0.0, 0.0);
+	sprintf(ammo, "%d / %d", rifleload, rifleammo);
+	int len = (int)strlen(ammo);
+	for (int i = 0; i < len; i++)
+		glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, ammo[i]);
+	glPopMatrix();
+
+	glPushMatrix();//체력 표시
+	glColor3f(1, 0, 0);
+	glTranslatef(20, 570, 0);
+	glRasterPos2f(0.0, 0.0);
+	sprintf(health, "%d", hp);
+	len = (int)strlen(ammo);
+	for (int i = 0; i < len; i++)
+		glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, health[i]);
+	glPopMatrix();
+
+	glPopMatrix();
+}
+
+void drawTestbox()
+{
+	glPushMatrix();//캐릭터가 바라보는 지점 드로우
+	glColor3f(1.0f, 1.0f, 1.0f);
+	glTranslatef(Charx + Viewx, Chary + Viewy, Charz + Viewz);
+	glutSolidCube(10);
+	glPopMatrix();
+
+	glPushMatrix();//바닥 그리기
+	glTranslatef(0, -100, 0);
+	glScalef(1, 0.01, 1);
+	glutWireCube(2000);
+	glPopMatrix();//바닥 그리기 종료
+
+	glPushMatrix();//바닥 그리기
+	glColor3f(1, 0, 0);//빨강색 z축
+	glTranslatef(0, 0, -1000);
+	glutSolidCube(100);
+	glPopMatrix();//바닥 그리기 종료
+
+	glPushMatrix();//바닥 그리기
+	glColor3f(0, 0, 1);//파랑색
+	glTranslatef(0, 0, 1000);//z축
+	glutSolidCube(100);
+	glPopMatrix();//바닥 그리기 종료
+
+	glPushMatrix();//바닥 그리기
+	glColor3f(0, 1, 0);
+	glTranslatef(1000, 0, 0);
+	glutSolidCube(100);
+	glPopMatrix();//바닥 그리기 종료
+
+	glPushMatrix();//바닥 그리기
+	glColor3f(1, 1, 0);
+	glTranslatef(-1000, 0, 0);
+	glutSolidCube(100);
+	glPopMatrix();//바닥 그리기 종료
+
+	glPushMatrix();//바닥 그리기
+	glColor3f(1, 0, 1);
+	glTranslatef(0, -1000, 0);
+	glutSolidCube(100);
+	glPopMatrix();//바닥 그리기 종료
+
+	glPushMatrix();//바닥 그리기
+	glColor3f(0, 1, 1);
+	glTranslatef(0, 1000, 0);
+	glutSolidCube(100);
+	glPopMatrix();//바닥 그리기 종료
+}
+
+void drawPistol()
+{
+
 }
