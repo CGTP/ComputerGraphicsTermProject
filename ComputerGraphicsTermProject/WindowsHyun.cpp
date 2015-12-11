@@ -45,8 +45,7 @@ int frameCnt = 0;                      // 돌아간 Frame 갯수
 double timeElapsed = 0.0f;         // 그 동안 쌓인 시간 차이
 float fps;
 char draw_FPS[100];
-int font = (int)GLUT_BITMAP_TIMES_ROMAN_24;
-void renderBitmapCharacter(float x, float y, float z, void *font, char *string);
+void update_FPS();
 
 //맵 데이터 변수
 int map_DATA[6][72][27]; // 높이, 가로, 세로
@@ -104,19 +103,8 @@ GLvoid DrawScene(GLvoid)
 	//3D Draw----------------------------------------------------------------------
 	glLoadIdentity();
 	//------------------------------------------------------------------------
-	// FPS 구하는 부분
-	long fpsEndTime = timeGetTime();
-	float timeDelta = (fpsEndTime - fpsStartTime) * 0.001f;
-	// Frame 증가 셋팅 
-	frameCnt++;
-	timeElapsed += timeDelta;
-	// FPS를 구하기.
-	if (timeElapsed >= 1.0f){
-		fps = (frameCnt / timeElapsed);
-		frameCnt = 0;
-		timeElapsed = 0.0f;
-	}
-	//------------------------------------------------------------------------
+	update_FPS();
+	////------------------------------------------------------------------------
 	if (FirstPersonView)
 		gluLookAt(Charx, Chary + 100, Charz, Charx + Viewx, Chary + Viewy, Charz + Viewz, 0.0, 1.0, 0.0);
 	else
@@ -155,11 +143,6 @@ GLvoid DrawScene(GLvoid)
 	//2D Draw-----------------------------------------------------------------------------
 	drawHud();
 	//2D END------------------------------------------------------------------------------
-
-	//------------------------------------------------------------------------
-	// FPS 구하는 부분.
-	fpsStartTime = timeGetTime();
-	//------------------------------------------------------------------------
 	glutSwapBuffers(); //화면에 출력하기
 }//end of drawScene
 
@@ -822,4 +805,31 @@ void show_map(){
 		}
 		printf("\n\n---------------------------------------------------\n\n");
 	}
+}
+
+void update_FPS(){
+	static DWORD frameCount = 0;            //프레임 카운트수
+	static float timeElapsed = 0.0f;            //흐른 시간
+	static DWORD lastTime = timeGetTime();   //마지막 시간(temp변수)
+
+	DWORD curTime = timeGetTime();      //현재 시간
+	float timeDelta = (curTime - lastTime)*0.001f;        //timeDelta(1번생성후 흐른 시간) 1초단위로 바꿔준다.
+
+	timeElapsed += timeDelta;
+
+	frameCount++;
+
+	if (timeElapsed >= 1.0f)         //흐른시간이 1초이상이면 내가 하고싶은것 처리
+	{
+		fps = (float)frameCount / timeElapsed;
+		frameCount = 0;
+		timeElapsed = 0.0f;
+	}
+	else
+	{
+		//Sleep(0.002f * 1000);   // 100fps   
+	}
+
+
+	lastTime = curTime;
 }
