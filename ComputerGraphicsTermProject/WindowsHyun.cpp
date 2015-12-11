@@ -106,7 +106,12 @@ GLvoid DrawScene(GLvoid)
 	glPushMatrix();
 	glEnable(GL_DEPTH_TEST);
 	sprintf(draw_FPS, "FPS : %f", fps);
+	char state2[100];
+	sprintf(state2, "X : %d, Y : %d, Height : %d", int(Charx / 120), int(Charz / 120), int(Chary / 120));
+
 	renderBitmapCharacter(-750, 540, -1000, (void *)font, draw_FPS);
+	renderBitmapCharacter(-750, 500, -1000, (void *)font, state2);
+
 	glDisable(GL_DEPTH_TEST);
 	glPopMatrix();
 	//------------------------------------------------------------------------
@@ -510,20 +515,27 @@ void animationCharleg()
 	case 1://전진,후진
 		if (timer < 150)
 		{
-			timer++;
+			timer += 2;
 			if (timer < 75)
 			{
 				left_leg_x = timer - 45;
 				right_leg_x = 30 - timer;
-				right_knee_x = timer - 10;
-				//left_knee_x = 105-timer;
+				left_knee_x = 0;
+				if (timer < 38)
+					right_knee_x = timer;
+				else
+					right_knee_x = 38 - (timer - 38);
 			}
 			else
 			{
 				left_leg_x = 105 - timer;
 				right_leg_x = timer - 120;
-				right_knee_x = 120 - timer;
-				//left_knee_x = timer - 120;
+				right_knee_x = 0;
+
+				if (timer < 113)
+					left_knee_x = timer - 75;
+				else
+					left_knee_x = 38 - (timer - 113);
 			}
 		}
 		else
