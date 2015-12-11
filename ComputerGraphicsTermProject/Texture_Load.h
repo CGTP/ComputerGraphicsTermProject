@@ -51,6 +51,7 @@ void drawBoxRight(int, bool, GLuint);
 void drawBoxLeft(int, bool, GLuint);
 
 void draw_Block(int, GLuint[]);	// 텍스쳐 맵핑된 블럭을 사이즈를 받아 그리기.
+void draw_Map_Block(int, GLuint[], int); // 최적화를 위한 블럭 재설정.
 void draw_Ground(int, GLuint[]);
 void draw_Wall(GLuint []); // 벽그리는 함수
 void draw_Ground(GLuint []);	// 땅그리는 함수
