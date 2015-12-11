@@ -17,7 +17,7 @@ void draw_StoneMap12(GLuint object[]);
 
 void draw_Location_Box(GLuint object[], int x, int y, int h){
 	glPushMatrix();
-	glTranslatef(120 * x, -70 + (120 * (h - 1)), 120 * y);
+	glTranslatef(120 * x, -120 + (120 * (h)), 120 * y);
 	map_DATA[h][x + 36][y + 13] = 1;
 	draw_Block(60, object);
 	glPopMatrix();
@@ -25,7 +25,7 @@ void draw_Location_Box(GLuint object[], int x, int y, int h){
 
 void draw_Map_Location_Box(GLuint object[], int x, int y, int h, int location){
 	glPushMatrix();
-	glTranslatef(120 * x, -70 + (120 * (h - 1)), 120 * y);
+	glTranslatef(120 * x, -120 + (120 * (h)), 120 * y);
 	map_DATA[h][x + 36][y + 13] = 1;
 	draw_Map_Block(60, object, location);
 	glPopMatrix();
@@ -33,7 +33,7 @@ void draw_Map_Location_Box(GLuint object[], int x, int y, int h, int location){
 
 void draw_Location_Ground(GLuint object[], int x, int y, int h){
 	glPushMatrix();
-	glTranslatef(120 * x, -70 + (120 * (h - 1)), 120 * y);
+	glTranslatef(120 * x, -120 + (120 * (h)), 120 * y);
 	map_DATA[h][x + 36][y + 13] = 1;
 	draw_Ground(60, object);
 	glPopMatrix();

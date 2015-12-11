@@ -34,15 +34,12 @@ float camxrotate = 0, camyrotate = -90, Viewx = 0, Viewy = 0, Viewz = -1000, Cam
 float Charx = 0, Charz = 0, Chary = 0;
 float nx = 0, ny = 0, bx = 0, by = 0;
 float testx = 0, texty = 0;
-int Charspeed = 20, Camdistance = 400, MouseSens = 25;
+int Charspeed = 30, Camdistance = 400, MouseSens = 25;
 bool RotateCam = true, FirstPersonView = true;
 bool Keybuffer[256];
 int Char_Location_X = 0, Char_Location_Y = 0, Char_Location_H = 0;
 
 // FPS 측정을 위한 변수
-long fpsStartTime = 0L;             // Frame 시작 시간
-int frameCnt = 0;                      // 돌아간 Frame 갯수
-double timeElapsed = 0.0f;         // 그 동안 쌓인 시간 차이
 float fps;
 char draw_FPS[100];
 void update_FPS();
@@ -100,15 +97,21 @@ GLvoid DrawScene(GLvoid)
 	gluPerspective(60.0f, (float)width / (float)height, 0.1, 10000.0);
 	glMatrixMode(GL_MODELVIEW);
 
+	glPushMatrix();
+	glColor3f(1, 0, 0);
+	glTranslated(0, 0, 0);
+	glutSolidCube(3);
+	glPopMatrix();
+
 	//3D Draw----------------------------------------------------------------------
 	glLoadIdentity();
 	//------------------------------------------------------------------------
 	update_FPS();
 	////------------------------------------------------------------------------
 	if (FirstPersonView)
-		gluLookAt(Charx, Chary + 100, Charz, Charx + Viewx, Chary + Viewy, Charz + Viewz, 0.0, 1.0, 0.0);
+		gluLookAt(Charx, Chary + 230, Charz, Charx + Viewx, Chary + Viewy, Charz + Viewz, 0.0, 1.0, 0.0);
 	else
-		gluLookAt(Charx + Camx, Chary + Camy, Charz + Camz, Charx + Viewx, Chary + Viewy, Charz + Viewz, 0.0, 1.0, 0.0);
+		gluLookAt(Charx + Camx, Chary + Camy+130, Charz + Camz, Charx + Viewx, Chary + Viewy, Charz + Viewz, 0.0, 1.0, 0.0);
 
 	//조명설정
 	glEnable(GL_DEPTH_TEST);                              // 가려진 면 제거
@@ -116,7 +119,7 @@ GLvoid DrawScene(GLvoid)
 
 
 	glPushMatrix();//캐릭터 그리기
-	glTranslatef(Charx, Chary, Charz);		//캐릭터 위치 이동
+	glTranslatef(Charx, Chary + 130, Charz);		//캐릭터 위치 이동
 	glRotatef(camxrotate + 180, 0, 1, 0);	//캐릭터 몸통 전체 회전
 	drawCharacter();	//캐릭터 그리기
 	glPopMatrix();
@@ -138,7 +141,24 @@ GLvoid DrawScene(GLvoid)
 	glPopMatrix();
 
 	glPushMatrix();
-	drawZomie();
+	//drawZomie();
+	glPopMatrix();
+
+	glPushMatrix();
+	for (int y = 0; y < 1; y++)
+	{
+		for (int z = -13; z < 14; z++)
+		{
+			for (int x = -36; x < 37; x++)
+			{
+				glPushMatrix();
+				glColor3f(1, 0, 0);
+				glTranslatef(x * 120, y * 120, z * 120);
+				glutSolidCube(5);
+				glPopMatrix();
+			}
+		}
+	}
 	glPopMatrix();
 	//2D Draw-----------------------------------------------------------------------------
 	drawHud();
@@ -759,15 +779,6 @@ void drawHud()
 void drawPistol()
 {
 
-}
-
-void renderBitmapCharacter(float x, float y, float z, void *font, char *string){
-	char *c;
-	glRasterPos3f(x, y, z);
-	for (c = string; *c != '\0'; c++)
-	{
-		glutBitmapCharacter(font, *c);
-	}
 }
 
 void character_Location(){
