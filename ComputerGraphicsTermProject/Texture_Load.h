@@ -78,6 +78,8 @@ static GLuint zombie_arm_bottom_object[6];
 static GLuint zombie_leg_top_object[6];
 static GLuint zombie_leg_bottom_object[6];
 
+extern int map_DATA[6][72][27]; // 높이, 가로, 세로
+
 void Load_TextureBMP(GLuint [], int, char *);
 AUX_RGBImageRec *LoadBMP(char *Filename);
 

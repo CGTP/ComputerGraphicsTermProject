@@ -18,6 +18,7 @@ void drawCharacter();//캐릭터 드로우 함수
 void drawZomie(); // 좀비 캐릭터 드로우 함수
 void init_Texture();//텍스쳐 로드 함수
 void animationCharleg();//캐릭터 다리 애니메이션 함수
+void character_Location(); // 캐릭터 위치를 도형 좌표로 표현한다.
 void Target(int x, int y);//카메라 시점관련 함수
 void Keyinput(int key);//키보드 동시입력을 위한 입력처리 함수
 
@@ -32,6 +33,7 @@ float testx = 0, texty = 0;
 int Charspeed = 20, Camdistance = 400, MouseSens = 25;
 bool RotateCam = true, FirstPersonView = true;
 bool Keybuffer[256];
+int Char_Location_X = 0, Char_Location_Y = 0, Char_Location_H = 0;
 
 // FPS 측정을 위한 변수
 long fpsStartTime = 0L;             // Frame 시작 시간
@@ -42,6 +44,9 @@ char draw_FPS[100];
 int font = (int)GLUT_BITMAP_TIMES_ROMAN_24;
 void renderBitmapCharacter(float x, float y, float z, void *font, char *string);
 
+//맵 데이터 변수
+int map_DATA[6][72][27]; // 높이, 가로, 세로
+void show_map();
 
 //애니메이션 변수
 int character_state = 0, timer = 0;//이동 애니메이션 구분용
@@ -105,11 +110,10 @@ GLvoid DrawScene(GLvoid)
 
 	glPushMatrix();
 	glEnable(GL_DEPTH_TEST);
-	sprintf(draw_FPS, "FPS : %f", fps);
 	char state2[100];
-	sprintf(state2, "X : %d, Y : %d, Height : %d", int(Charx / 120), int(Charz / 120), int(Chary / 120));
-
+	sprintf(draw_FPS, "FPS : %f", fps);
 	renderBitmapCharacter(-750, 540, -1000, (void *)font, draw_FPS);
+	sprintf(state2, "X : %d, Y : %d, Height : %d", Char_Location_X, Char_Location_Y, Char_Location_H);
 	renderBitmapCharacter(-750, 500, -1000, (void *)font, state2);
 
 	glDisable(GL_DEPTH_TEST);
@@ -494,7 +498,6 @@ void drawZomie(){
 	glPopMatrix(); //왼쪽골반 종료
 }
 
-
 void animationCharleg()
 {
 	switch (character_state){
@@ -596,29 +599,29 @@ void Target(int x, int y)
 	}
 }
 
-
-
 void Keyinput(int key)
 {
-	if (key == 'w')
+	character_Location();
+
+	if (key == 'w' )
 	{
 		Charx += Charspeed * cos((-camxrotate - 90) * 3.141592 / 180);
 		Charz += Charspeed * sin((-camxrotate - 90) * 3.141592 / 180);
 		character_state = 1;
 	}
-	else if (key == 's')
+	else if (key == 's'  )
 	{
 		Charx -= Charspeed * cos((-camxrotate - 90) * 3.141592 / 180);
 		Charz -= Charspeed * sin((-camxrotate - 90) * 3.141592 / 180);
 		character_state = 1;
 	}
-	if (key == 'a')
+	if (key == 'a' )
 	{
 		Charx -= Charspeed * cos((-camxrotate) * 3.141592 / 180);
 		Charz -= Charspeed * sin((-camxrotate) * 3.141592 / 180);
 		character_state = 2;
 	}
-	else if (key == 'd')
+	else if (key == 'd' )
 	{
 		Charx += Charspeed * cos((-camxrotate) * 3.141592 / 180);
 		Charz += Charspeed * sin((-camxrotate) * 3.141592 / 180);
@@ -678,6 +681,9 @@ void Keyinput(int key)
 		printf("현재 마우스 감도는 %d 입니다.(default : 25)\n", MouseSens);
 		Keybuffer[key] = false;
 	}
+	else if (key == 'm'){
+		show_map();
+	}
 
 	if (key == 27)
 	{
@@ -691,5 +697,42 @@ void renderBitmapCharacter(float x, float y, float z, void *font, char *string){
 	for (c = string; *c != '\0'; c++)
 	{
 		glutBitmapCharacter(font, *c);
+	}
+}
+
+void character_Location(){
+	// 캐릭터의 현재 위치와 좌표를 구한다.
+	Char_Location_X = Charx / 120, Char_Location_Y = Charz / 120, Char_Location_H = Chary / 120;
+
+	if (abs((Charz / 120) - int(Charz / 120)) >= 0.3){
+		// 완전히 중앙으로 가야지 인식하는 부분이 있어서 0.3 정도의 오차를 계산하여 좀더 정확한 위치를 받아온다.
+		if (Char_Location_Y > 0){
+			Char_Location_Y += 1;
+		}
+		else{
+			Char_Location_Y -= 1;
+		}
+	}
+	if (abs((Charx / 120) - int(Charx / 120)) >= 0.3){
+		if (Char_Location_X > 0){
+			Char_Location_X += 1;
+		}
+		else{
+			Char_Location_X -= 1;
+		}
+	}
+}
+
+void show_map(){
+	for (int k = 1; k < 6; ++k){
+		printf("--- %d층 ---\n", k);
+		printf("\n\n---------------------------------------------------\n\n");
+		for (int j = 0; j < 27; ++j){
+			for (int i = 0; i < 72; ++i){
+				printf("%d", map_DATA[k][i][j]);
+			}
+			printf("\n");
+		}
+		printf("\n\n---------------------------------------------------\n\n");
 	}
 }
