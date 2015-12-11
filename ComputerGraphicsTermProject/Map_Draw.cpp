@@ -67,6 +67,7 @@ void draw_Wall(GLuint object[]){
 		if (i == -26) i = 27;
 		for (int k = 5; k <= 5; ++k){
 			for (int j = -13; j <= 13; ++j){
+				draw_Location_Box(object, i, j, k);
 			}
 		}
 	}
