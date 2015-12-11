@@ -20,6 +20,7 @@ void animationChararm();//캐릭터 팔 애니메이션 함수
 void Target(int x, int y);//카메라 시점관련 함수
 void Keyinput(int key);//키보드 동시입력을 위한 입력처리 함수
 void drawHud();//HUD 그리는 함수
+void crashCheck();//충돌체크
 
 void drawTestbox();/////////////////////////////////////////////////테스트박스
 
@@ -42,8 +43,14 @@ bool Keybuffer[256];
 //애니메이션 변수
 int character_up_state = 0, character_down_state = 0, timer = 0;//이동 애니메이션 구분용
 float head_angle_x;//머리회전
-float left_sholder_x, left_sholder_y, right_sholder_x, right_sholder_y, left_elbow_x, right_elbow_x;//팔회전
+float left_sholder_x, left_sholder_y, left_sholder_z, right_sholder_x, right_sholder_y, right_sholder_z, left_elbow_x, right_elbow_x;//팔회전
 float left_leg_x, left_leg_y, left_knee_x, right_leg_x, right_leg_y, right_knee_x;//다리회전
+
+//맵 데이터 변수
+int map_DATA[6][72][27];
+
+//충돌체크 거리
+int crashdist = 20;
 
 void main()
 {
@@ -91,22 +98,114 @@ GLvoid DrawScene(GLvoid)
 	//3D Draw----------------------------------------------------------------------
 	glLoadIdentity();
 	if (FirstPersonView)
-		gluLookAt(Charx, Chary + 100, Charz, Charx + Viewx, Chary + Viewy, Charz + Viewz, 0.0, 1.0, 0.0);
+		gluLookAt(Charx, Chary + 170, Charz, Charx + Viewx, Chary + Viewy, Charz + Viewz, 0.0, 1.0, 0.0);
 	else
-		gluLookAt(Charx + Camx, Chary + Camy, Charz + Camz, Charx + Viewx, Chary + Viewy, Charz + Viewz, 0.0, 1.0, 0.0);
+		gluLookAt(Charx + Camx, Chary + Camy+70, Charz + Camz, Charx + Viewx, Chary + Viewy, Charz + Viewz, 0.0, 1.0, 0.0);
 
 	//조명설정
 	glEnable(GL_DEPTH_TEST);                              // 가려진 면 제거
 	glEnable(GL_CULL_FACE);                               // 후면 제거
 
+	glPushMatrix();
+	glTranslatef(0, 0, 0);
+	glColor3f(0, 1, 0);
+	glutSolidCube(5);
+	glPopMatrix();
 
 	glPushMatrix();//캐릭터 그리기
-	glTranslatef(Charx, Chary, Charz);		//캐릭터 위치 이동
+	glTranslatef(Charx, Chary+70, Charz);		//캐릭터 위치 이동
 	glRotatef(camxrotate + 180, 0, 1, 0);	//캐릭터 몸통 전체 회전
 	drawCharacter();	//캐릭터 그리기
 	glPopMatrix();
 	//3D END------------------------------------------------------------------------------
-	drawTestbox();
+	//drawTestbox();
+	glPushMatrix();
+	glTranslatef(60, 0, 60);
+
+	glPushMatrix();
+	draw_Ground(block_Nomal_object);
+	glPopMatrix();
+
+	glPushMatrix();
+	draw_Wall(block_Brick_object);
+	glPopMatrix();
+
+	glPushMatrix();
+	draw_Wooden(block_Wooden_object);
+	glPopMatrix();
+
+	glPushMatrix();
+	draw_Stone(block_Stone_object);
+	glPopMatrix();
+
+	glPopMatrix();
+	/*for (int y = 0; y < 1; y++)
+	{
+		for (int z = -13; z < 14; z++)
+		{
+			for (int x = -36; x < 37; x++)
+			{
+				glPushMatrix();
+				glTranslatef(x * 120, y * 120, z * 120);
+				glColor3f(1, 0, 0);
+				glutSolidCube(30);
+				glPopMatrix();
+			}
+		}
+	}*/
+	
+	for (int z = -13; z < 14; z++)
+	{
+		for (int x = -36; x < 37; x++)
+		{
+			if (map_DATA[1][x+36][z+13] == 1)
+			{
+				glPushMatrix();
+				glTranslatef(x * 120, 0, z * 120);
+				glColor3f(0, 0, 1);
+				glutSolidCube(30);
+				glPopMatrix();
+			}
+		}
+	}
+
+
+	int X = (Charx / 120);
+	int Z = (Charz / 120);
+
+	//printf("%d / %d\n", X, Z);
+
+	glPushMatrix();
+	glTranslatef(X * 120+60, 0, Z * 120+60);
+	glColor3f(0, 1, 0);
+	glutSolidCube(80);
+	glPopMatrix();
+
+	for (int z = Z - 2; z < Z + 2; z++)
+	{
+		for (int x = X - 2; x < X + 2; x++)
+		{
+			if (map_DATA[1][x+36][z+13] == 1)
+			{
+				glPushMatrix();
+				glTranslatef(x * 120+60, 0, z * 120+60);
+				glColor3f(1, 0, 0);
+				glutSolidCube(50);
+				glPopMatrix();
+			}
+			else if (map_DATA[1][x+36][z+13] == 0)
+			{
+				glPushMatrix();
+				glTranslatef(x * 120+60, 0, z * 120+60);
+				glColor3f(0, 0, 1);
+				glutSolidCube(50);
+				glPopMatrix();
+			}
+		}
+	}
+
+	//
+
 	//2D Draw-----------------------------------------------------------------------------
 	drawHud();
 	//2D END------------------------------------------------------------------------------
@@ -130,12 +229,12 @@ GLvoid Reshape(int w, int h)
 
 	//모델 뷰 행렬 스택 재설정
 	glMatrixMode(GL_MODELVIEW);
+
 }
 
 void Mouse(int button, int state, int x, int y)
 {
 }//end of Mouse
-
 
 void Motion(int x, int y)
 {
@@ -164,6 +263,12 @@ void TimerFunction(int value)
 			glutWarpPointer(400, 300);
 		animationCharleg();//캐릭터 다리 애니메이션
 		animationChararm();//캐릭터 팔 애니메이션
+
+		
+
+		crashCheck();
+
+		
 
 		for (int i = 0; i < 256; i++)
 		{
@@ -203,8 +308,9 @@ void drawCharacter(){
 
 	glPushMatrix(); //Save 오른팔 어께
 	glTranslated(-45, 44, 0);
-	glRotatef(right_sholder_x, 1, 0, 0);
+	glRotatef(-right_sholder_x+210, 1, 0, 0);
 	glRotatef(right_sholder_y, 0, 1, 0);
+	glRotatef(right_sholder_z, 0, 0, 1);
 	glScaled(0.5, 0.75, 0.5);
 	drawBoxFront(30, true, character_arm_top_object[0]);
 	drawBoxBack(30, true, character_arm_top_object[1]);
@@ -229,10 +335,11 @@ void drawCharacter(){
 	glPopMatrix();//오른팔 어께 종료
 
 
-	glPushMatrix(); //Save 왼팔 어께
+	glPushMatrix(); //Save 왼팔 어께 
 	glTranslated(45, 44, 0);
-	glRotatef(left_sholder_x, 1, 0, 0);
+	glRotatef(-left_sholder_x-90, 1, 0, 0);
 	glRotatef(left_sholder_y, 0, 1, 0);
+	glRotatef(left_sholder_z, 0, 0, 1);
 	glScaled(0.5, 0.75, 0.5);
 	drawBoxFront(30, true, character_arm_top_object[0]);
 	drawBoxBack(30, true, character_arm_top_object[1]);
@@ -319,16 +426,24 @@ void animationChararm()
 	switch (character_up_state)
 	{
 	case 0:
+		//left_sholder_x = 0;
+		left_sholder_y = 70;
+		left_sholder_z = -75;
+		//right_sholder_x = -60;
+		right_sholder_y = 30;
+		right_sholder_z = 0;
+		left_elbow_x = 25;
+		right_elbow_x = -30;
+		break;
+	case 1://라이플
+		break;
+	case 2://권총
 		left_sholder_x = 0;
 		left_sholder_y = 0;
 		right_sholder_x = 0;
 		right_sholder_y = 0;
 		left_elbow_x = 0;
 		right_elbow_x = 0;
-		break;
-	case 1://라이플
-		break;
-	case 2://권총
 		break;
 	}
 }
@@ -381,10 +496,19 @@ void animationCharleg()
 void init_Texture(){
 	nomal_Texture(block_Nomal_object);
 	tree_Texture(block_Tree_object);
+	brick_Texture(block_Brick_object);
+	wooden_Texture(block_Wooden_object);
+	stone_Texture(block_Stone_object);
+
 	head_Texture(character_head_object);
 	body_Texture(character_body_object);
 	arm_Texture(character_arm_top_object, character_arm_bottom_object);
 	leg_Texture(character_leg_top_object, character_leg_bottom_object);
+
+	zombie_head_Texture(zombie_head_object);
+	zombie_body_Texture(zombie_body_object);
+	zombie_arm_Texture(zombie_arm_top_object, zombie_arm_bottom_object);
+	zombie_leg_Texture(zombie_leg_top_object, zombie_leg_bottom_object);
 }
 
 void Target(int x, int y)
@@ -396,6 +520,8 @@ void Target(int x, int y)
 
 		camxrotate = camxrotate + (nx / MouseSens);
 		camyrotate = camyrotate + (ny / MouseSens);
+		left_sholder_x = camyrotate;
+		right_sholder_x = camyrotate;
 
 		Viewz = 1000 * sin((camyrotate)* 3.141592 / 180) * cos((camxrotate)* 3.141592 / 180);
 		Viewx = 1000 * sin((camyrotate)* 3.141592 / 180) * sin((camxrotate)* 3.141592 / 180);
@@ -452,6 +578,10 @@ void Keyinput(int key)
 	switch (key)
 	{
 	case '1':
+		Chary += 10;
+		break;
+	case '2':
+		Chary -= 10;
 		break;
 	case 'c':
 		glutSetCursor(GLUT_CURSOR_NONE);
@@ -550,6 +680,7 @@ void drawHud()
 
 void drawTestbox()
 {
+
 	glPushMatrix();//캐릭터가 바라보는 지점 드로우
 	glColor3f(1.0f, 1.0f, 1.0f);
 	glTranslatef(Charx + Viewx, Chary + Viewy, Charz + Viewz);
@@ -601,5 +732,82 @@ void drawTestbox()
 
 void drawPistol()
 {
+	glPushMatrix();
+	glTranslatef(0, 0, 0);
+	glPopMatrix();
+}
 
+void crashCheck()
+{
+	int X = (Charx / 120);
+	int Z = (Charz / 120);
+
+	if (Charx < 0)
+		X-=1;
+	if (Charz < 0)
+		Z-=1;
+
+	printf("%d / %d\n", X, Z);
+	//printf("%f / %f\n", X, Z);
+
+	for (int z = Z-1; z < Z+2; z++)
+	{
+		for (int x = X-1; x < X+2; x++)
+		{
+			if (map_DATA[1][x+36][z+13] == 1)
+			{
+				if ((x == X - 1) && (z == Z - 1))
+				{
+					/*if (Charx < ((x * 120) + 120 + crashdist))
+						Charx = ((x * 120) + 120 + crashdist);
+					if (Charz < ((z * 120) + 120 + crashdist))
+						Charz = ((z * 120) + 120 + crashdist);*/
+				}
+				else if ((x == X - 1) && (z == Z + 1))
+				{
+					/*if (Charx < ((x * 120) + 120 + crashdist))
+						Charx = ((x * 120) + 120 + crashdist);
+					if (((z * 120) - crashdist) < Charz)
+						Charz = ((z * 120) - crashdist);*/
+				}
+				else if ((x == X + 1) && (z == Z - 1))
+				{
+					/*if (((x * 120) - crashdist) < Charx)
+						Charx = ((x * 120) - crashdist);
+					if (Charz < ((z * 120) + 120 + crashdist))
+						Charz = ((z * 120) + 120 + crashdist);*/
+				}
+				else if ((x == X + 1) && (z == Z + 1))
+				{
+					/*if (((x * 120) - crashdist) < Charx)
+						Charx = ((x * 120) - crashdist);
+					if (((z * 120) - crashdist) < Charz)
+						Charz = ((z * 120) - crashdist);*/
+				}
+
+
+				else if (x == X - 1)
+				{
+					if (Charx < ((x * 120) + 120 + crashdist))
+						Charx = ((x * 120) + 120 + crashdist);
+				}
+				else if (X + 1 == x)
+				{
+					if (((x * 120) - crashdist) < Charx)
+						Charx = ((x * 120) - crashdist);
+				}
+
+				else if (z == Z - 1)
+				{
+					if (Charz < ((z * 120) + 120 + crashdist))
+						Charz = ((z * 120) + 120 + crashdist);
+				}
+				else if (Z+1 == z)
+				{
+					if (((z * 120) - crashdist) < Charz)
+						Charz = ((z * 120) - crashdist);
+				}
+			}//end of if
+		}//end of inner for
+	}//end of outer for
 }
