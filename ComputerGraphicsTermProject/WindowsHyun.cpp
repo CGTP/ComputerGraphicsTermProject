@@ -112,12 +112,6 @@ GLvoid DrawScene(GLvoid)
 	glEnable(GL_DEPTH_TEST);                              // 가려진 면 제거
 	glEnable(GL_CULL_FACE);                               // 후면 제거
 
-	glPushMatrix();
-	glTranslatef(0, 0, 0);
-	glColor3f(0, 1, 0);
-	glutSolidCube(5);
-	glPopMatrix();
-
 	glPushMatrix();//캐릭터 그리기
 	glTranslatef(Charx, Chary + 70, Charz);		//캐릭터 위치 이동
 	glRotatef(camxrotate + 180, 0, 1, 0);	//캐릭터 몸통 전체 회전
@@ -709,7 +703,7 @@ void crashCheck()
 	if (Charz < 0)
 		Z -= 1;
 
-	printf("%d / %d\n", X, Z);
+	//printf("%d / %d\n", X, Z);
 	//printf("%f / %f\n", X, Z);
 
 	for (int z = Z - 1; z < Z + 2; z++)
