@@ -2,6 +2,7 @@
 #include "Texture_Load.h"
 #include <math.h>
 
+
 GLvoid DrawScene(GLvoid);
 GLvoid Reshape(int w, int h);
 
@@ -13,14 +14,15 @@ void TimerFunction(int value);
 void MenuFunc(int button);
 
 void drawCharacter();//캐릭터 드로우 함수
-void drawZomie(); // 좀비 캐릭터 드로우 함수
 void init_Texture();//텍스쳐 로드 함수
 void animationCharleg();//캐릭터 다리 애니메이션 함수
 void animationChararm();//캐릭터 팔 애니메이션 함수
-void character_Location(); // 캐릭터 위치를 도형 좌표로 표현한다.
 void Target(int x, int y);//카메라 시점관련 함수
 void Keyinput(int key);//키보드 동시입력을 위한 입력처리 함수
 void drawHud();//HUD 그리는 함수
+void crashCheck();//충돌체크
+
+void drawTestbox();/////////////////////////////////////////////////테스트박스
 
 int Time = 10;//타이머 갱신시간
 int width, height;
@@ -34,25 +36,29 @@ float camxrotate = 0, camyrotate = -90, Viewx = 0, Viewy = 0, Viewz = -1000, Cam
 float Charx = 0, Charz = 0, Chary = 0;
 float nx = 0, ny = 0, bx = 0, by = 0;
 float testx = 0, texty = 0;
-int Charspeed = 30, Camdistance = 400, MouseSens = 25;
+int Charspeed = 5, Camdistance = 400, MouseSens = 25;
 bool RotateCam = true, FirstPersonView = true;
 bool Keybuffer[256];
-int Char_Location_X = 0, Char_Location_Y = 0, Char_Location_H = 0;
 
 // FPS 측정을 위한 변수
 float fps;
 char draw_FPS[100];
 void update_FPS();
 
-//맵 데이터 변수
-int map_DATA[6][72][27]; // 높이, 가로, 세로
-void show_map();
-
 //애니메이션 변수
 int character_up_state = 0, character_down_state = 0, timer = 0;//이동 애니메이션 구분용
 float head_angle_x;//머리회전
-float left_sholder_x, left_sholder_y, right_sholder_x, right_sholder_y, left_elbow_x, right_elbow_x;//팔회전
+float left_sholder_x, left_sholder_y, left_sholder_z, right_sholder_x, right_sholder_y, right_sholder_z, left_elbow_x, right_elbow_x;//팔회전
 float left_leg_x, left_leg_y, left_knee_x, right_leg_x, right_leg_y, right_knee_x;//다리회전
+
+//맵 데이터 변수
+int map_DATA[6][72][27];
+
+GLuint wall_background_object[1];
+
+
+//충돌체크 거리
+int crashdist = 20;
 
 void main()
 {
@@ -94,36 +100,57 @@ GLvoid DrawScene(GLvoid)
 	glViewport(0, 0, width, height);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	gluPerspective(60.0f, (float)width / (float)height, 0.1, 10000.0);
+	update_FPS();
+	gluPerspective(60.0f, (float)width / (float)height, 0.1, 5000.0);
 	glMatrixMode(GL_MODELVIEW);
-
-	glPushMatrix();
-	glColor3f(1, 0, 0);
-	glTranslated(0, 0, 0);
-	glutSolidCube(3);
-	glPopMatrix();
 
 	//3D Draw----------------------------------------------------------------------
 	glLoadIdentity();
-	//------------------------------------------------------------------------
-	update_FPS();
-	////------------------------------------------------------------------------
 	if (FirstPersonView)
-		gluLookAt(Charx, Chary + 230, Charz, Charx + Viewx, Chary + Viewy, Charz + Viewz, 0.0, 1.0, 0.0);
+		gluLookAt(Charx, Chary + 170, Charz, Charx + Viewx, Chary + Viewy, Charz + Viewz, 0.0, 1.0, 0.0);
 	else
-		gluLookAt(Charx + Camx, Chary + Camy+130, Charz + Camz, Charx + Viewx, Chary + Viewy, Charz + Viewz, 0.0, 1.0, 0.0);
+		gluLookAt(Charx + Camx, Chary + Camy + 70, Charz + Camz, Charx + Viewx, Chary + Viewy, Charz + Viewz, 0.0, 1.0, 0.0);
 
 	//조명설정
 	glEnable(GL_DEPTH_TEST);                              // 가려진 면 제거
 	glEnable(GL_CULL_FACE);                               // 후면 제거
 
+	glPushMatrix();
+	glTranslatef(0, 0, 0);
+	glColor3f(0, 1, 0);
+	glutSolidCube(5);
+	glPopMatrix();
 
 	glPushMatrix();//캐릭터 그리기
-	glTranslatef(Charx, Chary + 130, Charz);		//캐릭터 위치 이동
+	glTranslatef(Charx, Chary + 70, Charz);		//캐릭터 위치 이동
 	glRotatef(camxrotate + 180, 0, 1, 0);	//캐릭터 몸통 전체 회전
 	drawCharacter();	//캐릭터 그리기
 	glPopMatrix();
 	//3D END------------------------------------------------------------------------------
+	//drawTestbox();
+
+	glPushMatrix();
+	// 벽면을 그려보자.
+	glEnable(GL_TEXTURE_2D);
+	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+	glBindTexture(GL_TEXTURE_2D, wall_background_object[0]);
+	glBegin(GL_QUADS);
+	glTexCoord2d(0.0f, 1.0f);
+		glVertex3f(-4320, 3120, -1560);   //1
+		glTexCoord2d(0.0f, 0.0f);
+		glVertex3f(-4320, -60, -1560);   //2
+		glTexCoord2d(1.0f, 0.0f);
+		glVertex3f(4320, -60, -1560);   //3
+		glTexCoord2d(1.0f, 1.0f);
+		glVertex3f(4320, 3120, -1560);   //4
+	glEnd();
+	glDisable(GL_TEXTURE_2D);
+	glPopMatrix();
+
+
+	glPushMatrix();
+	glTranslatef(60, 0, 60);
+
 	glPushMatrix();
 	draw_Ground(block_Nomal_object);
 	glPopMatrix();
@@ -140,29 +167,20 @@ GLvoid DrawScene(GLvoid)
 	draw_Stone(block_Stone_object);
 	glPopMatrix();
 
-	glPushMatrix();
-	//drawZomie();
 	glPopMatrix();
 
-	glPushMatrix();
-	for (int y = 0; y < 1; y++)
-	{
-		for (int z = -13; z < 14; z++)
-		{
-			for (int x = -36; x < 37; x++)
-			{
-				glPushMatrix();
-				glColor3f(1, 0, 0);
-				glTranslatef(x * 120, y * 120, z * 120);
-				glutSolidCube(5);
-				glPopMatrix();
-			}
-		}
-	}
-	glPopMatrix();
+	int X = (Charx / 120);
+	int Z = (Charz / 120);
+
+	//printf("%d / %d\n", X, Z);
+
+
+	//
+
 	//2D Draw-----------------------------------------------------------------------------
 	drawHud();
 	//2D END------------------------------------------------------------------------------
+
 	glutSwapBuffers(); //화면에 출력하기
 }//end of drawScene
 
@@ -182,12 +200,12 @@ GLvoid Reshape(int w, int h)
 
 	//모델 뷰 행렬 스택 재설정
 	glMatrixMode(GL_MODELVIEW);
+
 }
 
 void Mouse(int button, int state, int x, int y)
 {
 }//end of Mouse
-
 
 void Motion(int x, int y)
 {
@@ -216,6 +234,12 @@ void TimerFunction(int value)
 			glutWarpPointer(400, 300);
 		animationCharleg();//캐릭터 다리 애니메이션
 		animationChararm();//캐릭터 팔 애니메이션
+
+
+
+		crashCheck();
+
+
 
 		for (int i = 0; i < 256; i++)
 		{
@@ -255,8 +279,9 @@ void drawCharacter(){
 
 	glPushMatrix(); //Save 오른팔 어께
 	glTranslated(-45, 44, 0);
-	glRotatef(right_sholder_x, 1, 0, 0);
+	glRotatef(-right_sholder_x + 210, 1, 0, 0);
 	glRotatef(right_sholder_y, 0, 1, 0);
+	glRotatef(right_sholder_z, 0, 0, 1);
 	glScaled(0.5, 0.75, 0.5);
 	drawBoxFront(30, true, character_arm_top_object[0]);
 	drawBoxBack(30, true, character_arm_top_object[1]);
@@ -281,10 +306,11 @@ void drawCharacter(){
 	glPopMatrix();//오른팔 어께 종료
 
 
-	glPushMatrix(); //Save 왼팔 어께
+	glPushMatrix(); //Save 왼팔 어께 
 	glTranslated(45, 44, 0);
-	glRotatef(left_sholder_x, 1, 0, 0);
+	glRotatef(-left_sholder_x - 90, 1, 0, 0);
 	glRotatef(left_sholder_y, 0, 1, 0);
+	glRotatef(left_sholder_z, 0, 0, 1);
 	glScaled(0.5, 0.75, 0.5);
 	drawBoxFront(30, true, character_arm_top_object[0]);
 	drawBoxBack(30, true, character_arm_top_object[1]);
@@ -361,142 +387,6 @@ void drawCharacter(){
 	drawBoxRight(30, true, character_leg_bottom_object[3]);
 	drawBoxTop(30, true, character_leg_top_object[4]);
 	drawBoxBottom(30, true, character_leg_top_object[5]);
-	glPopMatrix(); //왼쪽 무릎 종료
-
-	glPopMatrix(); //왼쪽골반 종료
-}
-
-void drawZomie(){
-	glPushMatrix(); //Save 머리
-	glTranslated(0, 75, 0);
-	glRotatef(-(camyrotate + 90) / 3, 1, 0, 0);
-	glScaled(1.0, 1.0, 0.7);
-	drawBoxFront(30, false, zombie_head_object[0]);
-	drawBoxBack(30, false, zombie_head_object[1]);
-	drawBoxLeft(30, false, zombie_head_object[2]);
-	drawBoxRight(30, false, zombie_head_object[3]);
-	drawBoxTop(30, false, zombie_head_object[4]);
-	drawBoxBottom(30, false, zombie_head_object[5]);
-	glPopMatrix();
-
-	glPushMatrix(); //Save 몸통
-	glScaled(1.0, 1.5, 0.5);
-	drawBoxFront(30, false, zombie_body_object[0]);
-	drawBoxBack(30, false, zombie_body_object[1]);
-	drawBoxLeft(30, false, zombie_body_object[2]);
-	drawBoxRight(30, false, zombie_body_object[3]);
-	drawBoxTop(30, false, zombie_body_object[4]);
-	drawBoxBottom(30, false, zombie_body_object[5]);
-	glPopMatrix();
-
-	glPushMatrix(); //Save 오른팔 어께
-	glTranslated(-45, 44, 0);
-	glRotatef(right_sholder_x, 1, 0, 0);
-	glRotatef(right_sholder_y, 0, 1, 0);
-	glScaled(0.5, 0.75, 0.5);
-	drawBoxFront(30, true, zombie_arm_top_object[0]);
-	drawBoxBack(30, true, zombie_arm_top_object[1]);
-	drawBoxLeft(30, true, zombie_arm_top_object[2]);
-	drawBoxRight(30, true, zombie_arm_top_object[3]);
-	drawBoxTop(30, true, zombie_arm_top_object[4]);
-	drawBoxBottom(30, true, zombie_arm_top_object[5]);
-	glScaled(2, 1.333333, 2);
-
-	glPushMatrix(); //Save 오른팔 팔꿈치
-	glTranslated(0, -45, 0);
-	glRotatef(right_elbow_x, 1, 0, 0);
-	glScaled(0.5, 0.75, 0.5);
-	drawBoxFront(30, true, zombie_arm_bottom_object[0]);
-	drawBoxBack(30, true, zombie_arm_bottom_object[1]);
-	drawBoxLeft(30, true, zombie_arm_bottom_object[2]);
-	drawBoxRight(30, true, zombie_arm_bottom_object[3]);
-	drawBoxTop(30, true, zombie_arm_top_object[5]);
-	drawBoxBottom(30, true, zombie_arm_top_object[5]);
-	glPopMatrix();//오른팔 팔꿈치 종료
-
-	glPopMatrix();//오른팔 어께 종료
-
-
-	glPushMatrix(); //Save 왼팔 어께
-	glTranslated(45, 44, 0);
-	glRotatef(left_sholder_x, 1, 0, 0);
-	glRotatef(left_sholder_y, 0, 1, 0);
-	glScaled(0.5, 0.75, 0.5);
-	drawBoxFront(30, true, zombie_arm_top_object[0]);
-	drawBoxBack(30, true, zombie_arm_top_object[1]);
-	drawBoxLeft(30, true, zombie_arm_top_object[2]);
-	drawBoxRight(30, true, zombie_arm_top_object[3]);
-	drawBoxTop(30, true, zombie_arm_top_object[4]);
-	drawBoxBottom(30, true, zombie_arm_top_object[5]);
-	glScaled(2, 1.333333, 2);
-
-	glPushMatrix(); //Save 왼팔 팔꿈치
-	glTranslated(0, -45, 0);
-	glRotatef(left_elbow_x, 1, 0, 0);
-	glScaled(0.5, 0.75, 0.5);
-	drawBoxFront(30, true, zombie_arm_bottom_object[0]);
-	drawBoxBack(30, true, zombie_arm_bottom_object[1]);
-	drawBoxLeft(30, true, zombie_arm_bottom_object[2]);
-	drawBoxRight(30, true, zombie_arm_bottom_object[3]);
-	drawBoxTop(30, true, zombie_arm_top_object[5]);
-	drawBoxBottom(30, true, zombie_arm_top_object[5]);
-	glPopMatrix();//왼팔 팔꿈치 종료
-
-	glPopMatrix();//왼팔어께 종료
-
-
-
-	glPushMatrix(); //Save 오른쪽 골반
-	glTranslated(-15, -40, 0);
-	glRotatef(right_leg_x, 1, 0, 0);
-	glRotatef(right_leg_y, 0, 1, 0);
-	glScaled(0.5, 0.75, 0.5);
-	drawBoxFront(30, true, zombie_leg_top_object[0]);
-	drawBoxBack(30, true, zombie_leg_top_object[1]);
-	drawBoxLeft(30, true, zombie_leg_top_object[2]);
-	drawBoxRight(30, true, zombie_leg_top_object[3]);
-	drawBoxTop(30, true, zombie_leg_top_object[4]);
-	drawBoxBottom(30, true, zombie_leg_top_object[5]);
-	glScaled(2, 1.333333, 2);
-
-	glPushMatrix(); //Save 오른쪽 무릎
-	glTranslated(0, -45, 0);
-	glRotatef(right_knee_x, 1, 0, 0);
-	glScaled(0.5, 0.75, 0.5);
-	drawBoxFront(30, true, zombie_leg_bottom_object[0]);
-	drawBoxBack(30, true, zombie_leg_bottom_object[1]);
-	drawBoxLeft(30, true, zombie_leg_bottom_object[2]);
-	drawBoxRight(30, true, zombie_leg_bottom_object[3]);
-	drawBoxTop(30, true, zombie_leg_top_object[4]);
-	drawBoxBottom(30, true, zombie_leg_top_object[5]);
-	glPopMatrix();//오른쪽 무릎 종료
-
-	glPopMatrix();//오른쪽 골반 종료
-
-
-	glPushMatrix(); //Save 왼쪽 골반
-	glTranslated(15, -40, 0);
-	glRotatef(left_leg_x, 1, 0, 0);
-	glRotatef(left_leg_y, 0, 1, 0);
-	glScaled(0.5, 0.75, 0.5);
-	drawBoxFront(30, true, zombie_leg_top_object[0]);
-	drawBoxBack(30, true, zombie_leg_top_object[1]);
-	drawBoxLeft(30, true, zombie_leg_top_object[2]);
-	drawBoxRight(30, true, zombie_leg_top_object[3]);
-	drawBoxTop(30, true, zombie_leg_top_object[4]);
-	drawBoxBottom(30, true, zombie_leg_top_object[5]);
-	glScaled(2, 1.333333, 2);
-
-	glPushMatrix(); //Save 왼쪽 무릎
-	glTranslated(0, -45, 0);
-	glRotatef(left_knee_x, 1, 0, 0);
-	glScaled(0.5, 0.75, 0.5);
-	drawBoxFront(30, true, zombie_leg_bottom_object[0]);
-	drawBoxBack(30, true, zombie_leg_bottom_object[1]);
-	drawBoxLeft(30, true, zombie_leg_bottom_object[2]);
-	drawBoxRight(30, true, zombie_leg_bottom_object[3]);
-	drawBoxTop(30, true, zombie_leg_top_object[4]);
-	drawBoxBottom(30, true, zombie_leg_top_object[5]);
 	glPopMatrix(); //왼쪽 무릎 종료
 
 	glPopMatrix(); //왼쪽골반 종료
@@ -507,16 +397,24 @@ void animationChararm()
 	switch (character_up_state)
 	{
 	case 0:
+		//left_sholder_x = 0;
+		left_sholder_y = 70;
+		left_sholder_z = -75;
+		//right_sholder_x = -60;
+		right_sholder_y = 30;
+		right_sholder_z = 0;
+		left_elbow_x = 25;
+		right_elbow_x = -30;
+		break;
+	case 1://라이플
+		break;
+	case 2://권총
 		left_sholder_x = 0;
 		left_sholder_y = 0;
 		right_sholder_x = 0;
 		right_sholder_y = 0;
 		left_elbow_x = 0;
 		right_elbow_x = 0;
-		break;
-	case 1://라이플
-		break;
-	case 2://권총
 		break;
 	}
 }
@@ -582,6 +480,9 @@ void init_Texture(){
 	zombie_body_Texture(zombie_body_object);
 	zombie_arm_Texture(zombie_arm_top_object, zombie_arm_bottom_object);
 	zombie_leg_Texture(zombie_leg_top_object, zombie_leg_bottom_object);
+
+	Load_TextureBMP(wall_background_object, 0, "ImageData/Wall/wall.bmp");
+
 }
 
 void Target(int x, int y)
@@ -593,6 +494,8 @@ void Target(int x, int y)
 
 		camxrotate = camxrotate + (nx / MouseSens);
 		camyrotate = camyrotate + (ny / MouseSens);
+		left_sholder_x = camyrotate;
+		right_sholder_x = camyrotate;
 
 		Viewz = 1000 * sin((camyrotate)* 3.141592 / 180) * cos((camxrotate)* 3.141592 / 180);
 		Viewx = 1000 * sin((camyrotate)* 3.141592 / 180) * sin((camxrotate)* 3.141592 / 180);
@@ -616,9 +519,10 @@ void Target(int x, int y)
 	}
 }
 
+
+
 void Keyinput(int key)
 {
-	character_Location();
 	if (key == 'w')
 	{
 		Charx += Charspeed * cos((-camxrotate - 90) * 3.141592 / 180);
@@ -648,6 +552,10 @@ void Keyinput(int key)
 	switch (key)
 	{
 	case '1':
+		Chary += 10;
+		break;
+	case '2':
+		Chary -= 10;
 		break;
 	case 'c':
 		glutSetCursor(GLUT_CURSOR_NONE);
@@ -688,16 +596,6 @@ void Keyinput(int key)
 		printf("현재 마우스 감도는 %d 입니다.(default : 25)\n", MouseSens);
 		Keybuffer[key] = false;
 		break;
-	case 'r':
-		Chary += 5;
-		break;
-	case 't':
-		Chary -= 5;
-		break;
-	case 'm':
-		show_map();
-		break;
-
 	case 27:
 		exit(0);
 		break;
@@ -746,7 +644,7 @@ void drawHud()
 	glTranslatef(20, 570, 0);
 	glRasterPos2f(0.0, 0.0);
 	sprintf(health, "%d", hp);
-	len = (int)strlen(health);
+	len = (int)strlen(ammo);
 	for (int i = 0; i < len; i++)
 		glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, health[i]);
 	glPopMatrix();
@@ -761,61 +659,141 @@ void drawHud()
 		glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, draw_FPS[i]);
 	glPopMatrix();
 
-	glPushMatrix();//현재 위치를 블럭단위로 표시.
-	glColor3f(1, 0, 0);
-	glTranslatef(20, 55, 0);
-	glRasterPos2f(0.0, 0.0);
-	char state2[100];
-	sprintf(state2, "X : %d, Y : %d, Height : %d", Char_Location_X, Char_Location_Y, Char_Location_H);
-	len = (int)strlen(state2);
-	for (int i = 0; i < len; i++)
-		glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, state2[i]);
+	glPopMatrix();
+}
+
+void drawTestbox()
+{
+
+	glPushMatrix();//캐릭터가 바라보는 지점 드로우
+	glColor3f(1.0f, 1.0f, 1.0f);
+	glTranslatef(Charx + Viewx, Chary + Viewy, Charz + Viewz);
+	glutSolidCube(10);
 	glPopMatrix();
 
+	glPushMatrix();//바닥 그리기
+	glTranslatef(0, -100, 0);
+	glScalef(1, 0.01, 1);
+	glutWireCube(2000);
+	glPopMatrix();//바닥 그리기 종료
 
-	glPopMatrix();
+	glPushMatrix();//바닥 그리기
+	glColor3f(1, 0, 0);//빨강색 z축
+	glTranslatef(0, 0, -1000);
+	glutSolidCube(100);
+	glPopMatrix();//바닥 그리기 종료
+
+	glPushMatrix();//바닥 그리기
+	glColor3f(0, 0, 1);//파랑색
+	glTranslatef(0, 0, 1000);//z축
+	glutSolidCube(100);
+	glPopMatrix();//바닥 그리기 종료
+
+	glPushMatrix();//바닥 그리기
+	glColor3f(0, 1, 0);
+	glTranslatef(1000, 0, 0);
+	glutSolidCube(100);
+	glPopMatrix();//바닥 그리기 종료
+
+	glPushMatrix();//바닥 그리기
+	glColor3f(1, 1, 0);
+	glTranslatef(-1000, 0, 0);
+	glutSolidCube(100);
+	glPopMatrix();//바닥 그리기 종료
+
+	glPushMatrix();//바닥 그리기
+	glColor3f(1, 0, 1);
+	glTranslatef(0, -1000, 0);
+	glutSolidCube(100);
+	glPopMatrix();//바닥 그리기 종료
+
+	glPushMatrix();//바닥 그리기
+	glColor3f(0, 1, 1);
+	glTranslatef(0, 1000, 0);
+	glutSolidCube(100);
+	glPopMatrix();//바닥 그리기 종료
 }
 
 void drawPistol()
 {
-
+	glPushMatrix();
+	glTranslatef(0, 0, 0);
+	glPopMatrix();
 }
 
-void character_Location(){
-	// 캐릭터의 현재 위치와 좌표를 구한다.
-	Char_Location_X = Charx / 120, Char_Location_Y = Charz / 120, Char_Location_H = Chary / 120;
+void crashCheck()
+{
+	int X = (Charx / 120);
+	int Z = (Charz / 120);
 
-	if (abs((Charz / 120) - int(Charz / 120)) >= 0.3){
-		// 완전히 중앙으로 가야지 인식하는 부분이 있어서 0.3 정도의 오차를 계산하여 좀더 정확한 위치를 받아온다.
-		if (Char_Location_Y > 0){
-			Char_Location_Y += 1;
-		}
-		else{
-			Char_Location_Y -= 1;
-		}
-	}
-	if (abs((Charx / 120) - int(Charx / 120)) >= 0.3){
-		if (Char_Location_X > 0){
-			Char_Location_X += 1;
-		}
-		else{
-			Char_Location_X -= 1;
-		}
-	}
-}
+	if (Charx < 0)
+		X -= 1;
+	if (Charz < 0)
+		Z -= 1;
 
-void show_map(){
-	for (int k = 1; k < 6; ++k){
-		printf("--- %d층 ↓ ---", k);
-		printf("\n\n---------------------------------------------------\n\n");
-		for (int j = 0; j < 27; ++j){
-			for (int i = 0; i < 72; ++i){
-				printf("%d", map_DATA[k][i][j]);
-			}
-			printf("\n");
-		}
-		printf("\n\n---------------------------------------------------\n\n");
-	}
+	printf("%d / %d\n", X, Z);
+	//printf("%f / %f\n", X, Z);
+
+	for (int z = Z - 1; z < Z + 2; z++)
+	{
+		for (int x = X - 1; x < X + 2; x++)
+		{
+			if (map_DATA[1][x + 36][z + 13] == 1)
+			{
+				if ((x == X - 1) && (z == Z - 1))
+				{
+					/*if (Charx < ((x * 120) + 120 + crashdist))
+					Charx = ((x * 120) + 120 + crashdist);
+					if (Charz < ((z * 120) + 120 + crashdist))
+					Charz = ((z * 120) + 120 + crashdist);*/
+				}
+				else if ((x == X - 1) && (z == Z + 1))
+				{
+					/*if (Charx < ((x * 120) + 120 + crashdist))
+					Charx = ((x * 120) + 120 + crashdist);
+					if (((z * 120) - crashdist) < Charz)
+					Charz = ((z * 120) - crashdist);*/
+				}
+				else if ((x == X + 1) && (z == Z - 1))
+				{
+					/*if (((x * 120) - crashdist) < Charx)
+					Charx = ((x * 120) - crashdist);
+					if (Charz < ((z * 120) + 120 + crashdist))
+					Charz = ((z * 120) + 120 + crashdist);*/
+				}
+				else if ((x == X + 1) && (z == Z + 1))
+				{
+					/*if (((x * 120) - crashdist) < Charx)
+					Charx = ((x * 120) - crashdist);
+					if (((z * 120) - crashdist) < Charz)
+					Charz = ((z * 120) - crashdist);*/
+				}
+
+
+				else if (x == X - 1)
+				{
+					if (Charx < ((x * 120) + 120 + crashdist))
+						Charx = ((x * 120) + 120 + crashdist);
+				}
+				else if (X + 1 == x)
+				{
+					if (((x * 120) - crashdist) < Charx)
+						Charx = ((x * 120) - crashdist);
+				}
+
+				else if (z == Z - 1)
+				{
+					if (Charz < ((z * 120) + 120 + crashdist))
+						Charz = ((z * 120) + 120 + crashdist);
+				}
+				else if (Z + 1 == z)
+				{
+					if (((z * 120) - crashdist) < Charz)
+						Charz = ((z * 120) - crashdist);
+				}
+			}//end of if
+		}//end of inner for
+	}//end of outer for
 }
 
 void update_FPS(){
