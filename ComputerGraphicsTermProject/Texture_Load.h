@@ -57,6 +57,11 @@ void draw_Wall(GLuint []); // 벽그리는 함수
 void draw_Ground(GLuint []);	// 땅그리는 함수
 void draw_Wooden(GLuint[]);	// 나무박스 그려준다.
 void draw_Stone(GLuint[]);	// 벽돌을 그려준다.
+void draw_Background_Wall(GLuint []); // 벽을 그린다.
+
+void draw_wall_background(GLuint[]);
+void wall_background_Texture(GLuint[]);
+static GLuint wall_background_object[6];
 
 static GLuint block_Nomal_object[6];
 static GLuint block_Tree_object[6];
