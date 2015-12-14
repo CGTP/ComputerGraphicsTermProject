@@ -36,7 +36,7 @@ float camxrotate = 0, camyrotate = -90, Viewx = 0, Viewy = 0, Viewz = -1000, Cam
 float Charx = 0, Charz = 0, Chary = 0;
 float nx = 0, ny = 0, bx = 0, by = 0;
 float testx = 0, texty = 0;
-int Charspeed = 5, Camdistance = 400, MouseSens = 25;
+int Charspeed = 50, Camdistance = 400, MouseSens = 25;
 bool RotateCam = true, FirstPersonView = true;
 bool Keybuffer[256];
 
@@ -53,9 +53,6 @@ float left_leg_x, left_leg_y, left_knee_x, right_leg_x, right_leg_y, right_knee_
 
 //맵 데이터 변수
 int map_DATA[6][72][27];
-
-GLuint wall_background_object[1];
-
 
 //충돌체크 거리
 int crashdist = 20;
@@ -115,12 +112,6 @@ GLvoid DrawScene(GLvoid)
 	glEnable(GL_DEPTH_TEST);                              // 가려진 면 제거
 	glEnable(GL_CULL_FACE);                               // 후면 제거
 
-	glPushMatrix();
-	glTranslatef(0, 0, 0);
-	glColor3f(0, 1, 0);
-	glutSolidCube(5);
-	glPopMatrix();
-
 	glPushMatrix();//캐릭터 그리기
 	glTranslatef(Charx, Chary + 70, Charz);		//캐릭터 위치 이동
 	glRotatef(camxrotate + 180, 0, 1, 0);	//캐릭터 몸통 전체 회전
@@ -129,26 +120,8 @@ GLvoid DrawScene(GLvoid)
 	//3D END------------------------------------------------------------------------------
 	//drawTestbox();
 
-	glPushMatrix();
-	// 벽면을 그려보자.
-	glEnable(GL_TEXTURE_2D);
-	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-	glBindTexture(GL_TEXTURE_2D, wall_background_object[0]);
-	glBegin(GL_QUADS);
-	glTexCoord2d(0.0f, 1.0f);
-		glVertex3f(-4320, 3120, -1560);   //1
-		glTexCoord2d(0.0f, 0.0f);
-		glVertex3f(-4320, -60, -1560);   //2
-		glTexCoord2d(1.0f, 0.0f);
-		glVertex3f(4320, -60, -1560);   //3
-		glTexCoord2d(1.0f, 1.0f);
-		glVertex3f(4320, 3120, -1560);   //4
-	glEnd();
-	glDisable(GL_TEXTURE_2D);
-	glPopMatrix();
+	draw_wall_background(wall_background_object);
 
-
-	glPushMatrix();
 	glTranslatef(60, 0, 60);
 
 	glPushMatrix();
@@ -481,8 +454,7 @@ void init_Texture(){
 	zombie_arm_Texture(zombie_arm_top_object, zombie_arm_bottom_object);
 	zombie_leg_Texture(zombie_leg_top_object, zombie_leg_bottom_object);
 
-	Load_TextureBMP(wall_background_object, 0, "ImageData/Wall/wall.bmp");
-
+	wall_background_Texture(wall_background_object);
 }
 
 void Target(int x, int y)
@@ -731,7 +703,7 @@ void crashCheck()
 	if (Charz < 0)
 		Z -= 1;
 
-	printf("%d / %d\n", X, Z);
+	//printf("%d / %d\n", X, Z);
 	//printf("%f / %f\n", X, Z);
 
 	for (int z = Z - 1; z < Z + 2; z++)
