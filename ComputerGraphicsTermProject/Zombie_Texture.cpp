@@ -119,3 +119,4 @@ void zombie_leg_Texture(GLuint object[], GLuint object2[]){
 	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_COLOR, GL_MODULATE);
 	// 텍스처 매핑 활성화
 }
+

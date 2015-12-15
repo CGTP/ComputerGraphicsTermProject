@@ -11,6 +11,8 @@
 #include "OpenGL_Aux/GLAUX.H"
 #pragma comment(lib, "./OpenGL_Aux/GLAUX")
 // OpenGL Aux 사용으로 인한 모듈 추가 종료
+#pragma comment(lib, "winmm.lib") 
+// 배경음악을 구현하기 위한 모듈 추가.
 
 // json 으로 인한 추가 모듈
 #include <string>

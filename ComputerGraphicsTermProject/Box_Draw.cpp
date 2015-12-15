@@ -133,6 +133,7 @@ void drawBoxTop(int size, bool shaft, GLuint image){
 	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 	glBindTexture(GL_TEXTURE_2D, image);
 	glBegin(GL_QUADS);
+	glNormal3f(0, 1, 0);
 	if (shaft == true){
 		glTexCoord2d(1.0f, 1.0f);
 		glVertex3f(-size, 0, size);  //1
