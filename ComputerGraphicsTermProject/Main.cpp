@@ -19,30 +19,28 @@ void Motion(int x, int y);
 void TimerFunction(int value);
 void MenuFunc(int button);
 
-void drawCharacter();//ìºë¦­í„° ë“œë¡œìš° í•¨ìˆ˜
-void init_Texture();//í…ìŠ¤ì³ ë¡œë“œ í•¨ìˆ˜
-void animationCharleg();//ìºë¦­í„° ë‹¤ë¦¬ ì• ë‹ˆë©”ì´ì…˜ í•¨ìˆ˜
-void animationChararm();//ìºë¦­í„° íŒ” ì• ë‹ˆë©”ì´ì…˜ í•¨ìˆ˜
-void Target(int x, int y);//ì¹´ë©”ë¼ ì‹œì ê´€ë ¨ í•¨ìˆ˜
-void Keyinput(int key);//í‚¤ë³´ë“œ ë™ì‹œì…ë ¥ì„ ìœ„í•œ ì…ë ¥ì²˜ë¦¬ í•¨ìˆ˜
-void drawHud();//HUD ê·¸ë¦¬ëŠ” í•¨ìˆ˜
-void crashCheck();//ì¶©ëŒì²´í¬
+void drawCharacter();//Ä³¸¯ÅÍ µå·Î¿ì ÇÔ¼ö
+void init_Texture();//ÅØ½ºÃÄ ·Îµå ÇÔ¼ö
+void animationCharleg();//Ä³¸¯ÅÍ ´Ù¸® ¾Ö´Ï¸ŞÀÌ¼Ç ÇÔ¼ö
+void animationChararm();//Ä³¸¯ÅÍ ÆÈ ¾Ö´Ï¸ŞÀÌ¼Ç ÇÔ¼ö
+void Target(int x, int y);//Ä«¸Ş¶ó ½ÃÁ¡°ü·Ã ÇÔ¼ö
+void Keyinput(int key);//Å°º¸µå µ¿½ÃÀÔ·ÂÀ» À§ÇÑ ÀÔ·ÂÃ³¸® ÇÔ¼ö
+void drawHud();//HUD ±×¸®´Â ÇÔ¼ö
+void crashCheck();//Ãæµ¹Ã¼Å©
 
-void drawPistol();//ê¶Œì´ê·¸ë¦¬ê¸°
-void bulletCreate();//ì´ì•Œ ìƒì„±
-void bulletDestroy(Bullet * Del);//ì´ì•Œ íŒŒê´´
-void drawBullet();//ì´ì•Œ ê·¸ë¦¬ê¸°
+void drawPistol();//±ÇÃÑ±×¸®±â
+void bulletCreate();//ÃÑ¾Ë »ı¼º
+void bulletDestroy(Bullet * Del);//ÃÑ¾Ë ÆÄ±«
+void drawBullet();//ÃÑ¾Ë ±×¸®±â
 
-void drawTestbox();/////////////////////////////////////////////////í…ŒìŠ¤íŠ¸ë°•ìŠ¤
-
-int Time = 10, Bullet_Time = 1;//íƒ€ì´ë¨¸ ê°±ì‹ ì‹œê°„
+int Time = 10, Bullet_Time = 1;//Å¸ÀÌ¸Ó °»½Å½Ã°£
 int width, height;
 char Input;
 
 int rifleammo = 120, rifleload = 30, hp = 100;
 char ammo[10], health[10];
 
-//ìºë¦­í„° ë° ì¹´ë©”ë¼ ê´€ë ¨ ë³€ìˆ˜
+//Ä³¸¯ÅÍ ¹× Ä«¸Ş¶ó °ü·Ã º¯¼ö
 float camxrotate = 0, camyrotate = -90, Viewx = 0, Viewy = 0, Viewz = -1000, Camx, Camy, Camz;
 float Charx = 0, Charz = 0, Chary = 0;
 float nx = 0, ny = 0, bx = 0, by = 0;
@@ -51,20 +49,25 @@ int Charspeed = 5, Camdistance = 400, MouseSens = 25;
 bool RotateCam = true, FirstPersonView = true;
 bool Keybuffer[256];
 
-//ì• ë‹ˆë©”ì´ì…˜ ë³€ìˆ˜
-int character_up_state = 0, character_down_state = 0, legtimer = 0;//ì´ë™ ì• ë‹ˆë©”ì´ì…˜ êµ¬ë¶„ìš©
-float head_angle_x;//ë¨¸ë¦¬íšŒì „
-float left_sholder_x, left_sholder_y, left_sholder_z, right_sholder_x, right_sholder_y, right_sholder_z, left_elbow_x, right_elbow_x;//íŒ”íšŒì „
-float left_leg_x, left_leg_y, left_knee_x, right_leg_x, right_leg_y, right_knee_x;//ë‹¤ë¦¬íšŒì „
-bool sight = false;//ì •ì¡°ì¤€
+// FPS ÃøÁ¤À» À§ÇÑ º¯¼ö
+float fps;
+char draw_FPS[100];
+void update_FPS();
 
-//ë§µ ë°ì´í„° ë³€ìˆ˜
+//¾Ö´Ï¸ŞÀÌ¼Ç º¯¼ö
+int character_up_state = 0, character_down_state = 0, legtimer = 0;//ÀÌµ¿ ¾Ö´Ï¸ŞÀÌ¼Ç ±¸ºĞ¿ë
+float head_angle_x;//¸Ó¸®È¸Àü
+float left_sholder_x, left_sholder_y, left_sholder_z, right_sholder_x, right_sholder_y, right_sholder_z, left_elbow_x, right_elbow_x;//ÆÈÈ¸Àü
+float left_leg_x, left_leg_y, left_knee_x, right_leg_x, right_leg_y, right_knee_x;//´Ù¸®È¸Àü
+bool sight = false;//Á¤Á¶ÁØ
+
+//¸Ê µ¥ÀÌÅÍ º¯¼ö
 int map_DATA[6][72][27];
 
-//ì¶©ëŒì²´í¬ ê±°ë¦¬
+//Ãæµ¹Ã¼Å© °Å¸®
 int crashdist = 20;
 
-//ì´ì•Œë°ì´í„°
+//ÃÑ¾Ëµ¥ÀÌÅÍ
 
 
 Bullet * Head = NULL;
@@ -76,173 +79,111 @@ void main()
 {
 	srand((unsigned)time(NULL));
 
-	//ìœˆë„ìš° ì´ˆê¸°í™” ë° ìƒì„±
-	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH); //ë””ìŠ¤í”Œë ˆì´ ëª¨ë“œ ì„¤ì •
-	glutInitWindowPosition(500, 0); // ìœˆë„ìš° ìœ„ì¹˜ ì§€ì •
-	glutInitWindowSize(800, 600); //ìœˆë„ìš° í¬ê¸° ì§€ì •
-	glutCreateWindow("ComputerGrapgics TermProject"); //ìœˆë„ìš° ìƒì„±(ìœˆë„ìš° ì´ë¦„)
+	//À©µµ¿ì ÃÊ±âÈ­ ¹× »ı¼º
+	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH); //µğ½ºÇÃ·¹ÀÌ ¸ğµå ¼³Á¤
+	glutInitWindowPosition(500, 0); // À©µµ¿ì À§Ä¡ ÁöÁ¤
+	glutInitWindowSize(800, 600); //À©µµ¿ì Å©±â ÁöÁ¤
+	glutCreateWindow("ComputerGrapgics TermProject"); //À©µµ¿ì »ı¼º(À©µµ¿ì ÀÌ¸§)
 
-	//ìƒíƒœ ë³€ìˆ˜ ì´ˆê¸°í™” í•¨ìˆ˜
-	glutSetCursor(GLUT_CURSOR_NONE);//ë§ˆìš°ìŠ¤ì»¤ì„œ ì—†ì• ê¸°
-	init_Texture();//í…ìŠ¤ì³ ë¶ˆëŸ¬ì˜¤ê¸°
+	//»óÅÂ º¯¼ö ÃÊ±âÈ­ ÇÔ¼ö
+	glutSetCursor(GLUT_CURSOR_NONE);//¸¶¿ì½ºÄ¿¼­ ¾ø¾Ö±â
+	init_Texture();//ÅØ½ºÃÄ ºÒ·¯¿À±â
 	for (int i = 0; i < 256; i++)
 		Keybuffer[i] = false;
 
-	//í•„ìš”í•œ ì½œë°± í•¨ìˆ˜ ì„¤ì •
-	glutDisplayFunc(DrawScene); //ì¶œë ¥ í•¨ìˆ˜ì˜ ì§€ì •
-	glutTimerFunc(Time, TimerFunction, 1);//íƒ€ì´ë¨¸ ì½œë°± í•¨ìˆ˜
+	//ÇÊ¿äÇÑ Äİ¹é ÇÔ¼ö ¼³Á¤
+	glutDisplayFunc(DrawScene); //Ãâ·Â ÇÔ¼öÀÇ ÁöÁ¤
+	glutTimerFunc(Time, TimerFunction, 1);//Å¸ÀÌ¸Ó Äİ¹é ÇÔ¼ö
 	glutTimerFunc(Bullet_Time, TimerFunction, 2);
 
-	glutPassiveMotionFunc(Motion);//ë§ˆìš°ìŠ¤ëª¨ì…˜
-	glutMouseFunc(Mouse);//ë§ˆìš°ìŠ¤ì…ë ¥
-	glutMotionFunc(Motion);//í´ë¦­ì‹œì—ë„ ì›€ì§ì´ê²Œë” ë§ˆìš°ìŠ¤ëª¨ì…˜ ì ìš©
+	glutPassiveMotionFunc(Motion);//¸¶¿ì½º¸ğ¼Ç
+	glutMouseFunc(Mouse);//¸¶¿ì½ºÀÔ·Â
+	glutMotionFunc(Motion);//Å¬¸¯½Ã¿¡µµ ¿òÁ÷ÀÌ°Ô²û ¸¶¿ì½º¸ğ¼Ç Àû¿ë
 
-	glutKeyboardFunc(Keyboard);//í‚¤ë³´ë“œì…ë ¥
-	glutKeyboardUpFunc(Keyboardup);//í‚¤ë³´ë“œ ë²„íŠ¼ì„ ë—ì„ ë•Œ
+	glutKeyboardFunc(Keyboard);//Å°º¸µåÀÔ·Â
+	glutKeyboardUpFunc(Keyboardup);//Å°º¸µå ¹öÆ°À» ¶ÃÀ» ¶§
 
-	glutReshapeFunc(Reshape);//ë‹¤ì‹œê·¸ë¦¬ê¸°
-	glutMainLoop();//ì´ë²¤íŠ¸ ë£¨í”„ ì‹¤í–‰í•˜ê¸°
+	glutReshapeFunc(Reshape);//´Ù½Ã±×¸®±â
+	glutMainLoop();//ÀÌº¥Æ® ·çÇÁ ½ÇÇàÇÏ±â
 }
 
-//ìœˆë„ìš° ì¶œë ¥ í•¨ìˆ˜
+//À©µµ¿ì Ãâ·Â ÇÔ¼ö
 GLvoid DrawScene(GLvoid)
 {
-	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);//ë°”íƒ•ìƒ‰ì„'black'ë¡œì§€ì •
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);// ì„¤ì •ëœ ìƒ‰ìœ¼ë¡œ ì „ì²´ë¥¼ ì¹ í•˜ê¸°
+	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);//¹ÙÅÁ»öÀ»'black'·ÎÁöÁ¤
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);// ¼³Á¤µÈ »öÀ¸·Î ÀüÃ¼¸¦ Ä¥ÇÏ±â
 
 	glViewport(0, 0, width, height);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	gluPerspective(60.0f, (float)width / (float)height, 0.1, 5000.0);
+	gluPerspective(60.0f, (float)width / (float)height, 0.1, 10000.0);
 	glMatrixMode(GL_MODELVIEW);
 
 	//3D Draw----------------------------------------------------------------------
 	glLoadIdentity();
+	update_FPS();
 	if (FirstPersonView)
-		gluLookAt(Charx, Chary + 170, Charz, Charx + Viewx, Chary + Viewy+170, Charz + Viewz, 0.0, 1.0, 0.0);
+		gluLookAt(Charx, Chary + 170, Charz, Charx + Viewx, Chary + Viewy + 170, Charz + Viewz, 0.0, 1.0, 0.0);
 	else
-		gluLookAt(Charx + Camx, Chary + Camy+190, Charz + Camz, Charx + Viewx, Chary + Viewy + 190, Charz + Viewz, 0.0, 1.0, 0.0);
+		gluLookAt(Charx + Camx, Chary + Camy + 190, Charz + Camz, Charx + Viewx, Chary + Viewy + 190, Charz + Viewz, 0.0, 1.0, 0.0);
 
 	glPushMatrix();
-	//ì¡°ëª…ì„¤ì •
-	glEnable(GL_DEPTH_TEST);                              // ê°€ë ¤ì§„ ë©´ ì œê±°
-	glEnable(GL_CULL_FACE);                               // í›„ë©´ ì œê±°
+	//Á¶¸í¼³Á¤
+	glEnable(GL_DEPTH_TEST);                              // °¡·ÁÁø ¸é Á¦°Å
+	glEnable(GL_CULL_FACE);                               // ÈÄ¸é Á¦°Å
 
-	glPushMatrix();//ìºë¦­í„° ê·¸ë¦¬ê¸°
-	glTranslatef(Charx, Chary+70, Charz);		//ìºë¦­í„° ìœ„ì¹˜ ì´ë™
-	glRotatef(camxrotate + 180, 0, 1, 0);	//ìºë¦­í„° ëª¸í†µ ì „ì²´ íšŒì „
-	drawCharacter();//ìºë¦­í„° ê·¸ë¦¬ê¸°
-	drawPistol();//ê¶Œì´ê·¸ë¦¬ê¸°
-	glPopMatrix();//ìºë¦­í„°ê·¸ë¦¬ê¸° end
-	
+	glPushMatrix();//Ä³¸¯ÅÍ ±×¸®±â
+	glTranslatef(Charx, Chary + 70, Charz);		//Ä³¸¯ÅÍ À§Ä¡ ÀÌµ¿
+	glRotatef(camxrotate + 180, 0, 1, 0);	//Ä³¸¯ÅÍ ¸öÅë ÀüÃ¼ È¸Àü
+	drawCharacter();//Ä³¸¯ÅÍ ±×¸®±â
+	drawPistol();//±ÇÃÑ±×¸®±â
+	glPopMatrix();//Ä³¸¯ÅÍ±×¸®±â end
+
 	//3D END------------------------------------------------------------------------------
-	drawBullet();//ì´ì•Œê·¸ë¦¬ê¸°
+	drawBullet();//ÃÑ¾Ë±×¸®±â
 
-	glPushMatrix();//ë¸”ë¡ê·¸ë¦¬ê¸°
+	glPushMatrix();//ºí·Ï±×¸®±â
 	glTranslatef(60, 0, 60);
 
-	glPushMatrix();//ë•…
+	draw_wall_background(wall_background_object);
+
+	glPushMatrix();//¶¥
 	draw_Ground(block_Nomal_object);
-	glPopMatrix();//ë•…end
-	glPushMatrix();//ë²½ëŒ
+	glPopMatrix();//¶¥end
+	glPushMatrix();//º®µ¹
 	draw_Wall(block_Brick_object);
-	glPopMatrix();//ë²½ëŒend
-	glPushMatrix();//ë‚˜ë¬´
+	glPopMatrix();//º®µ¹end
+	glPushMatrix();//³ª¹«
 	draw_Wooden(block_Wooden_object);
-	glPopMatrix();//ë‚˜ë¬´end
-	glPushMatrix();//ëŒ
+	glPopMatrix();//³ª¹«end
+	glPushMatrix();//µ¹
 	draw_Stone(block_Stone_object);
-	glPopMatrix();//ëŒend
+	glPopMatrix();//µ¹end
 
-	glPopMatrix();//ë¸”ë¡ê·¸ë¦¬ê¸° end
-
-	//í…ŒìŠ¤íŠ¸ìš©
-	/*for (int y = 0; y < 1; y++)
-	{
-		for (int z = -13; z < 14; z++)
-		{
-			for (int x = -36; x < 37; x++)
-			{
-				glPushMatrix();
-				glTranslatef(x * 120, y * 120, z * 120);
-				glColor3f(1, 0, 0);
-				glutSolidCube(30);
-				glPopMatrix();
-			}
-		}
-	}*/
-	
-	/*for (int z = -13; z < 14; z++)
-	{
-		for (int x = -36; x < 37; x++)
-		{
-			if (map_DATA[1][x+36][z+13] == 1)
-			{
-				glPushMatrix();
-				glTranslatef(x * 120, 0, z * 120);
-				glColor3f(0, 0, 1);
-				glutSolidCube(30);
-				glPopMatrix();
-			}
-		}
-	}
-
-
-	int X = (Charx / 120);
-	int Z = (Charz / 120);
-
-
-	glPushMatrix();
-	glTranslatef(X * 120+60, 0, Z * 120+60);
-	glColor3f(0, 1, 0);
-	glutSolidCube(80);
-	glPopMatrix();
-
-	for (int z = Z - 2; z < Z + 2; z++)
-	{
-		for (int x = X - 2; x < X + 2; x++)
-		{
-			if (map_DATA[1][x+36][z+13] == 1)
-			{
-				glPushMatrix();
-				glTranslatef(x * 120+60, 0, z * 120+60);
-				glColor3f(1, 0, 0);
-				glutSolidCube(50);
-				glPopMatrix();
-			}
-			else if (map_DATA[1][x+36][z+13] == 0)
-			{
-				glPushMatrix();
-				glTranslatef(x * 120+60, 0, z * 120+60);
-				glColor3f(0, 0, 1);
-				glutSolidCube(50);
-				glPopMatrix();
-			}
-		}
-	}*/
+	glPopMatrix();//ºí·Ï±×¸®±â end
 
 	//2D Draw-----------------------------------------------------------------------------
 	drawHud();
 	//2D END------------------------------------------------------------------------------
 	glPopMatrix();
-	glutSwapBuffers(); //í™”ë©´ì— ì¶œë ¥í•˜ê¸°
+	glutSwapBuffers(); //È­¸é¿¡ Ãâ·ÂÇÏ±â
 }//end of drawScene
 
 GLvoid Reshape(int w, int h)
 {
-	//ë·°í¬íŠ¸ ë³€í™˜ ì„¤ì •
+	//ºäÆ÷Æ® º¯È¯ ¼³Á¤
 	glViewport(0, 0, w, h);
 	width = w;
 	height = h;
 
-	//íˆ¬ì˜ í–‰ë ¬ ìŠ¤íƒ ì¬ì„¤ì •
+	//Åõ¿µ Çà·Ä ½ºÅÃ Àç¼³Á¤
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 
-	//í´ë¦¬í•‘ ê³µê°„ ì„¤ì • : ì›ê·¼íˆ¬ì˜
+	//Å¬¸®ÇÎ °ø°£ ¼³Á¤ : ¿ø±ÙÅõ¿µ
 	gluPerspective(60.0f, (float)w / (float)h, 0.1, 5000.0);
 
-	//ëª¨ë¸ ë·° í–‰ë ¬ ìŠ¤íƒ ì¬ì„¤ì •
+	//¸ğµ¨ ºä Çà·Ä ½ºÅÃ Àç¼³Á¤
 	glMatrixMode(GL_MODELVIEW);
 
 }
@@ -263,7 +204,7 @@ void Mouse(int button, int state, int x, int y)
 				sight = true;
 		}
 		else{}
-		
+
 	}
 }//end of Mouse
 
@@ -292,8 +233,8 @@ void TimerFunction(int value)
 	case 1:
 		if (RotateCam)
 			glutWarpPointer(400, 300);
-		animationCharleg();//ìºë¦­í„° ë‹¤ë¦¬ ì• ë‹ˆë©”ì´ì…˜
-		animationChararm();//ìºë¦­í„° íŒ” ì• ë‹ˆë©”ì´ì…˜
+		animationCharleg();//Ä³¸¯ÅÍ ´Ù¸® ¾Ö´Ï¸ŞÀÌ¼Ç
+		animationChararm();//Ä³¸¯ÅÍ ÆÈ ¾Ö´Ï¸ŞÀÌ¼Ç
 
 		crashCheck();
 
@@ -324,15 +265,15 @@ void TimerFunction(int value)
 			glutPostRedisplay();
 			glutTimerFunc(Bullet_Time, TimerFunction, 2);
 		}
-		
+
 		break;
 	}
-	
-	
+
+
 }//end of TimerFunction
 
 void drawCharacter(){
-	glPushMatrix(); //Save ë¨¸ë¦¬
+	glPushMatrix(); //Save ¸Ó¸®
 	glTranslated(0, 75, 0);
 	glRotatef(-(camyrotate + 90) / 3, 1, 0, 0);
 	glScaled(1.0, 1.0, 0.7);
@@ -342,9 +283,9 @@ void drawCharacter(){
 	drawBoxRight(30, false, character_head_object[3]);
 	drawBoxTop(30, false, character_head_object[4]);
 	drawBoxBottom(30, false, character_head_object[5]);
-	glPopMatrix(); //ë¨¸ë¦¬ end
+	glPopMatrix(); //¸Ó¸® end
 
-	glPushMatrix(); //Save ëª¸í†µ
+	glPushMatrix(); //Save ¸öÅë
 	glScaled(1.0, 1.5, 0.5);
 	drawBoxFront(30, false, character_body_object[0]);
 	drawBoxBack(30, false, character_body_object[1]);
@@ -352,13 +293,13 @@ void drawCharacter(){
 	drawBoxRight(30, false, character_body_object[3]);
 	drawBoxTop(30, false, character_body_object[4]);
 	drawBoxBottom(30, false, character_body_object[5]);
-	glPopMatrix(); //ëª¸í†µ end
+	glPopMatrix(); //¸öÅë end
 
 
 	if (sight){}
 	else
 	{
-		glPushMatrix(); //Save ì˜¤ë¥¸íŒ” ì–´ê»˜
+		glPushMatrix(); //Save ¿À¸¥ÆÈ ¾î²²
 		glTranslated(-45, 44, 0);
 		glRotatef(-right_sholder_x + 210, 1, 0, 0);
 		glRotatef(right_sholder_y, 0, 1, 0);
@@ -372,7 +313,7 @@ void drawCharacter(){
 		drawBoxBottom(30, true, character_arm_top_object[5]);
 		glScaled(2, 1.333333, 2);
 
-		glPushMatrix(); //Save ì˜¤ë¥¸íŒ” íŒ”ê¿ˆì¹˜
+		glPushMatrix(); //Save ¿À¸¥ÆÈ ÆÈ²ŞÄ¡
 		glTranslated(0, -45, 0);
 		glRotatef(right_elbow_x, 1, 0, 0);
 		glPushMatrix();
@@ -384,11 +325,11 @@ void drawCharacter(){
 		drawBoxTop(30, true, character_arm_top_object[5]);
 		drawBoxBottom(30, true, character_arm_top_object[5]);
 		glPopMatrix();
-		glPopMatrix();//ì˜¤ë¥¸íŒ” íŒ”ê¿ˆì¹˜ ì¢…ë£Œ
-		glPopMatrix();//ì˜¤ë¥¸íŒ” ì–´ê»˜ ì¢…ë£Œ
+		glPopMatrix();//¿À¸¥ÆÈ ÆÈ²ŞÄ¡ Á¾·á
+		glPopMatrix();//¿À¸¥ÆÈ ¾î²² Á¾·á
 
 
-		glPushMatrix(); //Save ì™¼íŒ” ì–´ê»˜ 
+		glPushMatrix(); //Save ¿ŞÆÈ ¾î²² 
 		glTranslated(45, 44, 0);
 		glRotatef(-left_sholder_x - 90, 1, 0, 0);
 		glRotatef(left_sholder_y, 0, 1, 0);
@@ -402,7 +343,7 @@ void drawCharacter(){
 		drawBoxBottom(30, true, character_arm_top_object[5]);
 		glScaled(2, 1.333333, 2);
 
-		glPushMatrix(); //Save ì™¼íŒ” íŒ”ê¿ˆì¹˜
+		glPushMatrix(); //Save ¿ŞÆÈ ÆÈ²ŞÄ¡
 		glTranslated(0, -45, 0);
 		glRotatef(left_elbow_x, 1, 0, 0);
 		glScaled(0.5, 0.75, 0.5);
@@ -412,12 +353,12 @@ void drawCharacter(){
 		drawBoxRight(30, true, character_arm_bottom_object[3]);
 		drawBoxTop(30, true, character_arm_top_object[5]);
 		drawBoxBottom(30, true, character_arm_top_object[5]);
-		glPopMatrix();//ì™¼íŒ” íŒ”ê¿ˆì¹˜ ì¢…ë£Œ
-		glPopMatrix();//ì™¼íŒ”ì–´ê»˜ ì¢…ë£Œ
+		glPopMatrix();//¿ŞÆÈ ÆÈ²ŞÄ¡ Á¾·á
+		glPopMatrix();//¿ŞÆÈ¾î²² Á¾·á
 	}
 
 
-	glPushMatrix(); //Save ì˜¤ë¥¸ìª½ ê³¨ë°˜
+	glPushMatrix(); //Save ¿À¸¥ÂÊ °ñ¹İ
 	glTranslated(-15, -40, 0);
 	glRotatef(right_leg_x, 1, 0, 0);
 	glRotatef(right_leg_y, 0, 1, 0);
@@ -430,7 +371,7 @@ void drawCharacter(){
 	drawBoxBottom(30, true, character_leg_top_object[5]);
 	glScaled(2, 1.333333, 2);
 
-	glPushMatrix(); //Save ì˜¤ë¥¸ìª½ ë¬´ë¦
+	glPushMatrix(); //Save ¿À¸¥ÂÊ ¹«¸­
 	glTranslated(0, -45, 0);
 	glRotatef(right_knee_x, 1, 0, 0);
 	glScaled(0.5, 0.75, 0.5);
@@ -440,12 +381,12 @@ void drawCharacter(){
 	drawBoxRight(30, true, character_leg_bottom_object[3]);
 	drawBoxTop(30, true, character_leg_top_object[4]);
 	drawBoxBottom(30, true, character_leg_top_object[5]);
-	glPopMatrix();//ì˜¤ë¥¸ìª½ ë¬´ë¦ ì¢…ë£Œ
+	glPopMatrix();//¿À¸¥ÂÊ ¹«¸­ Á¾·á
 
-	glPopMatrix();//ì˜¤ë¥¸ìª½ ê³¨ë°˜ ì¢…ë£Œ
+	glPopMatrix();//¿À¸¥ÂÊ °ñ¹İ Á¾·á
 
 
-	glPushMatrix(); //Save ì™¼ìª½ ê³¨ë°˜
+	glPushMatrix(); //Save ¿ŞÂÊ °ñ¹İ
 	glTranslated(15, -40, 0);
 	glRotatef(left_leg_x, 1, 0, 0);
 	glRotatef(left_leg_y, 0, 1, 0);
@@ -458,7 +399,7 @@ void drawCharacter(){
 	drawBoxBottom(30, true, character_leg_top_object[5]);
 	glScaled(2, 1.333333, 2);
 
-	glPushMatrix(); //Save ì™¼ìª½ ë¬´ë¦
+	glPushMatrix(); //Save ¿ŞÂÊ ¹«¸­
 	glTranslated(0, -45, 0);
 	glRotatef(left_knee_x, 1, 0, 0);
 	glScaled(0.5, 0.75, 0.5);
@@ -468,16 +409,16 @@ void drawCharacter(){
 	drawBoxRight(30, true, character_leg_bottom_object[3]);
 	drawBoxTop(30, true, character_leg_top_object[4]);
 	drawBoxBottom(30, true, character_leg_top_object[5]);
-	glPopMatrix(); //ì™¼ìª½ ë¬´ë¦ ì¢…ë£Œ
+	glPopMatrix(); //¿ŞÂÊ ¹«¸­ Á¾·á
 
-	glPopMatrix(); //ì™¼ìª½ê³¨ë°˜ ì¢…ë£Œ
+	glPopMatrix(); //¿ŞÂÊ°ñ¹İ Á¾·á
 }
 
 void animationChararm()
 {
 	switch (character_up_state)
 	{
-	case 2://ê¶Œì´
+	case 2://±ÇÃÑ
 		//left_sholder_x = 0;
 		left_sholder_y = 70;
 		left_sholder_z = -75;
@@ -487,7 +428,7 @@ void animationChararm()
 		left_elbow_x = 25;
 		right_elbow_x = -30;
 		break;
-	case 1://ë¼ì´í”Œ
+	case 1://¶óÀÌÇÃ
 		//left_sholder_x = 0;
 		left_sholder_y = 70;
 		left_sholder_z = -75;
@@ -497,7 +438,7 @@ void animationChararm()
 		left_elbow_x = 25;
 		right_elbow_x = -30;
 		break;
-	case 0://ê¸°ë³¸ìì„¸
+	case 0://±âº»ÀÚ¼¼
 		left_sholder_x = 0;
 		left_sholder_y = 0;
 		right_sholder_x = 0;
@@ -511,7 +452,7 @@ void animationChararm()
 void animationCharleg()
 {
 	switch (character_down_state){
-	case 0://ê°€ë§Œíˆ ì„œìˆì„ ë•Œ
+	case 0://°¡¸¸È÷ ¼­ÀÖÀ» ¶§
 		left_leg_x = 0;
 		left_leg_y = 0;
 		left_knee_x = 0;
@@ -519,7 +460,7 @@ void animationCharleg()
 		right_leg_y = 0;
 		right_knee_x = 0;
 		break;
-	case 1://ì „ì§„,í›„ì§„
+	case 1://ÀüÁø,ÈÄÁø
 		if (legtimer < 150)
 		{
 			legtimer += 2;
@@ -538,7 +479,7 @@ void animationCharleg()
 				left_leg_x = 105 - legtimer;
 				right_leg_x = legtimer - 120;
 				right_knee_x = 0;
-				
+
 				if (legtimer < 113)
 					left_knee_x = legtimer - 75;
 				else
@@ -548,7 +489,7 @@ void animationCharleg()
 		else
 			legtimer = 0;
 		break;
-	case 2://ì¢Œìš°ì´ë™
+	case 2://ÁÂ¿ìÀÌµ¿
 		break;
 	}
 }
@@ -569,6 +510,8 @@ void init_Texture(){
 	zombie_body_Texture(zombie_body_object);
 	zombie_arm_Texture(zombie_arm_top_object, zombie_arm_bottom_object);
 	zombie_leg_Texture(zombie_leg_top_object, zombie_leg_bottom_object);
+
+	wall_background_Texture(wall_background_object);
 }
 
 void Target(int x, int y)
@@ -675,14 +618,14 @@ void Keyinput(int key)
 		MouseSens++;
 		if (MouseSens < 1)
 			MouseSens = 1;
-		printf("í˜„ì¬ ë§ˆìš°ìŠ¤ ê°ë„ëŠ” %d ì…ë‹ˆë‹¤.(default : 25)\n", MouseSens);
+		printf("ÇöÀç ¸¶¿ì½º °¨µµ´Â %d ÀÔ´Ï´Ù.(default : 25)\n", MouseSens);
 		Keybuffer[key] = false;
 		break;
 	case ']':
 		MouseSens--;
 		if (MouseSens > 100)
 			MouseSens = 100;
-		printf("í˜„ì¬ ë§ˆìš°ìŠ¤ ê°ë„ëŠ” %d ì…ë‹ˆë‹¤.(default : 25)\n", MouseSens);
+		printf("ÇöÀç ¸¶¿ì½º °¨µµ´Â %d ÀÔ´Ï´Ù.(default : 25)\n", MouseSens);
 		Keybuffer[key] = false;
 		break;
 	case 27:
@@ -703,37 +646,14 @@ void drawHud()
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
-	if (sight)
-	{
-		glColor3f(0, 0, 1);
-		glBegin(GL_QUADS);// Crosshair
-		glVertex2f(396, 304);
-		glVertex2f(404, 304);
-		glVertex2f(404, 296);
-		glVertex2f(396, 296);
-		glEnd();
-	}
-	else
-	{
-		glColor3f(0, 1, 0);
-		glBegin(GL_LINES);// Crosshair
-		glVertex2f(380, 300);
-		glVertex2f(390, 300);
 
-		glVertex2f(410, 300);
-		glVertex2f(420, 300);
+	draw_Crosshair(sight);// Å©·Î½º Çì¾î ±¸Çö
 
-		glVertex2f(400, 280);
-		glVertex2f(400, 290);
+	draw_MiniMap(Charx, Charz);// ¹Ì´Ï¸Ê ±¸Çö
 
-		glVertex2f(400, 310);
-		glVertex2f(400, 320);
-		glEnd();
-	}
-
-	glPushMatrix();//ì´ì•Œ í‘œì‹œ
+	glPushMatrix();//ÃÑ¾Ë Ç¥½Ã
 	glColor3f(0, 1, 0);
-	glTranslatef(680, 570,0);
+	glTranslatef(680, 570, 0);
 	glRasterPos2f(0.0, 0.0);
 	sprintf(ammo, "%d / %d", rifleload, rifleammo);
 	int len = (int)strlen(ammo);
@@ -741,7 +661,7 @@ void drawHud()
 		glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, ammo[i]);
 	glPopMatrix();
 
-	glPushMatrix();//ì²´ë ¥ í‘œì‹œ
+	glPushMatrix();//Ã¼·Â Ç¥½Ã
 	glColor3f(1, 0, 0);
 	glTranslatef(20, 570, 0);
 	glRasterPos2f(0.0, 0.0);
@@ -751,59 +671,18 @@ void drawHud()
 		glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, health[i]);
 	glPopMatrix();
 
+
+	glPushMatrix();//FPS Ç¥½Ã
+	glColor3f(1, 0, 0);
+	glTranslatef(640, 25, 0);
+	glRasterPos2f(0.0, 0.0);
+	sprintf(draw_FPS, "FPS : %f", fps);
+	len = (int)strlen(draw_FPS);
+	for (int i = 0; i < len; i++)
+		glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, draw_FPS[i]);
 	glPopMatrix();
-}
 
-void drawTestbox()
-{
-
-	glPushMatrix();//ìºë¦­í„°ê°€ ë°”ë¼ë³´ëŠ” ì§€ì  ë“œë¡œìš°
-	glColor3f(1.0f, 1.0f, 1.0f);
-	glTranslatef(Charx + Viewx, Chary + Viewy, Charz + Viewz);
-	glutSolidCube(10);
 	glPopMatrix();
-
-	glPushMatrix();//ë°”ë‹¥ ê·¸ë¦¬ê¸°
-	glTranslatef(0, -100, 0);
-	glScalef(1, 0.01, 1);
-	glutWireCube(2000);
-	glPopMatrix();//ë°”ë‹¥ ê·¸ë¦¬ê¸° ì¢…ë£Œ
-
-	glPushMatrix();//ë°”ë‹¥ ê·¸ë¦¬ê¸°
-	glColor3f(1, 0, 0);//ë¹¨ê°•ìƒ‰ zì¶•
-	glTranslatef(0, 0, -1000);
-	glutSolidCube(100);
-	glPopMatrix();//ë°”ë‹¥ ê·¸ë¦¬ê¸° ì¢…ë£Œ
-
-	glPushMatrix();//ë°”ë‹¥ ê·¸ë¦¬ê¸°
-	glColor3f(0, 0, 1);//íŒŒë‘ìƒ‰
-	glTranslatef(0, 0, 1000);//zì¶•
-	glutSolidCube(100);
-	glPopMatrix();//ë°”ë‹¥ ê·¸ë¦¬ê¸° ì¢…ë£Œ
-
-	glPushMatrix();//ë°”ë‹¥ ê·¸ë¦¬ê¸°
-	glColor3f(0, 1, 0);
-	glTranslatef(1000, 0, 0);
-	glutSolidCube(100);
-	glPopMatrix();//ë°”ë‹¥ ê·¸ë¦¬ê¸° ì¢…ë£Œ
-
-	glPushMatrix();//ë°”ë‹¥ ê·¸ë¦¬ê¸°
-	glColor3f(1, 1, 0);
-	glTranslatef(-1000, 0, 0);
-	glutSolidCube(100);
-	glPopMatrix();//ë°”ë‹¥ ê·¸ë¦¬ê¸° ì¢…ë£Œ
-
-	glPushMatrix();//ë°”ë‹¥ ê·¸ë¦¬ê¸°
-	glColor3f(1, 0, 1);
-	glTranslatef(0, -1000, 0);
-	glutSolidCube(100);
-	glPopMatrix();//ë°”ë‹¥ ê·¸ë¦¬ê¸° ì¢…ë£Œ
-
-	glPushMatrix();//ë°”ë‹¥ ê·¸ë¦¬ê¸°
-	glColor3f(0, 1, 1);
-	glTranslatef(0, 1000, 0);
-	glutSolidCube(100);
-	glPopMatrix();//ë°”ë‹¥ ê·¸ë¦¬ê¸° ì¢…ë£Œ
 }
 
 void drawPistol()
@@ -815,33 +694,33 @@ void drawPistol()
 	else{
 		glTranslatef(0, 25, 0);
 	}
-	glRotatef(-right_sholder_x-90, 1, 0, 0);
+	glRotatef(-right_sholder_x - 90, 1, 0, 0);
 	if (sight){ glTranslatef(0, -15, 50); }
 	else{ glTranslatef(-20, 10, 100); }
-	
+
 	glColor3f(0.1, 0.1, 0.1);
 
-	glPushMatrix();//ì†ì¡ì´
+	glPushMatrix();//¼ÕÀâÀÌ
 	glTranslatef(0, -10, 0);
 	glScalef(0.5, 1.0, 0.5);
 	glRotatef(15, 1, 0, 0);
 	glutSolidCube(20);
 	glPopMatrix();
 
-	glPushMatrix();//ì´ì•„ë˜ë¶€ë¶„
+	glPushMatrix();//ÃÑ¾Æ·¡ºÎºĞ
 	glTranslatef(0, 2, +15);
 	glScalef(0.25, 0.1, 1.0);
 	glutSolidCube(40);
 	glPopMatrix();
 
-	glPushMatrix();//ì´ìœ—ë¶€ë¶„
+	glPushMatrix();//ÃÑÀ­ºÎºĞ
 	glColor3f(0.3, 0.3, 0.3);
 	glTranslatef(0, 8, +15);
 	glScalef(0.25, 0.2, 1.0);
 	glutSolidCube(40);
 	glPopMatrix();
 
-	glPushMatrix();//ê°€ëŠ ì¢Œ
+	glPushMatrix();//°¡´ÆÁÂ
 	glColor3f(0.0, 0.8, 0.0);
 	glTranslatef(3, 14, 0);
 	glutSolidCube(2);
@@ -851,7 +730,7 @@ void drawPistol()
 
 	if (sight){}
 	else{
-		glPushMatrix();//ê°€ëŠ ì‡ 
+		glPushMatrix();//°¡´Æ¼è
 		glColor3f(0.0, 0.0, 1.0);
 		glTranslatef(0, 14, 35);
 		glutSolidCube(1);
@@ -886,12 +765,12 @@ void crashCheck()
 	int X = (Charx / 120);
 	int Y = (Chary / 120) + 1;
 	int Z = (Charz / 120);
-	
+
 
 	if (Charx < 0)
-		X-=1;
+		X -= 1;
 	if (Charz < 0)
-		Z-=1;
+		Z -= 1;
 
 	for (int y = Y; y < Y + 2; y++)
 	{
@@ -901,7 +780,7 @@ void crashCheck()
 			{
 				if (map_DATA[y][x + 36][z + 13] == 1)
 				{
-					
+
 					if ((x == X - 1) && (z == Z - 1))
 					{
 					}
@@ -948,7 +827,7 @@ void bulletCreate()
 	printf("1");
 	Bullet * New = (Bullet*)malloc(sizeof(Bullet));
 	if (FirstPersonView)
-	{ 
+	{
 		if (sight)
 		{
 			New->x = Charx + 50 * sin((camyrotate)* 3.141592 / 180) * sin((camxrotate)* 3.141592 / 180);
@@ -968,9 +847,9 @@ void bulletCreate()
 		New->y = Chary + 140 * cos((camyrotate - 20)* 3.141592 / 180) + 170;
 		New->z = Charz + 140 * sin((camyrotate - 20)* 3.141592 / 180) * cos((camxrotate - 10)* 3.141592 / 180);
 	}
-	New->fz = 10*sin((camyrotate)* 3.141592 / 180) * cos((camxrotate)* 3.141592 / 180);
-	New->fx = 10*sin((camyrotate)* 3.141592 / 180) * sin((camxrotate)* 3.141592 / 180);
-	New->fy = 10*cos((camyrotate)* 3.141592 / 180);
+	New->fz = 10 * sin((camyrotate)* 3.141592 / 180) * cos((camxrotate)* 3.141592 / 180);
+	New->fx = 10 * sin((camyrotate)* 3.141592 / 180) * sin((camxrotate)* 3.141592 / 180);
+	New->fy = 10 * cos((camyrotate)* 3.141592 / 180);
 	New->next = NULL;
 	printf("%f, %f, %f\n", New->fx, New->fy, New->fz);
 	//printf("Viewx : %f, Viewy : %f, Viewz : %f\n", Viewx, Viewy, Viewz);
@@ -1003,14 +882,14 @@ void bulletDestroy(Bullet * Del)
 	while (DTemp != NULL)
 	{
 		if (Head == Del)
-		{ 
+		{
 			Head = Del->next;
 			DTemp = Head;
 			free(Del);
 			break;
 		}
 		else if (DTemp->next == Del)
-		{ 
+		{
 			Del = DTemp->next;
 			DTemp->next = Del->next;
 			free(Del);
@@ -1021,4 +900,31 @@ void bulletDestroy(Bullet * Del)
 			DTemp = DTemp->next;
 	}
 	printf("destend\n");
+}
+
+void update_FPS(){
+	static DWORD frameCount = 0;            //ÇÁ·¹ÀÓ Ä«¿îÆ®¼ö
+	static float timeElapsed = 0.0f;            //Èå¸¥ ½Ã°£
+	static DWORD lastTime = timeGetTime();   //¸¶Áö¸· ½Ã°£(tempº¯¼ö)
+
+	DWORD curTime = timeGetTime();      //ÇöÀç ½Ã°£
+	float timeDelta = (curTime - lastTime)*0.001f;        //timeDelta(1¹ø»ı¼ºÈÄ Èå¸¥ ½Ã°£) 1ÃÊ´ÜÀ§·Î ¹Ù²ãÁØ´Ù.
+
+	timeElapsed += timeDelta;
+
+	frameCount++;
+
+	if (timeElapsed >= 1.0f)         //Èå¸¥½Ã°£ÀÌ 1ÃÊÀÌ»óÀÌ¸é ³»°¡ ÇÏ°í½ÍÀº°Í Ã³¸®
+	{
+		fps = (float)frameCount / timeElapsed;
+		frameCount = 0;
+		timeElapsed = 0.0f;
+	}
+	else
+	{
+		//Sleep(0.002f * 1000);   // 100fps   
+	}
+
+
+	lastTime = curTime;
 }

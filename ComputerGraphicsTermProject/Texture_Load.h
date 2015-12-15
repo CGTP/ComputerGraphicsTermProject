@@ -85,6 +85,10 @@ static GLuint zombie_leg_bottom_object[6];
 
 extern int map_DATA[6][72][27]; // 높이, 가로, 세로
 
+// UI_Draw cpp 함수들
+void draw_MiniMap(int, int); // 미니맵 그리는 함수
+void draw_Crosshair(bool); // 크로스헤어 그리는 함수
+
 void Load_TextureBMP(GLuint [], int, char *);
 AUX_RGBImageRec *LoadBMP(char *Filename);
 
