@@ -14,6 +14,7 @@
 #pragma comment(lib, "winmm.lib") 
 // 배경음악을 구현하기 위한 모듈 추가.
 
+/*
 // json 으로 인한 추가 모듈
 #include <string>
 #include <vector>
@@ -28,9 +29,11 @@
 #else // linux
 #endif
 // json 으로 인한 추가 모듈
+*/
 
-void nomal_Texture(GLuint []);
-void tree_Texture(GLuint []);
+
+void nomal_Texture(GLuint[]);
+void tree_Texture(GLuint[]);
 void brick_Texture(GLuint[]);
 void wooden_Texture(GLuint[]);
 void stone_Texture(GLuint[]);
@@ -55,11 +58,11 @@ void drawBoxLeft(int, bool, GLuint);
 void draw_Block(int, GLuint[]);	// 텍스쳐 맵핑된 블럭을 사이즈를 받아 그리기.
 void draw_Map_Block(int, GLuint[], int); // 최적화를 위한 블럭 재설정.
 void draw_Ground(int, GLuint[]);
-void draw_Wall(GLuint []); // 벽그리는 함수
-void draw_Ground(GLuint []);	// 땅그리는 함수
+void draw_Wall(GLuint[]); // 벽그리는 함수
+void draw_Ground(GLuint[]);	// 땅그리는 함수
 void draw_Wooden(GLuint[]);	// 나무박스 그려준다.
 void draw_Stone(GLuint[]);	// 벽돌을 그려준다.
-void draw_Background_Wall(GLuint []); // 벽을 그린다.
+void draw_Background_Wall(GLuint[]); // 벽을 그린다.
 
 void draw_wall_background(GLuint[]);
 void wall_background_Texture(GLuint[]);
@@ -91,7 +94,7 @@ extern int map_DATA[6][72][27]; // 높이, 가로, 세로
 void draw_MiniMap(int, int); // 미니맵 그리는 함수
 void draw_Crosshair(bool); // 크로스헤어 그리는 함수
 
-void Load_TextureBMP(GLuint [], int, char *);
+void Load_TextureBMP(GLuint[], int, char *);
 AUX_RGBImageRec *LoadBMP(char *Filename);
 
 #endif

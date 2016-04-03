@@ -1,0 +1,18 @@
+﻿  Block_Draw.cpp
+  Block_Texture.cpp
+  Box_Draw.cpp
+  Character_Texture.cpp
+  Load_BMP.cpp
+  Main.cpp
+Main.cpp(81): warning C4838: 'double'에서 'GLfloat'(으)로의 변환에는 축소 변환이 필요합니다.
+Main.cpp(82): warning C4838: 'double'에서 'GLfloat'(으)로의 변환에는 축소 변환이 필요합니다.
+  Map_Draw.cpp
+  UI_Draw.cpp
+  Wall_Texture_Draw.cpp
+  Zombie_Texture.cpp
+  코드를 생성하고 있습니다.
+  0 of 77 functions ( 0.0%) were compiled, the rest were copied from previous compilation.
+    0 functions were new in current compilation
+    0 functions had inline decision re-evaluated but remain unchanged
+  코드를 생성했습니다.
+  ComputerGraphicsTermProject.vcxproj -> C:\ComputerGraphicsTermProject\Release\ComputerGraphicsTermProject.exe
