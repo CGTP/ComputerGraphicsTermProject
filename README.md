@@ -22,7 +22,7 @@ Computer Graphics TermProject
 개발 환경
 -------------
 
-+ Visual Studio 2013
++ Visual Studio 2013 -> Visual Studio 2015
 + OpenGL
 + C/C++
 
@@ -102,3 +102,24 @@ Computer Graphics TermProject
 
  1. “충돌 체크” 마무리 및 2차 테스트 후 문제점 수정
  2. 최종 발표를 위한 작업 내용 정리 및 릴리즈 파일 준비.
+
+----------
+
+
+완성된 이미지 & 동영상
+--------------------
++ [유튜브 시연 영상 (36초) - 촬영을 위하여 FPS를 30으로 조정하였습니다.](https://www.youtube.com/watch?v=55W6j0bYiPQ)
++ 기본적인 조명을 활용한 시점
+![Image05](http://i.imgur.com/cVUgaWY.png)
+
++ 줌을 한뒤 하이라이트 조명을 사용한 시점
+![Image06](http://i.imgur.com/ZBUe298.png)
+
++ 3인칭 시점
+![Image07](http://i.imgur.com/q1C4g8x.png)
+
++ 1인칭 시점에서의 좀비 캐릭터 확인
+![Image08](http://i.imgur.com/Tuxp8Gh.png)
+
++ 1번 이미지와 같은 일반적인 시점
+![Image09](http://i.imgur.com/cVUgaWY.png)
